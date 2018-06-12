@@ -1,4 +1,4 @@
-# coravel
+# Coravel
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
 
