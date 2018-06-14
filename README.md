@@ -54,16 +54,16 @@ services.AddScheduler(scheduler =>
 
 So far, these methods are available for specifying what the interval of your task's schedule can be:
 
-- AfterMinutes(int minutes);
-- EveryMinute();
-- EveryFiveMinutes();
-- EveryTenMinutes();
-- EveryFifteenMinutes();
-- EveryThirtyMinutes();
-- Hourly();
-- Daily();
-- Weekly();
+- `AfterMinutes(int minutes);`
+- `EveryMinute();`
+- `EveryFiveMinutes();`
+- `EveryTenMinutes();`
+- `EveryFifteenMinutes();`
+- `EveryThirtyMinutes();`
+- `Hourly();`
+- `Daily();`
+- `Weekly();`
 
-## Job Queing
+## Feature: Job Queing
 
 TBA
