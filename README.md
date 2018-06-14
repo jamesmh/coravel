@@ -26,7 +26,7 @@ The `AddScheduler()` method will configure a new Hosted Service that will run in
 
 This method has an instance of a `Scheduler` provided to you for configuring what tasks you want to schedule. It has a method `Schedule()` which accepts a `System.Action`. This contains the logic / code of the task you want to run.
 
-The output of the `Schedule()` method will return an object that implements the interface `IScheduled`. This provides methods for specifying the interval of when your tasks should be run (once a minute? every hour? etc.)
+After calling `Schedule()` you can chain method calls further to specify the interval of when your tasks should be run (once a minute? every hour? etc.)
 
 ### Scheduling Tasks With Varying Intervals
 
@@ -50,9 +50,19 @@ services.AddScheduler(scheduler =>
 });
 ```
 
-### ISchedule Interval Methods
+### Scheduling Interval Methods
 
-TBA
+So far, these methods are available for specifying what the interval of your task's schedule can be:
+
+- AfterMinutes(int minutes);
+- EveryMinute();
+- EveryFiveMinutes();
+- EveryTenMinutes();
+- EveryFifteenMinutes();
+- EveryThirtyMinutes();
+- Hourly();
+- Daily();
+- Weekly();
 
 ## Job Queing
 
