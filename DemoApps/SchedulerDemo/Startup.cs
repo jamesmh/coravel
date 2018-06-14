@@ -35,16 +35,16 @@ namespace SchedulerDemo
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            var scheduler = services.AddScheduler();
+            services.AddScheduler(scheduler =>
+            {
+                scheduler.Schedule(
+                    () => Console.WriteLine("Every minute. Ran at " + DateTime.UtcNow.ToLongTimeString())
+                ).EveryMinute();
 
-            scheduler.Schedule(
-                () => Console.WriteLine("Every minute. Ran at " + DateTime.UtcNow.ToLongTimeString())
-            ).EveryMinute();
-
-            scheduler.Schedule(
-                () => Console.WriteLine("Every 2 minutes. Ran at " + DateTime.UtcNow.ToLongTimeString())
-            ).EachMinutes(2);
-            
+                scheduler.Schedule(
+                    () => Console.WriteLine("Every 2 minutes. Ran at " + DateTime.UtcNow.ToLongTimeString())
+                ).AfterMinutes(2);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

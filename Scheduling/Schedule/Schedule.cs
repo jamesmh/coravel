@@ -18,7 +18,7 @@ namespace Scheduling.Schedule
             return scheduled;
         }
 
-        internal void RunTasksAtUtc(DateTime utcNow)
+        internal void RunScheduledTasks(DateTime utcNow)
         {
             foreach(var scheduledEvent in this._events){
                 if(scheduledEvent.ShouldInvokeNow(utcNow)){

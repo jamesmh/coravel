@@ -8,10 +8,10 @@ namespace Scheduling
 {
     public static class HostedServiceExtensions
     {
-        public static Scheduler AddScheduler(this IServiceCollection services)
+        public static void AddScheduler(this IServiceCollection services, Action<Scheduler> configScheduledTasks)
         {
             services.AddHostedService<SchedulerHost>();
-            return SchedulerHost.GetSchedulerInstance();
+            configScheduledTasks(SchedulerHost.GetSchedulerInstance());
         }
     }
 }

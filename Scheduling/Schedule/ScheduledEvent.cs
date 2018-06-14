@@ -25,15 +25,24 @@ namespace Scheduling.Schedule
         private TimeSpan IntervalSinceLstRun(DateTime utcNow) =>
             utcNow.AddSeconds(1).Subtract(this._utcLastRun);
         
-
-        internal void InvokeScheduledAction() => this._scheduledAction();
+        public void InvokeScheduledAction() => this._scheduledAction();
 
         public void Daily() => this._scheduledInterval = TimeSpan.FromDays(1);
 
-        public void EveryHour() => this._scheduledInterval = TimeSpan.FromHours(1);
+        public void Hourly() => this._scheduledInterval = TimeSpan.FromHours(1);
 
-        public void EveryMinute() => this._scheduledInterval = TimeSpan.FromMinutes(1);
+        public void EveryMinute() => this.AfterMinutes(1);
 
-        public void EachMinutes(int minutes)=> this._scheduledInterval = TimeSpan.FromMinutes(minutes);
+        public void AfterMinutes(int minutes)=> this._scheduledInterval = TimeSpan.FromMinutes(minutes);
+
+        public void EveryFiveMinutes()=> this.AfterMinutes(5);
+
+        public void EveryTenMinutes()=> this.AfterMinutes(10);
+
+        public void EveryFifteenMinutes()=> this.AfterMinutes(15);
+
+        public void EveryThirtyMinutes()=> this.AfterMinutes(30);
+
+        public void Weekly()=> this._scheduledInterval = TimeSpan.FromDays(7);
     }
 }

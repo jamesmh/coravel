@@ -11,7 +11,7 @@ namespace Scheduling.HostedService
 {
     internal class SchedulerHost : IHostedService, IDisposable
     {
-        private static Scheduler _scheduler;
+        private static Schedule.Scheduler _scheduler;
         private OneMinuteTimer _timer;
 
         internal static Scheduler GetSchedulerInstance()
@@ -29,7 +29,7 @@ namespace Scheduling.HostedService
 
         private void InvokeScheduledTasks()
         {  
-            GetSchedulerInstance().RunTasksAtUtc(DateTime.UtcNow);
+            GetSchedulerInstance().RunScheduledTasks(DateTime.UtcNow);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
