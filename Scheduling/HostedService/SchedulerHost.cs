@@ -4,16 +4,21 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Scheduling.Schedule;
+using Scheduling.Timing;
 
-namespace Scheduler
+namespace Scheduling.HostedService
 {
     internal class SchedulerHost : IHostedService, IDisposable
     {
-        private static IEnumerable<Action> _tasks;
+        private static Scheduler _scheduler;
         private OneMinuteTimer _timer;
 
-        public static void UsingScheduledTasks(IEnumerable<Action> tasks) {
-            _tasks = tasks;
+        internal static Scheduler GetSchedulerInstance()
+        {
+            if(_scheduler == null)
+                _scheduler = new Scheduler();
+            return _scheduler;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -24,8 +29,7 @@ namespace Scheduler
 
         private void InvokeScheduledTasks()
         {  
-            foreach(var task in _tasks)
-                task();
+            GetSchedulerInstance().RunTasksAtUtc(DateTime.UtcNow);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -36,7 +40,6 @@ namespace Scheduler
 
         public void Dispose()
         {
-            _tasks = null;
             this._timer?.Dispose();
         }
     }

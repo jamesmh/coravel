@@ -1,11 +1,12 @@
 using System;
 using System.Threading;
 
-namespace Scheduler
+namespace Scheduling.Timing
 {
     internal class OneMinuteTimer : IDisposable
     {
         private static readonly TimeSpan OneMinute = TimeSpan.FromMinutes(1);
+        private object _lock = new object();
         private Timer _timer;
         private Action _callback;
 
@@ -16,19 +17,17 @@ namespace Scheduler
         }
 
         private void ExecCallbackWithPausedTimer(object state) {
-          //  this.PauseTimer();
-            this._callback();
-         //   this.ResumeTimer();
-        }
-
-        private void PauseTimer()
-        {
-            this._timer?.Change(Timeout.Infinite, 0);
-        }
-
-        private void ResumeTimer()
-        {
-            this._timer?.Change(TimeSpan.Zero, OneMinute);
+            // If callback is still running we'll just keep the timer going 
+            // until the next iteration.
+            if(Monitor.TryEnter(this._lock))
+            {
+                try {
+                    this._callback();
+                }
+              finally {
+                    Monitor.Exit(this._lock);
+                }
+            }
         }
 
         public void Stop(){

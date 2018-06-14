@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Scheduler;
+using Scheduling;
 
 namespace SchedulerDemo
 {
@@ -35,9 +35,16 @@ namespace SchedulerDemo
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddScheduler(new List<Action>(){
-                () => Console.WriteLine("This is executed every minute at " + DateTime.UtcNow.ToLongTimeString() + " utc")
-            });
+            var scheduler = services.AddScheduler();
+
+            scheduler.Schedule(
+                () => Console.WriteLine("Every minute. Ran at " + DateTime.UtcNow.ToLongTimeString())
+            ).EveryMinute();
+
+            scheduler.Schedule(
+                () => Console.WriteLine("Every 2 minutes. Ran at " + DateTime.UtcNow.ToLongTimeString())
+            ).EachMinutes(2);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
