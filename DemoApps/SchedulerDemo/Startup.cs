@@ -31,18 +31,17 @@ namespace SchedulerDemo
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScheduler(scheduler =>
             {
                 scheduler.Schedule(
-                    () => Console.WriteLine("Every minute. Ran at " + DateTime.UtcNow.ToLongTimeString())
+                    () => Console.WriteLine("Every minute. Ran at utc " + DateTime.UtcNow)
                 ).EveryMinute();
 
                 scheduler.Schedule(
-                    () => Console.WriteLine("Every 2 minutes. Ran at " + DateTime.UtcNow.ToLongTimeString())
+                    () => Console.WriteLine("Every 2 minutes. Ran at utc " + DateTime.UtcNow)
                 ).AfterMinutes(2);
             });
         }
