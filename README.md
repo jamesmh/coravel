@@ -6,7 +6,7 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Simple Queuing
 - Additional command line tools integrated with other coraval features
 
-## Task Scheduling
+## Feature: Task Scheduling
 
 ### Initial Setup
 
