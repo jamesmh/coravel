@@ -6,7 +6,9 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Simple Queuing
 - Additional command line tools integrated with other coraval features
 
-# Initial Setup
+## Task Scheduling
+
+### Initial Setup
 
 In your .NET Core app's `Startup.cs` file, inside the `ConfigureServices()` method, add the following:
 
@@ -26,7 +28,7 @@ This method has an instance of a `Scheduler` provided to you for configuring wha
 
 The output of the `Schedule()` method will return an object that implements the interface `IScheduled`. This provides methods for specifying the interval of when your tasks should be run (once a minute? every hour? etc.)
 
-# Scheduling Tasks With Varying Intervals
+### Scheduling Tasks With Varying Intervals
 
 Another example, with multiple scheduled tasks:
 
@@ -48,6 +50,10 @@ services.AddScheduler(scheduler =>
 });
 ```
 
-# ISchedule Interval Methods
+### ISchedule Interval Methods
+
+TBA
+
+## Job Queing
 
 TBA
