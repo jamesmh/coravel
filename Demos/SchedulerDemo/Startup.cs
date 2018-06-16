@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Scheduling;
+using Coravel.Scheduling;
 
 namespace SchedulerDemo
 {
@@ -42,7 +42,8 @@ namespace SchedulerDemo
 
                 scheduler.Schedule(
                     () => Console.WriteLine("Every 2 minutes. Ran at utc " + DateTime.UtcNow)
-                ).AfterMinutes(2);
+                ).AfterMinutes(2)
+                .Friday().Sunday();
             });
         }
 

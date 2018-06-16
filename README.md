@@ -2,9 +2,10 @@
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
 
-- Easy Task Scheduling
-- Simple Queuing
-- Additional command line tools integrated with other coraval features
+- Task Scheduling
+- Queuing
+- Command line tools integrated with coraval features
+- More?
 
 ## Feature: Task Scheduling
 
@@ -17,40 +18,30 @@ services.AddScheduler(scheduler =>
     {
         scheduler.Schedule(
             () => Console.WriteLine("Every minute. Ran at utc" + DateTime.UtcNow.ToLongTimeString())
-        ).EveryMinute();
+        )
+        .EveryMinute();
+        .Weekday();
     }
 );
 ```
 
 The `AddScheduler()` method will configure a new Hosted Service that will run in the background while your app is running.
 
-This method has an instance of a `Scheduler` provided to you for configuring what tasks you want to schedule. It has a method `Schedule()` which accepts a `System.Action`. This contains the logic / code of the task you want to run.
+A `Scheduler` is provided to you for configuring what tasks you want to schedule. It has a method `Schedule()` which accepts a `System.Action`. This contains the logic / code of the task you want to run.
 
-After calling `Schedule()` you can chain method calls further to specify the interval of when your tasks should be run (once a minute? every hour? etc.)
+After calling `Schedule()` you can chain method calls further to specify the interval of when your tasks should be run (once a minute? every hour? etc.) and further restrictions (Monday's only? etc.)
 
-### Scheduling Tasks With Varying Intervals
-
-Another example, with multiple scheduled tasks:
+Example: Run a task once an hour only on Mondays.
 
 ```c#
-
-services.AddScheduler(scheduler =>
-{
-    scheduler.Schedule(
-        () => Console.WriteLine("Every minute. Ran at utc " + DateTime.UtcNow)
-    ).EveryMinute();
-
-    scheduler.Schedule(
-        () => Console.WriteLine("Every 10 minutes. Ran at utc " + DateTime.UtcNow)
-    ).EveryTenMinutes();
-
-    scheduler.Schedule(
-        () => Console.WriteLine("Every hour. Ran at utc " + DateTime.UtcNow)
-    ).Hourly();
-});
+scheduler.Schedule(
+    () => Console.WriteLine("Every minute on Mondays only.")
+)
+.Hourly()
+.Monday();
 ```
 
-### Scheduling Interval Methods
+### Scheduling Methods
 
 So far, these methods are available for specifying what the interval of your task's schedule can be:
 
@@ -64,6 +55,18 @@ So far, these methods are available for specifying what the interval of your tas
 - `Daily();`
 - `Weekly();`
 
-## Feature: Job Queing
+Further restrictions that can be chained:
+
+- `Monday()`
+- `Tuesday()`
+- `Wednesday()`
+- `Thursday()`
+- `Friday()`
+- `Saturday()`
+- `Sunday()`
+- `Weekday()`
+- `Weekend()`
+
+## Feature: Task Queing
 
 TBA

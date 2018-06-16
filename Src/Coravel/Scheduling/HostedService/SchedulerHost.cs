@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Scheduling.Schedule;
-using Scheduling.Timing;
+using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Timing;
 
-namespace Scheduling.HostedService
+namespace Coravel.Scheduling.HostedService
 {
     internal class SchedulerHost : IHostedService, IDisposable
     {

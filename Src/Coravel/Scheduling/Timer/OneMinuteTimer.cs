@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Scheduling.Timing
+namespace Coravel.Scheduling.Timing
 {
     internal class OneMinuteTimer : IDisposable
     {

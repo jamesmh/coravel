@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Coravel.Scheduling.Schedule.Interfaces;
 
-namespace Scheduling.Schedule
+namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler
     {
@@ -11,7 +12,7 @@ namespace Scheduling.Schedule
             this._events = new List<ScheduledEvent>();
         }
 
-        public IScheduled Schedule(Action actionToSchedule)
+        public IScheduleInterval Schedule(Action actionToSchedule)
         {
             ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
             this._events.Add(scheduled);

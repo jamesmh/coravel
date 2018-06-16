@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
-using Scheduling.HostedService;
-using Scheduling.Schedule;
+using Coravel.Scheduling.HostedService;
+using Coravel.Scheduling.Schedule;
 
-namespace Scheduling
+namespace Coravel.Scheduling
 {
     public static class HostedServiceExtensions
     {
