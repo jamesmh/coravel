@@ -9,6 +9,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Feature: Task Scheduling
 
+Usually, we have to configure a cron job or a Windows Task to get a single re-occuring task to work. With coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
+
 ### Initial Setup
 
 In your .NET Core app's `Startup.cs` file, inside the `ConfigureServices()` method, add the following:
@@ -66,6 +68,8 @@ Further restrictions that can be chained:
 - `Sunday()`
 - `Weekday()`
 - `Weekend()`
+
+These may be called multiple times - like `Monday().Wednesday()`.
 
 ## Feature: Task Queing
 
