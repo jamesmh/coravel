@@ -69,7 +69,7 @@ Further restrictions that can be chained:
 - `Weekday()`
 - `Weekend()`
 
-These may be called multiple times - like `Monday().Wednesday()`.
+These may be called multiple times - like `Monday().Wednesday()`. This would mean only running the task on Mondays and Wednesdays.
 
 ## Feature: Task Queing
 
