@@ -19,7 +19,7 @@ In your .NET Core app's `Startup.cs` file, inside the `ConfigureServices()` meth
 services.AddScheduler(scheduler =>
     {
         scheduler.Schedule(
-            () => Console.WriteLine("Every minute. Ran at utc" + DateTime.UtcNow.ToLongTimeString())
+            () => Console.WriteLine("Every minute.")
         )
         .EveryMinute();
         .Weekday();
@@ -47,7 +47,6 @@ scheduler.Schedule(
 
 So far, these methods are available for specifying what the interval of your task's schedule can be:
 
-- `AfterMinutes(int minutes);`
 - `EveryMinute();`
 - `EveryFiveMinutes();`
 - `EveryTenMinutes();`

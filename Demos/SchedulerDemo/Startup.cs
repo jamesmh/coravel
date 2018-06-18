@@ -36,14 +36,20 @@ namespace SchedulerDemo
 
             services.AddScheduler(scheduler =>
             {
-                scheduler.Schedule(
-                    () => Console.WriteLine("Every minute. Ran at utc " + DateTime.UtcNow)
-                ).EveryMinute();
+                // Run this every five minutes only on Fri and Sat.
+                scheduler.Schedule(() => Console.WriteLine("Every minute on Monday")
+                )
+                .EveryMinute();
+                //.Monday();
 
-                scheduler.Schedule(
-                    () => Console.WriteLine("Every 2 minutes. Ran at utc " + DateTime.UtcNow)
-                ).AfterMinutes(2)
-                .Friday().Sunday();
+                // Run this task every minute.
+                scheduler.Schedule(() => Console.WriteLine("Monday at xx:50"))
+                .HourlyAt(04)
+                .Monday();
+
+                scheduler.Schedule(() => Console.WriteLine("During the week at xx:55"))                
+                .HourlyAt(05)
+                .Weekday();
             });
         }
 
