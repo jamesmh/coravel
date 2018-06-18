@@ -73,7 +73,7 @@ namespace Coravel.Scheduling.Schedule.Restrictions
             return this;
         }
 
-        internal bool PassesRestrictions(DateTime utcNow) =>
+        public bool PassesRestrictions(DateTime utcNow) =>
             this._restrictions.Any()
                 ? this._restrictions.Contains(utcNow.DayOfWeek)
                 : true;

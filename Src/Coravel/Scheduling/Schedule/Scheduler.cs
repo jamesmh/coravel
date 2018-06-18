@@ -4,7 +4,7 @@ using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class Scheduler
+    public class Scheduler : IScheduler
     {
         private List<ScheduledEvent> _events;
 
@@ -19,7 +19,7 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
-        internal void RunScheduledTasks(DateTime utcNow)
+        public void RunScheduledTasks(DateTime utcNow)
         {
             foreach(var scheduledEvent in this._events){
                 if(scheduledEvent.ShouldInvokeNow(utcNow)){
