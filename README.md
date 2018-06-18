@@ -9,7 +9,7 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Feature: Task Scheduling
 
-Usually, we have to configure a cron job or a Windows Task to get a single re-occuring task to work. With coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
+Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single re-occuring task to work. With coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
 
 ### Initial Setup
 
