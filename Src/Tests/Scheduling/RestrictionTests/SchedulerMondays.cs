@@ -10,7 +10,7 @@ namespace Tests.Scheduling.RestrictionTests
     {
         [TestMethod]
         [DataTestMethod]
-        public void EveryDailyOnMondaysOnly() {
+        public void DailyOnMondaysOnly() {
               var scheduler = new Scheduler();
             int taskRunCount = 0;
 

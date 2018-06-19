@@ -133,31 +133,31 @@
     "System.Boolean Coravel.Scheduling.Schedule.ScheduledEvent::ShouldInvokeNow(System.DateTime)": {
      "Lines": {
       "26": {
-       "Hits": 214
+       "Hits": 246
       },
       "27": {
-       "Hits": 214
+       "Hits": 246
       },
       "28": {
-       "Hits": 214
+       "Hits": 246
       },
       "30": {
-       "Hits": 214
+       "Hits": 246
       },
       "31": {
-       "Hits": 141
+       "Hits": 155
       },
       "32": {
-       "Hits": 141
+       "Hits": 155
       },
       "33": {
-       "Hits": 141
+       "Hits": 155
       },
       "35": {
-       "Hits": 73
+       "Hits": 91
       },
       "36": {
-       "Hits": 214
+       "Hits": 246
       }
      },
      "Branches": {
@@ -177,7 +177,7 @@
     "System.TimeSpan Coravel.Scheduling.Schedule.ScheduledEvent::IntervalSinceLstRun(System.DateTime)": {
      "Lines": {
       "38": {
-       "Hits": 214
+       "Hits": 246
       }
      },
      "Branches": {
@@ -204,10 +204,10 @@
     "System.Boolean Coravel.Scheduling.Schedule.ScheduledEvent::PassesRestrictions(System.DateTime)": {
      "Lines": {
       "47": {
-       "Hits": 214
+       "Hits": 246
       },
       "48": {
-       "Hits": 214
+       "Hits": 246
       }
      },
      "Branches": {
@@ -227,7 +227,7 @@
     "System.Void Coravel.Scheduling.Schedule.ScheduledEvent::InvokeScheduledAction()": {
      "Lines": {
       "50": {
-       "Hits": 141
+       "Hits": 155
       }
      },
      "Branches": {
@@ -236,16 +236,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.ScheduledEvent::Daily()": {
      "Lines": {
       "53": {
-       "Hits": 23
+       "Hits": 27
       },
       "54": {
-       "Hits": 23
+       "Hits": 27
       },
       "55": {
-       "Hits": 23
+       "Hits": 27
       },
       "56": {
-       "Hits": 23
+       "Hits": 27
       }
      },
      "Branches": {
@@ -438,19 +438,19 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleInterval Coravel.Scheduling.Schedule.Scheduler::Schedule(System.Action)": {
      "Lines": {
       "16": {
-       "Hits": 79
+       "Hits": 83
       },
       "17": {
-       "Hits": 79
+       "Hits": 83
       },
       "18": {
-       "Hits": 79
+       "Hits": 83
       },
       "19": {
-       "Hits": 79
+       "Hits": 83
       },
       "20": {
-       "Hits": 79
+       "Hits": 83
       }
      },
      "Branches": {
@@ -459,25 +459,25 @@
     "System.Void Coravel.Scheduling.Schedule.Scheduler::RunScheduledTasks(System.DateTime)": {
      "Lines": {
       "23": {
-       "Hits": 214
+       "Hits": 246
       },
       "24": {
-       "Hits": 1284
+       "Hits": 1476
       },
       "25": {
-       "Hits": 355
+       "Hits": 401
       },
       "26": {
-       "Hits": 141
+       "Hits": 155
       },
       "27": {
-       "Hits": 141
+       "Hits": 155
       },
       "28": {
-       "Hits": 214
+       "Hits": 246
       },
       "29": {
-       "Hits": 214
+       "Hits": 246
       }
      },
      "Branches": {
@@ -512,16 +512,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Monday()": {
      "Lines": {
       "18": {
-       "Hits": 1
+       "Hits": 2
       },
       "19": {
-       "Hits": 1
+       "Hits": 2
       },
       "20": {
-       "Hits": 1
+       "Hits": 2
       },
       "21": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -530,16 +530,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Tuesday()": {
      "Lines": {
       "24": {
-       "Hits": 1
+       "Hits": 2
       },
       "25": {
-       "Hits": 1
+       "Hits": 2
       },
       "26": {
-       "Hits": 1
+       "Hits": 2
       },
       "27": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -548,16 +548,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Wednesday()": {
      "Lines": {
       "30": {
-       "Hits": 1
+       "Hits": 2
       },
       "31": {
-       "Hits": 1
+       "Hits": 2
       },
       "32": {
-       "Hits": 1
+       "Hits": 2
       },
       "33": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -566,16 +566,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Thursday()": {
      "Lines": {
       "36": {
-       "Hits": 1
+       "Hits": 2
       },
       "37": {
-       "Hits": 1
+       "Hits": 2
       },
       "38": {
-       "Hits": 1
+       "Hits": 2
       },
       "39": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -584,16 +584,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Friday()": {
      "Lines": {
       "42": {
-       "Hits": 1
+       "Hits": 2
       },
       "43": {
-       "Hits": 1
+       "Hits": 2
       },
       "44": {
-       "Hits": 1
+       "Hits": 2
       },
       "45": {
-       "Hits": 1
+       "Hits": 2
       }
      },
      "Branches": {
@@ -602,16 +602,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Saturday()": {
      "Lines": {
       "48": {
-       "Hits": 0
+       "Hits": 2
       },
       "49": {
-       "Hits": 0
+       "Hits": 2
       },
       "50": {
-       "Hits": 0
+       "Hits": 2
       },
       "51": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -620,16 +620,16 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Sunday()": {
      "Lines": {
       "54": {
-       "Hits": 0
+       "Hits": 2
       },
       "55": {
-       "Hits": 0
+       "Hits": 2
       },
       "56": {
-       "Hits": 0
+       "Hits": 2
       },
       "57": {
-       "Hits": 0
+       "Hits": 2
       }
      },
      "Branches": {
@@ -638,28 +638,28 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Weekday()": {
      "Lines": {
       "60": {
-       "Hits": 0
+       "Hits": 1
       },
       "61": {
-       "Hits": 0
+       "Hits": 1
       },
       "62": {
-       "Hits": 0
+       "Hits": 1
       },
       "63": {
-       "Hits": 0
+       "Hits": 1
       },
       "64": {
-       "Hits": 0
+       "Hits": 1
       },
       "65": {
-       "Hits": 0
+       "Hits": 1
       },
       "66": {
-       "Hits": 0
+       "Hits": 1
       },
       "67": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -668,19 +668,19 @@
     "Coravel.Scheduling.Schedule.Interfaces.IScheduleRestriction Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::Weekend()": {
      "Lines": {
       "70": {
-       "Hits": 0
+       "Hits": 1
       },
       "71": {
-       "Hits": 0
+       "Hits": 1
       },
       "72": {
-       "Hits": 0
+       "Hits": 1
       },
       "73": {
-       "Hits": 0
+       "Hits": 1
       },
       "74": {
-       "Hits": 0
+       "Hits": 1
       }
      },
      "Branches": {
@@ -689,13 +689,13 @@
     "System.Boolean Coravel.Scheduling.Schedule.Restrictions.DayRestrictions::PassesRestrictions(System.DateTime)": {
      "Lines": {
       "77": {
-       "Hits": 214
+       "Hits": 246
       },
       "78": {
-       "Hits": 214
+       "Hits": 246
       },
       "79": {
-       "Hits": 214
+       "Hits": 246
       }
      },
      "Branches": {
@@ -801,22 +801,22 @@
     "System.Boolean Coravel.Scheduling.Schedule.Restrictions.TimeRestrictions::PassesRestrictions(System.DateTime)": {
      "Lines": {
       "29": {
-       "Hits": 196
+       "Hits": 210
       },
       "30": {
-       "Hits": 196
+       "Hits": 210
       },
       "31": {
-       "Hits": 196
+       "Hits": 210
       },
       "33": {
-       "Hits": 196
+       "Hits": 210
       },
       "34": {
-       "Hits": 196
+       "Hits": 210
       },
       "35": {
-       "Hits": 196
+       "Hits": 210
       }
      },
      "Branches": {
