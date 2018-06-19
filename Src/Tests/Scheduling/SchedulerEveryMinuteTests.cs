@@ -1,7 +1,7 @@
 using System;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.SchedulingTestHelpers;
+using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
 
 namespace Tests.Scheduling
 {
