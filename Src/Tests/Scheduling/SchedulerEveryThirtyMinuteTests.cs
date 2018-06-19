@@ -6,40 +6,36 @@ using static Tests.Scheduling.SchedulingTestHelpers;
 namespace Tests.Scheduling
 {
     [TestClass]
-    public class SchedulerEveryFiveMinuteTests
+    public class SchedulerEveryThirtyMinuteTests
     {
         [TestMethod]
-        [DataRow(0, 5, 10, 15)]
-        [DataRow(20, 25, 30, 35)]
-        [DataRow(4, 10, 21, 50)]
-        [DataRow(30, 37, 50, 59)]
-        public void ValidEveryFiveMinutes(int first, int second, int third, int fourth)
+        [DataRow(0, 30)]
+        [DataRow(6, 36)]
+        [DataRow(6, 40)]
+        [DataRow(10, 41)]
+        public void ValidEveryThirtyMinutes(int first, int second)
         {
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
-            scheduler.Schedule(() => taskRunCount++).EveryFiveMinutes();
+            scheduler.Schedule(() => taskRunCount++).EveryThirtyMinutes();
 
             RunScheduledTasksFromMinutes(scheduler, first);
             RunScheduledTasksFromMinutes(scheduler, second);
-            RunScheduledTasksFromMinutes(scheduler, third);
-            RunScheduledTasksFromMinutes(scheduler, fourth);
 
-            Assert.IsTrue(taskRunCount == 4);
+            Assert.IsTrue(taskRunCount == 2);
         }
 
         [TestMethod]
-        // Each case ought to run twice.
-        [DataRow(0, 3, 4, 5)]
-        [DataRow(15, 16, 17, 30)]
+        [DataRow(0, 25, 30, 59)]
+        [DataRow(5, 20, 34, 36)]
 
-
-        public void ValidEveryFiveMinutes_2RunsOnly(int first, int second, int third, int fourth)
+        public void ValidEveryThirtyMinutes_2RunsOnly(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
-            scheduler.Schedule(() => taskRunCount++).EveryFiveMinutes();
+            scheduler.Schedule(() => taskRunCount++).EveryThirtyMinutes();
 
             RunScheduledTasksFromMinutes(scheduler, first);
             RunScheduledTasksFromMinutes(scheduler, second);
