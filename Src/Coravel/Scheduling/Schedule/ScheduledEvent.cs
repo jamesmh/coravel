@@ -18,13 +18,13 @@ namespace Coravel.Scheduling.Schedule
         public ScheduledEvent(Action scheduledAction)
         {
             this._scheduledAction = scheduledAction;
-            this._dayRestrictions = new DayRestrictions();   
+            this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
         }
 
-        internal bool ShouldInvokeNow(DateTime utcNow)
+        public bool ShouldInvokeNow(DateTime utcNow)
         {
-            bool scheduledNow = IntervalSinceLstRun(utcNow) >= this._scheduledInterval;
+            bool scheduledNow = IntervalSinceLastRun(utcNow) >= this._scheduledInterval;
             bool restrictionsPassed = PassesRestrictions(utcNow);
 
             if (scheduledNow && restrictionsPassed)
@@ -34,20 +34,8 @@ namespace Coravel.Scheduling.Schedule
             }
             return false;
         }
-        private TimeSpan IntervalSinceLstRun(DateTime utcNow) =>
-            utcNow.AddSeconds(1).Subtract(this._utcLastRun);
 
-        private IScheduleRestriction AfterMinutes(int minutes)
-        {
-            this._scheduledInterval = TimeSpan.FromMinutes(minutes);
-            return this._dayRestrictions;
-        }
-
-        private bool PassesRestrictions(DateTime utcNow) =>
-            this._dayRestrictions.PassesRestrictions(utcNow)
-            && this._timeRestrictions.PassesRestrictions(utcNow);        
-
-        internal void InvokeScheduledAction() => this._scheduledAction();
+        public void InvokeScheduledAction() => this._scheduledAction();
 
         public IScheduleRestriction Daily()
         {
@@ -114,5 +102,18 @@ namespace Coravel.Scheduling.Schedule
             this._scheduledInterval = TimeSpan.FromDays(7);
             return this._dayRestrictions;
         }
+
+        private TimeSpan IntervalSinceLastRun(DateTime utcNow) =>
+            utcNow.Subtract(this._utcLastRun);
+
+        private IScheduleRestriction AfterMinutes(int minutes)
+        {
+            this._scheduledInterval = TimeSpan.FromMinutes(minutes);
+            return this._dayRestrictions;
+        }
+
+        private bool PassesRestrictions(DateTime utcNow) =>
+            this._dayRestrictions.PassesRestrictions(utcNow)
+            && this._timeRestrictions.PassesRestrictions(utcNow);
     }
 }
