@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Timing;
+using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.HostedService
 {
@@ -14,7 +15,7 @@ namespace Coravel.Scheduling.HostedService
         private static Schedule.Scheduler _scheduler;
         private OneMinuteTimer _timer;
 
-        internal static Scheduler GetSchedulerInstance()
+        public static Scheduler GetSchedulerInstance()
         {
             if(_scheduler == null)
                 _scheduler = new Scheduler();

@@ -9,10 +9,14 @@ namespace Coravel.Scheduling
 {
     public static class HostedServiceExtensions
     {
-        public static void AddScheduler(this IServiceCollection services, Action<IScheduler> configScheduledTasks)
+        public static IHostedScheduler AddScheduler(this IServiceCollection services, Action<IScheduler> configScheduledTasks)
         {
+            Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
+
             services.AddHostedService<SchedulerHost>();
-            configScheduledTasks(SchedulerHost.GetSchedulerInstance());
+            configScheduledTasks(scheduler);
+
+            return scheduler; 
         }
     }
 }
