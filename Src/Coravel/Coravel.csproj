@@ -2,9 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+
+    <PackageId>Coravel</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>James Hickey</Authors>
+    <Company>-</Company>
+    <Title>Coravel</Title>
+    <Description>Extra .Net Core features for developer artisans: Task scheduling and more.</Description>
+    <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-    <ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.0"/>
   </ItemGroup>
 
