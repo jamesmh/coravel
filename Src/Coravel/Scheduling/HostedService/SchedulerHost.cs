@@ -30,7 +30,7 @@ namespace Coravel.Scheduling.HostedService
 
         private void InvokeScheduledTasks()
         {  
-            GetSchedulerInstance().RunScheduledTasks();
+            GetSchedulerInstance().RunScheduler();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

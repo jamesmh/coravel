@@ -4,8 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Queuing.Interfaces;
 
-namespace Coravel.Scheduling
+namespace Coravel
 {
     public static class HostedServiceExtensions
     {
@@ -17,6 +18,12 @@ namespace Coravel.Scheduling
             configScheduledTasks(scheduler);
 
             return scheduler; 
+        }
+
+        public static void AddQueue(this IServiceCollection services) {
+            Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
+            IQueue queue = scheduler.UseQueue();
+            services.AddSingleton<IQueue>(queue);
         }
     }
 }

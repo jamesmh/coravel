@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Coravel.Scheduling;
+using Coravel;
 
 namespace SchedulerDemo
 {
@@ -34,6 +34,7 @@ namespace SchedulerDemo
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // Coravel Scheduling
             services.AddScheduler(scheduler =>
             {
                 // Run this every five minutes only on Fri and Sat.
@@ -49,8 +50,11 @@ namespace SchedulerDemo
 
                 scheduler.Schedule(() => Console.WriteLine("During the week at xx:55"))                
                 .HourlyAt(05)
-                .Weekday();
+                .Weekday();                
             });
+
+            // Coravel Queuing
+            services.AddQueue();       
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

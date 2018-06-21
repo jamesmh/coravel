@@ -5,11 +5,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SchedulerDemo.Models;
+using Coravel.Queuing.Interfaces;
 
 namespace SchedulerDemo.Controllers
 {
     public class HomeController : Controller
     {
+        IQueue _queue;
+
+        public HomeController(IQueue queue) {
+            this._queue = queue;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -20,6 +27,12 @@ namespace SchedulerDemo.Controllers
             ViewData["Message"] = "Your application description page.";
 
             return View();
+        }
+
+        // Home/QueueTask
+        public IActionResult QueueTask() {
+            this._queue.QueueTask(() => Console.WriteLine("This was queued!"));
+            return Ok();
         }
 
         public IActionResult Contact()
