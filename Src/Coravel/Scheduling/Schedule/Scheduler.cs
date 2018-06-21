@@ -34,6 +34,11 @@ namespace Coravel.Scheduling.Schedule
             InvokeScheduledTasks(utcNow);
         }
 
+        internal void RunSchedulerFinal()
+        {
+            this._queue.Stop();
+        }
+
         public IHostedScheduler OnError(Action<Exception> onError)
         {
             this._errorHandler = onError;

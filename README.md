@@ -126,7 +126,41 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 ## Feature: Task Queing
 
-TBA
+Coravel allows zero-configuration queues (at run time). The queue hooks into the scheduling mechanism (although that is handled for you).
+
+The scheduler checks for scheduled tasks every minutes. If there are any available items in the queue, then it will invoke them all.
+
+### Setup
+
+In your `Startup` file, in the `ConfigureServices()` just do this:
+
+```c#
+services.AddQueue();  
+```
+
+That's it! This will automatically register the queue in your service container.
+
+### How To Queue Tasks
+
+In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue`. 
+
+You use the `QueueTask()` method to add a task to the queue.
+
+```c#
+IQueue _queue;
+
+public HomeController(IQueue queue) {
+    this._queue = queue;
+}
+
+//... Further down ...
+
+public IActionResult QueueTask() {
+    // Call .QueueTask() to add item to the queue!
+    this._queue.QueueTask(() => Console.WriteLine("This was queued!"));
+    return Ok();
+}
+```
 
 ## Feature: Facades
 

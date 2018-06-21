@@ -24,18 +24,16 @@ namespace Coravel.Scheduling.HostedService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            this._timer = new OneMinuteTimer(this.InvokeScheduledTasks);
+            this._timer = new OneMinuteTimer(GetSchedulerInstance().RunScheduler);
             return Task.CompletedTask;
-        }
-
-        private void InvokeScheduledTasks()
-        {  
-            GetSchedulerInstance().RunScheduler();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             this._timer?.Stop();
+
+            GetSchedulerInstance().RunSchedulerFinal();
+
             return Task.CompletedTask;
         } 
 
