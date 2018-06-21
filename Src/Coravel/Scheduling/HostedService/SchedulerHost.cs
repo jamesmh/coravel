@@ -33,6 +33,7 @@ namespace Coravel.Scheduling.HostedService
             this._timer?.Stop();
 
             // Should we persist queued items?
+            GetSchedulerInstance().RunScheduler(); //Flush any queue items, etc.
 
             return Task.CompletedTask;
         } 

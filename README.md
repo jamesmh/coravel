@@ -162,6 +162,8 @@ public IActionResult QueueTask() {
 }
 ```
 
+_Note: When you app / hosted service is stopped, the queue will be consumed one last time. Assuming no further items were added to the queue, this should be fine. But, coravel is not persisting queued items that may exist when the application is stopped. Future feature?_
+
 ## Feature: Facades
 
 TBA
