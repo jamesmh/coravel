@@ -9,8 +9,6 @@ namespace Coravel.Queuing
     public class Queue : IQueue
     {
         private ConcurrentQueue<Action> _tasks = new ConcurrentQueue<Action>();
-        
-        // add lock and bool to indicate that the queue is stopped.
 
         public void QueueTask(Action task)
         {
@@ -22,11 +20,6 @@ namespace Coravel.Queuing
                 this._tasks.TryDequeue(out var queuedTask);
                 yield return queuedTask;
             }
-        }
-
-        internal void Stop()
-        {
-            throw new NotImplementedException();
         }
     }
 }
