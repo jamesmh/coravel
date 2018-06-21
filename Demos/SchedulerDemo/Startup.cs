@@ -37,7 +37,7 @@ namespace SchedulerDemo
             services.AddScheduler(scheduler =>
             {
                 // Run this every five minutes only on Fri and Sat.
-                scheduler.Schedule(() => Console.WriteLine("Every minute on Monday")
+                scheduler.Schedule(() => Console.WriteLine("Every minute")
                 )
                 .EveryMinute();
                 //.Monday();
