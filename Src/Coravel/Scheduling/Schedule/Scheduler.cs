@@ -21,8 +21,12 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
-        public void RunScheduledTasks(DateTime utcNow)
-        {
+        public void RunScheduledTasks()
+        {            
+            DateTime utcNow = DateTime.UtcNow;
+            // Minutes is lowest value used in scheduling calculations
+            utcNow = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute, 0);
+
             foreach (var scheduledEvent in this._events)
             {
                 if (scheduledEvent.ShouldInvokeNow(utcNow))

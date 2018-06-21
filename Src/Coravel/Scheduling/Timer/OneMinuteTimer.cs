@@ -6,7 +6,6 @@ namespace Coravel.Scheduling.Timing
     internal class OneMinuteTimer : IDisposable
     {
         private static readonly TimeSpan OneMinute = TimeSpan.FromMinutes(1);
-        private object _lock = new object();
         private Timer _timer;
         private Action _callback;
 
@@ -17,17 +16,7 @@ namespace Coravel.Scheduling.Timing
         }
 
         private void ExecCallbackWithPausedTimer(object state) {
-            // If callback is still running we'll just keep the timer going 
-            // until the next iteration.
-            if(Monitor.TryEnter(this._lock))
-            {
-                try {
-                    this._callback();
-                }
-              finally {
-                    Monitor.Exit(this._lock);
-                }
-            }
+            this._callback();
         }
 
         public void Stop(){

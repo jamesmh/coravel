@@ -4,6 +4,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 - Task Scheduling
 - Queuing
+- Dynamic Facades (which link to the service container)
+- Mailer
 - Command line tools integrated with coraval features
 - More???
 
@@ -29,11 +31,9 @@ services.AddScheduler(scheduler =>
 
 This will run the task (which prints to the console) every minute and only on weekdays (not Sat or Sun). Simple enough?
 
-### How Do I Use It Now?
+### How Does It Work?
 
 The `AddScheduler()` method will configure a new Hosted Service that will run in the background while your app is running.
-
-__Note: Currently, history of executed tasks is not persisted (possible future feature). If you need scheduled task to run in a very consistent manner (let's say, every Monday at 3pm) keep reading...__
 
 A `Scheduler` is provided to you for configuring what tasks you want to schedule. It has a method `Schedule()` which accepts a `System.Action`. This contains the logic / code of the task you want to run.
 
@@ -82,6 +82,13 @@ First, methods to apply interval constraints are available.
 
 ##### Basic Intervals
 
+These methods tell your task to execute at basic intervals. 
+
+Using any of these methods will cause the task to be executed immedately after your app has started. Then they will only be
+executed again once the specific interval has been reached. 
+
+If you restart your app these methods will cause all tasks to run again on start. To avoid this, use an interval method with time constraints (see below).
+
 - `EveryMinute();`
 - `EveryFiveMinutes();`
 - `EveryTenMinutes();`
@@ -93,13 +100,19 @@ First, methods to apply interval constraints are available.
 
 ##### Intervals With Time Contraints
 
+These methods allow you specify an interval and a time constraint so that your scheduling is more specific and consistent.
+
+Please note that the scheduler is using _UTC_ time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm _UTC_ time.
+
 - `HourlyAt(int minute)`
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
 
 #### Day Constraints
 
-After calling one of the methods above, you can further chain to restrict what day(s) the scheduled task is allowed to run on:
+After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
+
+All these methods are further chainable - like `Monday().Wednesday()`. This would mean only running the task on Mondays and Wednesdays. Be careful since you could do something like this `.Weekend().Weekday()` which basically means there are no constraints (it runs on any day).
 
 - `Monday()`
 - `Tuesday()`
@@ -111,10 +124,14 @@ After calling one of the methods above, you can further chain to restrict what d
 - `Weekday()`
 - `Weekend()`
 
-These may be called multiple times - like `Monday().Wednesday()`.
-
-This would mean only running the task on Mondays and Wednesdays.
-
 ## Feature: Task Queing
+
+TBA
+
+## Feature: Facades
+
+TBA
+
+## Feature: Mailer
 
 TBA
