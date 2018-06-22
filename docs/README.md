@@ -10,8 +10,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Sections
 
-[Task Scheduling](https://jamesmh.github.io/coravel/Scheduling)
-[Queuing](https://jamesmh.github.io/coravel/Queuing)
+- [Task Scheduling](https://jamesmh.github.io/coravel/Scheduling)
+- [Queuing](https://jamesmh.github.io/coravel/Queuing)
 
 ## Quick-Start
 
