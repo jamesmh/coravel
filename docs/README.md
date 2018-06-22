@@ -2,11 +2,11 @@
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
 
-[x] Task Scheduling
-[x] Queuing
-[] Mailer
-[] Command line tools integrated with coraval features
-[] More???
+- Task Scheduling
+- Queuing
+- Mailer [TBA]
+- Command line tools integrated with coraval features [TBA]
+- More???
 
 ## Sections
 
