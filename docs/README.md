@@ -8,7 +8,7 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Command line tools integrated with coraval features [TBA]
 - More???
 
-## Sections
+## Features
 
 - [Task Scheduling](https://jamesmh.github.io/coravel/Scheduling)
 - [Queuing](https://jamesmh.github.io/coravel/Queuing)
