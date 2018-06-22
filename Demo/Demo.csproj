@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\Coravel\Coravel.csproj" />
+    <ProjectReference Include="..\Src\Coravel\Coravel.csproj" />
   </ItemGroup>
 
 </Project>

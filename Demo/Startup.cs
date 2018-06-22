@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coravel;
 
-namespace SchedulerDemo
+namespace Demo
 {
     public class Startup
     {

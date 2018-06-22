@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Demos/SchedulerDemo/bin/Debug/netcoreapp2.1/SchedulerDemo.dll",
+            "program": "${workspaceFolder}/Demo/bin/Debug/netcoreapp2.1/Demo.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Demos/SchedulerDemo",
+            "cwd": "${workspaceFolder}/Demo",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
