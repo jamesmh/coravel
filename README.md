@@ -62,15 +62,17 @@ scheduler.Schedule(
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
 
-### Scheduler Error Handling
+### Error Handling
 
-Any tasks that throw errors will just be skipped and the next task in line will be invoked.
+Any tasks that throw errors __will just be skipped__ and the next task in line will be invoked.
 
-If you want to catch errors and do something specific with them you may use the `OnError()` method.
+If you want to catch errors and do something specific with them you may use the `OnError()` extensions method on your `IServiceCollection`.
 
 ```c#
-scheduler.OnError((exception) => doSomethingWithException());
+services.OnError((exception) => doSomethingWithException(exception));
 ```
+
+You can, of course, add error handling inside your specific tasks too.
 
 ### Scheduling Tasks
 
@@ -142,7 +144,7 @@ That's it! This will automatically register the queue in your service container.
 
 ### How To Queue Tasks
 
-In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue`. 
+In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue`.
 
 You use the `QueueTask()` method to add a task to the queue.
 
@@ -162,11 +164,22 @@ public IActionResult QueueTask() {
 }
 ```
 
-_Note: When you app / hosted service is stopped, the queue will be consumed one last time. Assuming no further items were added to the queue, this should be fine. But, coravel is not persisting queued items that may exist when the application is stopped. Future feature?_
+### Handling Errors
 
-## Feature: Facades
+Since the queue is hooked into the scheduling mechanism, the `OnError()`extension method that corvel provides for your `IServiceCollection` will be used for your queued tasks.
 
-TBA
+Again, you may use proper error handling in your tasks too.
+
+## On App Closing
+
+When your app is stopped, coravel will attempt to gracefully wait until the last moment and:
+
+- Run the scheduler once last time
+- Consume any tasks remaining in the queue
+
+You shouldn't have to worry about loosing any queued items.
+
+If your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks. But under normal circumstances, even when forcefully shutting down your app, coravel will (in the background) handle this for you.
 
 ## Feature: Mailer
 

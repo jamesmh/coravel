@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SchedulerDemo.Models;
 using Coravel.Queuing.Interfaces;
+using System.Threading;
 
 namespace SchedulerDemo.Controllers
 {
@@ -31,7 +32,9 @@ namespace SchedulerDemo.Controllers
 
         // Home/QueueTask
         public IActionResult QueueTask() {
+            Thread.Sleep(5000);
             this._queue.QueueTask(() => Console.WriteLine("This was queued!"));
+            Console.WriteLine("Task Queued");
             return Ok();
         }
 

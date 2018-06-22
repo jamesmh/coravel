@@ -6,7 +6,7 @@ using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class Scheduler : IScheduler, IHostedScheduler
+    public class Scheduler : IScheduler, IHostedScheduler, IDisposable
     {
         private List<ScheduledEvent> _events;
         private Action<Exception> _errorHandler;
@@ -30,7 +30,8 @@ namespace Coravel.Scheduling.Schedule
             this.RunAt(utcNow);
         }
 
-        public void RunAt(DateTime utcDate) {
+        public void RunAt(DateTime utcDate)
+        {
             // Minutes is lowest value used in scheduling calculations
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
 
@@ -51,6 +52,11 @@ namespace Coravel.Scheduling.Schedule
                 this._queue = new Queue();
             }
             return this._queue;
+        }
+
+        public void Dispose()
+        {
+            this.RunScheduler();
         }
 
         private void ConsumeQueuedTasks()
@@ -85,11 +91,7 @@ namespace Coravel.Scheduling.Schedule
             }
             catch (Exception e)
             {
-                if (this._errorHandler == null)
-                {
-                    throw e;
-                }
-                else
+                if (this._errorHandler != null)
                 {
                     this._errorHandler(e);
                 }

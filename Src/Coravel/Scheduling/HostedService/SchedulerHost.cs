@@ -31,16 +31,13 @@ namespace Coravel.Scheduling.HostedService
         public Task StopAsync(CancellationToken cancellationToken)
         {
             this._timer?.Stop();
-
-            // Should we persist queued items?
-            GetSchedulerInstance().RunScheduler(); //Flush any queue items, etc.
-
             return Task.CompletedTask;
         } 
 
         public void Dispose()
         {
             this._timer?.Dispose();
+            GetSchedulerInstance()?.Dispose();
         }
     }
 }
