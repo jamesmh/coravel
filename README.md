@@ -10,8 +10,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Features
 
-- [Task Scheduling](https://jamesmh.github.com/coravel/Scheduling)
-- [Queuing](https://jamesmh.github.com/coravel/Queuing)
+- [Task Scheduling](https://github.com/jamesmh/coravel#task-scheduling-1)
+- [Queuing](https://github.com/jamesmh/coravel#feature-task-queuing)
 
 ## Quick-Start
 
@@ -189,7 +189,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 - `Weekday()`
 - `Weekend()`
 
-## Feature: Task Queing
+## Feature: Task Queuing
 
 Coravel allows zero-configuration queues (at run time). The queue hooks into the scheduling mechanism (although that is handled for you).
 
