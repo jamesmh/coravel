@@ -10,14 +10,14 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Features
 
-- [Task Scheduling](https://github.com/jamesmh/coravel#task-scheduling-1)
+- [Task Scheduling](https://github.com/jamesmh/coravel#task-scheduling)
 - [Queuing](https://github.com/jamesmh/coravel#feature-task-queuing)
 
 ## Quick-Start
 
 Add the nuget package `Coravel` to your .NET Core app. Done!
 
-### Task Scheduling
+### 1. Scheduling Tasks
 
 Tired of using cron and Windows Task Scheduler? Want to use something easy that ties into your existing code?
 
@@ -37,7 +37,7 @@ services.AddScheduler(scheduler =>
 
 Easy enough? Look at the documentation to see what methods are available!
 
-### Task Queuing
+### 2. Task Queuing
 
 Tired of having to install and configure other systems to get a queuing system up-and-running? Tired of using databases to issue queued tasks? Look no further!
 
@@ -167,7 +167,7 @@ If you restart your app these methods will cause all tasks to run again on start
 
 These methods allow you specify an interval and a time constraint so that your scheduling is more specific and consistent.
 
-Please note that the scheduler is using _UTC_ time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm _UTC_ time.
+_Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
 
 - `HourlyAt(int minute)`
 - `DailyAtHour(int hour)`
