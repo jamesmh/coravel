@@ -19,16 +19,16 @@ namespace Tests.Scheduling.RestrictionTests
             .Daily()
             .Weekend();
 
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/09")); //Sat
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/10")); //Sun
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/11")); //Mon
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/12")); //Tue
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/13")); //W
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/14")); //T
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/15")); //F
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/16")); //S
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/17")); //S
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/18")); //M
+            scheduler.RunAt(DateTime.Parse("2018/06/09")); //Sat
+            scheduler.RunAt(DateTime.Parse("2018/06/10")); //Sun
+            scheduler.RunAt(DateTime.Parse("2018/06/11")); //Mon
+            scheduler.RunAt(DateTime.Parse("2018/06/12")); //Tue
+            scheduler.RunAt(DateTime.Parse("2018/06/13")); //W
+            scheduler.RunAt(DateTime.Parse("2018/06/14")); //T
+            scheduler.RunAt(DateTime.Parse("2018/06/15")); //F
+            scheduler.RunAt(DateTime.Parse("2018/06/16")); //S
+            scheduler.RunAt(DateTime.Parse("2018/06/17")); //S
+            scheduler.RunAt(DateTime.Parse("2018/06/18")); //M
 
             Assert.IsTrue(taskRunCount == 4);
         }

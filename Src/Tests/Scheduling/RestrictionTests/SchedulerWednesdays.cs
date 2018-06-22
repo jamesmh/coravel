@@ -18,12 +18,12 @@ namespace Tests.Scheduling.RestrictionTests
             .Daily()
             .Wednesday();
 
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/05")); 
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/06")); //Wednesday
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/07"));
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/12")); 
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/13")); //Wednesday
-            scheduler.RunScheduledTasks(DateTime.Parse("2018/06/14")); 
+            scheduler.RunAt(DateTime.Parse("2018/06/05")); 
+            scheduler.RunAt(DateTime.Parse("2018/06/06")); //Wednesday
+            scheduler.RunAt(DateTime.Parse("2018/06/07"));
+            scheduler.RunAt(DateTime.Parse("2018/06/12")); 
+            scheduler.RunAt(DateTime.Parse("2018/06/13")); //Wednesday
+            scheduler.RunAt(DateTime.Parse("2018/06/14")); 
 
             Assert.IsTrue(taskRunCount == 2);
         }

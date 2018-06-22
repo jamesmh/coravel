@@ -21,7 +21,7 @@ namespace Tests.Scheduling
             bool wasRun = false;
 
             scheduler.Schedule(() => wasRun = true).EveryMinute();
-            scheduler.RunScheduledTasks(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
+            scheduler.RunAt(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
 
             Assert.IsTrue(wasRun);
         }

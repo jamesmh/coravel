@@ -27,11 +27,15 @@ namespace Coravel.Scheduling.Schedule
         public void RunScheduler()
         {
             DateTime utcNow = DateTime.UtcNow;
+            this.RunAt(utcNow);
+        }
+
+        public void RunAt(DateTime utcDate) {
             // Minutes is lowest value used in scheduling calculations
-            utcNow = new DateTime(utcNow.Year, utcNow.Month, utcNow.Day, utcNow.Hour, utcNow.Minute, 0);
+            utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
 
             ConsumeQueuedTasks();
-            InvokeScheduledTasks(utcNow);
+            InvokeScheduledTasks(utcDate);
         }
 
         public IHostedScheduler OnError(Action<Exception> onError)

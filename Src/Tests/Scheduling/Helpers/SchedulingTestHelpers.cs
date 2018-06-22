@@ -6,7 +6,7 @@ namespace Tests.Scheduling.Helpers
     public static class SchedulingTestHelpers
     {
         public static void RunScheduledTasksFromMinutes(Scheduler scheduler, int minutes){
-            scheduler.RunScheduledTasks(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
+            scheduler.RunAt(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
         }
 
         public static void RunScheduledTasksFromDayHourMinutes(Scheduler scheduler, int days, int hours, int minutes){
@@ -16,7 +16,7 @@ namespace Tests.Scheduling.Helpers
 
             var combinedTimeSpan = daysSpan.Add(hoursSpan).Add(minutesSpan);
 
-            scheduler.RunScheduledTasks(DateTime.Today.Add(combinedTimeSpan));
+            scheduler.RunAt(DateTime.Today.Add(combinedTimeSpan));
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Tests.Scheduling
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
 
-            scheduler.RunScheduledTasks(DateTime.UtcNow); // All tasks will run.
+            scheduler.RunAt(DateTime.UtcNow); // All tasks will run.
 
             Assert.IsTrue(errorHandledCount == 2);
             Assert.IsTrue(successfulTaskCount == 4);
