@@ -129,10 +129,15 @@ scheduler.Schedule(
 
 Any tasks that throw errors __will just be skipped__ and the next task in line will be invoked.
 
-If you want to catch errors and do something specific with them you may use the `OnError()` extensions method on your `IServiceCollection`.
+If you want to catch errors and do something specific with them you may use the `OnError()` method.
 
 ```c#
-services.OnError((exception) => doSomethingWithException(exception));
+services.AddScheduler(scheduler =>
+    // Assign your schedules
+)
+.OnError((exception) => 
+    doSomethingWithException(exception)
+);
 ```
 
 You can, of course, add error handling inside your specific tasks too.
@@ -229,7 +234,7 @@ public IActionResult QueueTask() {
 
 ### Handling Errors
 
-Since the queue is hooked into the scheduling mechanism, the `OnError()`extension method that corvel provides for your `IServiceCollection` will be used for your queued tasks.
+Since the queue is hooked into the scheduling mechanism, the `OnError()`extension method that corvel provides will be used for your queued tasks.
 
 Again, you may use proper error handling in your tasks too.
 
