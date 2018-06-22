@@ -4,7 +4,6 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 - Task Scheduling
 - Queuing
-- Dynamic Facades (which link to the service container)
 - Mailer
 - Command line tools integrated with coraval features
 - More???
@@ -180,7 +179,3 @@ When your app is stopped, coravel will attempt to gracefully wait until the last
 You shouldn't have to worry about loosing any queued items.
 
 If your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks. But under normal circumstances, even when forcefully shutting down your app, coravel will (in the background) handle this for you.
-
-## Feature: Mailer
-
-TBA
