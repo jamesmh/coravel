@@ -17,7 +17,9 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 Add the nuget package `Coravel` to your .NET Core app. Done!
 
-__Task Scheduling__: Tired of using cron and Windows Task Scheduler? Want to just use something easy that ties into your existing code?
+### Task Scheduling
+
+Tired of using cron and Windows Task Scheduler? Want to use something easy that ties into your existing code?
 
 In `Startup.cs`, put this in `ConfigureServices()`:
 
@@ -33,9 +35,11 @@ services.AddScheduler(scheduler =>
 );
 ```
 
-Easy enough? Look at the documentation to see what methods are available to you!
+Easy enough? Look at the documentation to see what methods are available!
 
-__Queing__: Tired of having to install other systems to get a queuing system to work? Tired of using databases to issue queued tasks?
+### Task Queuing
+
+Tired of having to install and configure other systems to get a queuing system up-and-running? Tired of using databases to issue queued tasks? Look no further!
 
 In `Startup.cs`, put this in `ConfigureServices()`:
 
