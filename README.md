@@ -29,7 +29,7 @@ services.AddScheduler(scheduler =>
         scheduler.Schedule(
             () => Console.WriteLine("Run at 1pm utc during week days.")
         )
-        .DailyAt(13, 00);
+        .DailyAt(13, 00)
         .Weekday();
     }
 );
