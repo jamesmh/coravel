@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Coravel.Scheduling.Timing
 {
@@ -7,16 +8,16 @@ namespace Coravel.Scheduling.Timing
     {
         private static readonly TimeSpan OneMinute = TimeSpan.FromMinutes(1);
         private Timer _timer;
-        private Action _callback;
+        private Func<Task> _callback;
 
-        public OneMinuteTimer(Action callback)
+        public OneMinuteTimer(Func<Task> callback)
         {
             this._callback = callback;
             this._timer = new Timer(this.ExecCallbackWithPausedTimer, null, TimeSpan.Zero, OneMinute);
         }
 
         private void ExecCallbackWithPausedTimer(object state) {
-            this._callback();
+            this._callback().ConfigureAwait(false);
         }
 
         public void Stop(){

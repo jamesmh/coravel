@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
@@ -9,7 +10,7 @@ namespace Tests.Scheduling
     public class SchedulerOnErrorTests
     {
         [TestMethod]
-        public void TestSchedulerHandlesErrors()
+        public async Task TestSchedulerHandlesErrors()
         {
             var scheduler = new Scheduler();
             int errorHandledCount = 0;
@@ -36,7 +37,7 @@ namespace Tests.Scheduling
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
 
-            scheduler.RunAt(DateTime.UtcNow); // All tasks will run.
+            await scheduler.RunAt(DateTime.UtcNow); // All tasks will run.
 
             Assert.IsTrue(errorHandledCount == 2);
             Assert.IsTrue(successfulTaskCount == 4);

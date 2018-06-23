@@ -5,47 +5,48 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Scheduling.Schedule.Tasks;
 
 namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler : IScheduler, IHostedScheduler, IDisposable
     {
-        private List<IScheduledTask> _events;
+        private List<ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
         private Queue _queue;
 
         public Scheduler()
         {
-            this._events = new List<IScheduledTask>();
+            this._tasks = new List<ScheduledTask>();
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
             ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
-            this._events.Add(scheduled);
+            this._tasks.Add(scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            ScheduledAsyncTask scheduled = new ScheduledAsyncTask(asyncTaskToSchedule);
-            this._events.Add(scheduled);
+            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
+            this._tasks.Add(scheduled);
             return scheduled;
         }
 
-        public void RunScheduler()
+        public async Task RunScheduler()
         {
             DateTime utcNow = DateTime.UtcNow;
-            this.RunAt(utcNow);
+            await this.RunAt(utcNow);
         }
 
-        public void RunAt(DateTime utcDate)
+        public async Task RunAt(DateTime utcDate)
         {
             // Minutes is lowest value used in scheduling calculations
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
 
             ConsumeQueuedTasks();
-            InvokeScheduledTasksAsync(utcDate);
+            await InvokeScheduledTasksAsync(utcDate);
         }
 
         public IHostedScheduler OnError(Action<Exception> onError)
@@ -65,7 +66,7 @@ namespace Coravel.Scheduling.Schedule
 
         public void Dispose()
         {
-            this.RunScheduler();
+            this.RunScheduler().GetAwaiter().GetResult();
         }
 
         private void ConsumeQueuedTasks()
@@ -77,64 +78,37 @@ namespace Coravel.Scheduling.Schedule
 
             foreach (Action task in queuedTasks)
             {
-                this.InvokeActionWithErrorHandling(task);
+                try
+                {
+                    task();
+                }
+                catch (Exception e)
+                {
+                    if (this._errorHandler != null)
+                    {
+                        this._errorHandler(e);
+                    }
+                }
             }
         }
 
         private async Task InvokeScheduledTasksAsync(DateTime utcNow)
         {
-            var tasks = this._events
-                .Where(e => e is ScheduledTask)
-                .Select(e => e as ScheduledTask);
-
-            var asyncTasks = this._events
-                .Where(e => e is ScheduledAsyncTask)
-                .Select(e => e as ScheduledAsyncTask);
-
-            foreach (var scheduledEvent in tasks)
+            foreach (var scheduledEvent in this._tasks)
             {
                 if (scheduledEvent.ShouldInvokeNow(utcNow))
                 {
-                    this.InvokeActionWithErrorHandling(scheduledEvent.InvokeScheduledAction);
-                }
-            }
-
-            foreach (var asyncTask in asyncTasks)
-            {
-                if (asyncTask.ShouldInvokeNow(utcNow))
-                {
-                    await this.InvokeActionWithErrorHandlingAsync(asyncTask.InvokeAsync);
-                }
-            }
-        }
-
-        //TODO: Move error handling into the task Invoke. Pass in the scheduler error handler as param.
-        private void InvokeActionWithErrorHandling(Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception e)
-            {
-                if (this._errorHandler != null)
-                {
-                    this._errorHandler(e);
-                }
-            }
-        }
-
-        private async Task InvokeActionWithErrorHandlingAsync(Func<Task> task)
-        {
-            try
-            {
-                await task();
-            }
-            catch (Exception e)
-            {
-                if (this._errorHandler != null)
-                {
-                    this._errorHandler(e);
+                    try
+                    {
+                        await scheduledEvent.InvokeScheduledAction();
+                    }
+                    catch (Exception e)
+                    {
+                        if (this._errorHandler != null)
+                        {
+                            this._errorHandler(e);
+                        }
+                    }
                 }
             }
         }
