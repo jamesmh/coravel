@@ -198,7 +198,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 Coravel allows zero-configuration queues (at run time). The queue hooks into the scheduling mechanism (although that is handled for you).
 
-The scheduler checks for scheduled tasks every minutes. If there are any available items in the queue, then it will invoke them all.
+The scheduler checks for scheduled tasks every minute. If there are any available items in the queue, then it will invoke them all.
 
 ### Setup
 
