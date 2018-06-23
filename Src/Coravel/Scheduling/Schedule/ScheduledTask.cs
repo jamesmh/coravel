@@ -6,7 +6,7 @@ using Coravel.Scheduling.Schedule.Restrictions;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class ScheduledEvent : IScheduleInterval
+    public class ScheduledTask : IScheduleInterval, IScheduledTask
     {
         private TimeSpan _scheduledInterval;
         private DateTime _utcLastRun;
@@ -15,12 +15,14 @@ namespace Coravel.Scheduling.Schedule
         private TimeRestrictions _timeRestrictions;
 
 
-        public ScheduledEvent(Action scheduledAction)
+        public ScheduledTask(Action scheduledAction)
         {
             this._scheduledAction = scheduledAction;
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
         }
+
+        public static ScheduledTask WithEmptyTask() => new ScheduledTask(DummyMethod);
 
         public bool ShouldInvokeNow(DateTime utcNow)
         {
@@ -115,5 +117,7 @@ namespace Coravel.Scheduling.Schedule
         private bool PassesRestrictions(DateTime utcNow) =>
             this._dayRestrictions.PassesRestrictions(utcNow)
             && this._timeRestrictions.PassesRestrictions(utcNow);
+
+        private static void DummyMethod() { }
     }
 }

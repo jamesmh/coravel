@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
@@ -8,18 +10,25 @@ namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler : IScheduler, IHostedScheduler, IDisposable
     {
-        private List<ScheduledEvent> _events;
+        private List<IScheduledTask> _events;
         private Action<Exception> _errorHandler;
         private Queue _queue;
 
         public Scheduler()
         {
-            this._events = new List<ScheduledEvent>();
+            this._events = new List<IScheduledTask>();
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
+            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
+            this._events.Add(scheduled);
+            return scheduled;
+        }
+
+        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
+        {
+            ScheduledAsyncTask scheduled = new ScheduledAsyncTask(asyncTaskToSchedule);
             this._events.Add(scheduled);
             return scheduled;
         }
@@ -36,7 +45,7 @@ namespace Coravel.Scheduling.Schedule
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
 
             ConsumeQueuedTasks();
-            InvokeScheduledTasks(utcDate);
+            InvokeScheduledTasksAsync(utcDate);
         }
 
         public IHostedScheduler OnError(Action<Exception> onError)
@@ -72,22 +81,54 @@ namespace Coravel.Scheduling.Schedule
             }
         }
 
-        private void InvokeScheduledTasks(DateTime utcNow)
+        private async Task InvokeScheduledTasksAsync(DateTime utcNow)
         {
-            foreach (var scheduledEvent in this._events)
+            var tasks = this._events
+                .Where(e => e is ScheduledTask)
+                .Select(e => e as ScheduledTask);
+
+            var asyncTasks = this._events
+                .Where(e => e is ScheduledAsyncTask)
+                .Select(e => e as ScheduledAsyncTask);
+
+            foreach (var scheduledEvent in tasks)
             {
                 if (scheduledEvent.ShouldInvokeNow(utcNow))
                 {
                     this.InvokeActionWithErrorHandling(scheduledEvent.InvokeScheduledAction);
                 }
             }
+
+            foreach (var asyncTask in asyncTasks)
+            {
+                if (asyncTask.ShouldInvokeNow(utcNow))
+                {
+                    await this.InvokeActionWithErrorHandlingAsync(asyncTask.InvokeAsync);
+                }
+            }
         }
 
+        //TODO: Move error handling into the task Invoke. Pass in the scheduler error handler as param.
         private void InvokeActionWithErrorHandling(Action action)
         {
             try
             {
                 action();
+            }
+            catch (Exception e)
+            {
+                if (this._errorHandler != null)
+                {
+                    this._errorHandler(e);
+                }
+            }
+        }
+
+        private async Task InvokeActionWithErrorHandlingAsync(Func<Task> task)
+        {
+            try
+            {
+                await task();
             }
             catch (Exception e)
             {
