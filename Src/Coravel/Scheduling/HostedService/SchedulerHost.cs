@@ -25,7 +25,7 @@ namespace Coravel.Scheduling.HostedService
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
-        {
+        {            
             this._timer = new Timer((state) => this._signal.Release(),null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
             Task.Run(RunSchedulerAsync);
             return Task.CompletedTask;
@@ -36,22 +36,28 @@ namespace Coravel.Scheduling.HostedService
             while (!this._shutdown.IsCancellationRequested)
             {
                 await this._signal.WaitAsync(this._shutdown.Token);
-                await GetSchedulerInstance().RunSchedulerAsync();                
+                await GetSchedulerInstance().RunSchedulerAsync();                           
             }
-
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            // Signal to background thread that we are done :)
             this._shutdown.Cancel();
-             this._timer?.Change(Timeout.Infinite, 0);
+
+            this._timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
             this._timer?.Dispose();
+
+            // Run the scheduler one last time.
+            // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
             GetSchedulerInstance()?.Dispose();
+
+            Console.WriteLine("disposed");
         }
     }
 }
