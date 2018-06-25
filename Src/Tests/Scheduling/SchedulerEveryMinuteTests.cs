@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
@@ -15,13 +16,13 @@ namespace Tests.Scheduling
         [DataRow(15)]
         [DataRow(30)]
         [DataRow(59)]
-        public void ValidEveryMinute(int minutes)
+        public async Task ValidEveryMinute(int minutes)
         {
             var scheduler = new Scheduler();
             bool wasRun = false;
 
             scheduler.Schedule(() => wasRun = true).EveryMinute();
-            scheduler.RunAt(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
+            await scheduler.RunAtAsync(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
 
             Assert.IsTrue(wasRun);
         }

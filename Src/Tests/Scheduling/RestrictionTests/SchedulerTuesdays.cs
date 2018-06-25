@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
@@ -10,7 +11,7 @@ namespace Tests.Scheduling.RestrictionTests
     {
         [TestMethod]
         [DataTestMethod]
-        public void DailyOnTuesdaysOnly() {
+        public async Task DailyOnTuesdaysOnly() {
               var scheduler = new Scheduler();
             int taskRunCount = 0;
 
@@ -18,11 +19,11 @@ namespace Tests.Scheduling.RestrictionTests
             .Daily()
             .Tuesday();
 
-            scheduler.RunAt(DateTime.Parse("2018/06/05")); //Tuesday
-            scheduler.RunAt(DateTime.Parse("2018/06/06"));
-            scheduler.RunAt(DateTime.Parse("2018/06/07"));
-            scheduler.RunAt(DateTime.Parse("2018/06/12")); //Tuesday
-            scheduler.RunAt(DateTime.Parse("2018/06/13"));
+            await scheduler.RunAtAsync(DateTime.Parse("2018/06/05")); //Tuesday
+            await scheduler.RunAtAsync(DateTime.Parse("2018/06/06"));
+            await scheduler.RunAtAsync(DateTime.Parse("2018/06/07"));
+            await scheduler.RunAtAsync(DateTime.Parse("2018/06/12")); //Tuesday
+            await scheduler.RunAtAsync(DateTime.Parse("2018/06/13"));
 
             Assert.IsTrue(taskRunCount == 2);
         }

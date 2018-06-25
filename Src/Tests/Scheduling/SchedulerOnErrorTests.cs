@@ -37,7 +37,7 @@ namespace Tests.Scheduling
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
 
-            await scheduler.RunAt(DateTime.UtcNow); // All tasks will run.
+            await scheduler.RunAtAsync(DateTime.UtcNow); // All tasks will run.
 
             Assert.IsTrue(errorHandledCount == 2);
             Assert.IsTrue(successfulTaskCount == 4);
@@ -63,7 +63,7 @@ namespace Tests.Scheduling
             scheduler.Schedule(ThrowsErrorTask).EveryMinute();
             scheduler.Schedule(DummyTask).EveryMinute();
 
-            scheduler.RunAt(DateTime.UtcNow);
+           await scheduler.RunAtAsync(DateTime.UtcNow);
 
             Assert.IsTrue(successfulTaskCount == 1);
         }

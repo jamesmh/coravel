@@ -37,10 +37,10 @@ namespace Coravel.Scheduling.Schedule
         public async Task RunSchedulerAsync()
         {
             DateTime utcNow = DateTime.UtcNow;
-            await this.RunAt(utcNow);
+            await this.RunAtAsync(utcNow);
         }
 
-        public async Task RunAt(DateTime utcDate)
+        public async Task RunAtAsync(DateTime utcDate)
         {
             // Minutes is lowest value used in scheduling calculations
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);

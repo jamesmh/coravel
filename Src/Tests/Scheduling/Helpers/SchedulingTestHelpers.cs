@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 
 namespace Tests.Scheduling.Helpers
@@ -6,7 +7,7 @@ namespace Tests.Scheduling.Helpers
     public static class SchedulingTestHelpers
     {
         public static async Task RunScheduledTasksFromMinutes(Scheduler scheduler, int minutes){
-            scheduler.RunAt(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
+            await scheduler.RunAtAsync(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
         }
 
         public static async Task RunScheduledTasksFromDayHourMinutes(Scheduler scheduler, int days, int hours, int minutes){
@@ -16,7 +17,7 @@ namespace Tests.Scheduling.Helpers
 
             var combinedTimeSpan = daysSpan.Add(hoursSpan).Add(minutesSpan);
 
-            scheduler.RunAt(DateTime.Today.Add(combinedTimeSpan));
+            await scheduler.RunAtAsync(DateTime.Today.Add(combinedTimeSpan));
         }
     }
 }

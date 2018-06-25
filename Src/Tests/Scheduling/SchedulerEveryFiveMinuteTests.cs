@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
@@ -13,17 +14,17 @@ namespace Tests.Scheduling
         [DataRow(20, 25, 30, 35)]
         [DataRow(4, 10, 21, 50)]
         [DataRow(30, 37, 50, 59)]
-        public void ValidEveryFiveMinutes(int first, int second, int third, int fourth)
+        public async Task ValidEveryFiveMinutes(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++).EveryFiveMinutes();
 
-            RunScheduledTasksFromMinutes(scheduler, first);
-            RunScheduledTasksFromMinutes(scheduler, second);
-            RunScheduledTasksFromMinutes(scheduler, third);
-            RunScheduledTasksFromMinutes(scheduler, fourth);
+            await RunScheduledTasksFromMinutes(scheduler, first);
+            await RunScheduledTasksFromMinutes(scheduler, second);
+            await RunScheduledTasksFromMinutes(scheduler, third);
+            await RunScheduledTasksFromMinutes(scheduler, fourth);
 
             Assert.IsTrue(taskRunCount == 4);
         }
@@ -34,17 +35,17 @@ namespace Tests.Scheduling
         [DataRow(15, 16, 17, 30)]
 
 
-        public void ValidEveryFiveMinutes_2RunsOnly(int first, int second, int third, int fourth)
+        public async Task ValidEveryFiveMinutes_2RunsOnly(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++).EveryFiveMinutes();
 
-            RunScheduledTasksFromMinutes(scheduler, first);
-            RunScheduledTasksFromMinutes(scheduler, second);
-            RunScheduledTasksFromMinutes(scheduler, third);
-            RunScheduledTasksFromMinutes(scheduler, fourth);
+            await RunScheduledTasksFromMinutes(scheduler, first);
+            await RunScheduledTasksFromMinutes(scheduler, second);
+            await RunScheduledTasksFromMinutes(scheduler, third);
+            await RunScheduledTasksFromMinutes(scheduler, fourth);
 
             Assert.IsTrue(taskRunCount == 2);
         }
