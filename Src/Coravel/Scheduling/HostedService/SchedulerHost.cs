@@ -12,27 +12,41 @@ namespace Coravel.Scheduling.HostedService
 {
     internal class SchedulerHost : IHostedService, IDisposable
     {
+        private CancellationTokenSource _shutdown = new CancellationTokenSource();
         private static Schedule.Scheduler _scheduler;
-        private OneMinuteTimer _timer;
+         private SemaphoreSlim _signal = new SemaphoreSlim(0);
+          private Timer _timer;
 
         public static Scheduler GetSchedulerInstance()
         {
-            if(_scheduler == null)
+            if (_scheduler == null)
                 _scheduler = new Scheduler();
             return _scheduler;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            this._timer = new OneMinuteTimer(GetSchedulerInstance().RunScheduler);
+            this._timer = new Timer((state) => this._signal.Release(),null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            Task.Run(RunScheduler);
             return Task.CompletedTask;
+        }
+
+        private async Task RunScheduler()
+        {
+            while (!this._shutdown.IsCancellationRequested)
+            {
+                await this._signal.WaitAsync(this._shutdown.Token);
+                await GetSchedulerInstance().RunScheduler();                
+            }
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            this._timer?.Stop();
+            this._shutdown.Cancel();
+             this._timer?.Change(Timeout.Infinite, 0);
             return Task.CompletedTask;
-        } 
+        }
 
         public void Dispose()
         {

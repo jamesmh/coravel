@@ -41,14 +41,20 @@ namespace Demo
                 scheduler.Schedule(() => Console.WriteLine("Every minute")
                 )
                 .EveryMinute();
-                //.Monday();
+
+                scheduler.ScheduleAsync(async () => {
+                        await Task.Delay(5);
+                        Console.WriteLine("async task");
+                })                
+                .EveryMinute();
+                
 
                 // Run this task every minute.
-                scheduler.Schedule(() => Console.WriteLine("Monday at xx:50"))
-                .HourlyAt(04)
-                .Monday();
+                scheduler.Schedule(() => Console.WriteLine("Saturday at xx:38"))
+                .HourlyAt(44)
+                .Saturday();
 
-                scheduler.Schedule(() => Console.WriteLine("During the week at xx:55"))                
+                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))                
                 .HourlyAt(05)
                 .Weekday();                
             });
