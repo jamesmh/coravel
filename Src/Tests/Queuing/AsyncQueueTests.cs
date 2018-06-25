@@ -21,7 +21,7 @@ namespace Tests.Queuing
             queue.OnError(ex => errorsHandled++);
 
             queue.QueueTask(() => successfulTasks++);
-            queue.QueueTaskAsync(async () =>
+            queue.QueueAsyncTask(async () =>
             {
                 await Task.Delay(1);
                 successfulTasks++;
@@ -32,7 +32,7 @@ namespace Tests.Queuing
             await queue.ConsumeQueueAsync();
 
             queue.QueueTask(() => successfulTasks++);
-            queue.QueueTaskAsync(async () =>
+            queue.QueueAsyncTask(async () =>
             {
                 await Task.Delay(1);
                 throw new Exception();

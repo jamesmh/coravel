@@ -40,7 +40,7 @@ namespace Demo.Controllers
         
         public IActionResult QueueTaskAsync() {
             Thread.Sleep(5000);
-            this._queue.QueueTaskAsync(async() => {
+            this._queue.QueueAsyncTask(async() => {
                 await Task.Delay(1000);
                 Console.WriteLine("This was queued!");
                 await Task.Delay(1000);

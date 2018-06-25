@@ -98,7 +98,7 @@ This will run the task (which prints to the console) every minute and only on we
 
 The `AddScheduler()` method will configure a new Hosted Service that will run in the background while your app is running.
 
-A `Scheduler` is provided to you for configuring what tasks you want to schedule. It has a method `Schedule()` which accepts a `System.Action`. This contains the logic / code of the task you want to run.
+A `Scheduler` is provided to you for configuring what tasks you want to schedule. You may use the `Schedule()` and `ScheduleAsync()` methods to schedule a task.
 
 After calling `Schedule()` you can chain method calls further to specify:
 
@@ -125,7 +125,7 @@ scheduler.Schedule(
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
 
-### Error Handling
+### Global Error Handling
 
 Any tasks that throw errors __will just be skipped__ and the next task in line will be invoked.
 
@@ -135,7 +135,7 @@ If you want to catch errors and do something specific with them you may use the 
 services.AddScheduler(scheduler =>
     // Assign your schedules
 )
-.OnError((exception) => 
+.OnError((exception) =>
     doSomethingWithException(exception)
 );
 ```
@@ -145,6 +145,28 @@ You can, of course, add error handling inside your specific tasks too.
 ### Scheduling Tasks
 
 After you have called the `Schedule()` method on the `Scheduler`, you can begin to configure the schedule constraints of your task.
+
+```c#
+scheduler.Schedule(
+    () => Console.WriteLine("Scheduled task.")
+)
+.EveryMinute();
+```
+
+### Scheduling Async Tasks
+
+Coravel will also handle scheduling async methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be async (as it will be invoked by the scheduler at a later time).
+
+```c#
+scheduler.ScheduleAsync(async () =>
+{
+    await Task.Delay(500);
+    Console.WriteLine("async task");
+})
+.EveryMinute();
+```
+
+Note, that you are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
 #### Intervals
 
@@ -196,9 +218,11 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 ## Feature: Task Queuing
 
-Coravel allows zero-configuration queues (at run time). The queue hooks into the scheduling mechanism (although that is handled for you).
+Coravel allows zero-configuration queues (at run time).
 
-The scheduler checks for scheduled tasks every minute. If there are any available items in the queue, then it will invoke them all.
+Every 30 seconds, if there are any available items in the queue, they will begin invocation.
+
+_Note: The queue is a separate Hosted Service from the scheduler (i.e. they each run in isolation)_
 
 ### Setup
 
@@ -209,6 +233,19 @@ services.AddQueue();
 ```
 
 That's it! This will automatically register the queue in your service container.
+
+### Global Error Handling
+
+The `OnError()` extension method can be called after `AddQueue` to register a global error handler.
+
+```c#
+services
+    .AddQueue()
+    .OnError(e =>
+    {
+        //.... handle the error
+    });
+```
 
 ### How To Queue Tasks
 
@@ -232,11 +269,16 @@ public IActionResult QueueTask() {
 }
 ```
 
-### Handling Errors
+### Queue Async Task
 
-Since the queue is hooked into the scheduling mechanism, the `OnError()`extension method that corvel provides will be used for your queued tasks.
+Use the `QueueAsyncTask` to queue up an async Task (which will run async whenever the queue is consumed).
 
-Again, you may use proper error handling in your tasks too.
+```c#
+ this._queue.QueueAsyncTask(async() => {
+    await Task.Delay(1000);
+    Console.WriteLine("This was queued!");
+ };
+```
 
 ### On App Closing
 
@@ -248,3 +290,5 @@ When your app is stopped, coravel will attempt to gracefully wait until the last
 You shouldn't have to worry about loosing any queued items.
 
 If your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks. But under normal circumstances, even when forcefully shutting down your app, coravel will (in the background) handle this for you.
+
+_Note: Queue persistance might be added in the future ;)_

@@ -17,7 +17,7 @@ namespace Coravel.Queuing
             this._tasks.Enqueue(new ActionOrAsyncFunc(task));
         }
 
-        public void QueueTaskAsync(Func<Task> asyncTask)
+        public void QueueAsyncTask(Func<Task> asyncTask)
         {
             this._tasks.Enqueue(new ActionOrAsyncFunc(asyncTask));
         }
