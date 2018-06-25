@@ -1,42 +1,52 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Scheduling.Schedule.Tasks;
 
 namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler : IScheduler, IHostedScheduler, IDisposable
     {
-        private List<ScheduledEvent> _events;
+        private List<ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
         private Queue _queue;
 
         public Scheduler()
         {
-            this._events = new List<ScheduledEvent>();
+            this._tasks = new List<ScheduledTask>();
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
-            this._events.Add(scheduled);
+            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
+            this._tasks.Add(scheduled);
             return scheduled;
         }
 
-        public void RunScheduler()
+        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            DateTime utcNow = DateTime.UtcNow;
-            this.RunAt(utcNow);
+            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
+            this._tasks.Add(scheduled);
+            return scheduled;
         }
 
-        public void RunAt(DateTime utcDate)
+        public async Task RunSchedulerAsync()
+        {
+            DateTime utcNow = DateTime.UtcNow;
+            await this.RunAtAsync(utcNow);
+        }
+
+        public async Task RunAtAsync(DateTime utcDate)
         {
             // Minutes is lowest value used in scheduling calculations
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
 
             ConsumeQueuedTasks();
-            InvokeScheduledTasks(utcDate);
+            await InvokeScheduledTasksAsync(utcDate);
         }
 
         public IHostedScheduler OnError(Action<Exception> onError)
@@ -56,7 +66,7 @@ namespace Coravel.Scheduling.Schedule
 
         public void Dispose()
         {
-            this.RunScheduler();
+            this.RunSchedulerAsync().GetAwaiter().GetResult();
         }
 
         private void ConsumeQueuedTasks()
@@ -68,32 +78,37 @@ namespace Coravel.Scheduling.Schedule
 
             foreach (Action task in queuedTasks)
             {
-                this.InvokeActionWithErrorHandling(task);
-            }
-        }
-
-        private void InvokeScheduledTasks(DateTime utcNow)
-        {
-            foreach (var scheduledEvent in this._events)
-            {
-                if (scheduledEvent.ShouldInvokeNow(utcNow))
+                try
                 {
-                    this.InvokeActionWithErrorHandling(scheduledEvent.InvokeScheduledAction);
+                    task();
+                }
+                catch (Exception e)
+                {
+                    if (this._errorHandler != null)
+                    {
+                        this._errorHandler(e);
+                    }
                 }
             }
         }
 
-        private void InvokeActionWithErrorHandling(Action action)
+        private async Task InvokeScheduledTasksAsync(DateTime utcNow)
         {
-            try
+            foreach (var scheduledEvent in this._tasks)
             {
-                action();
-            }
-            catch (Exception e)
-            {
-                if (this._errorHandler != null)
+                if (scheduledEvent.ShouldInvokeNow(utcNow))
                 {
-                    this._errorHandler(e);
+                    try
+                    {
+                        await scheduledEvent.InvokeScheduledAction();
+                    }
+                    catch (Exception e)
+                    {
+                        if (this._errorHandler != null)
+                        {
+                            this._errorHandler(e);
+                        }
+                    }
                 }
             }
         }

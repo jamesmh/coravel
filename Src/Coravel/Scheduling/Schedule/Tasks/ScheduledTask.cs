@@ -1,23 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Restrictions;
 
-namespace Coravel.Scheduling.Schedule
+namespace Coravel.Scheduling.Schedule.Tasks
 {
-    public class ScheduledEvent : IScheduleInterval
+    public class ScheduledTask : IScheduleInterval, IScheduledTask
     {
         private TimeSpan _scheduledInterval;
         private DateTime _utcLastRun;
-        private Action _scheduledAction;
+        private ActionOrAsyncFunc _scheduledAction;
         private DayRestrictions _dayRestrictions;
         private TimeRestrictions _timeRestrictions;
 
 
-        public ScheduledEvent(Action scheduledAction)
+        public ScheduledTask(Action scheduledAction)
         {
-            this._scheduledAction = scheduledAction;
+            this._scheduledAction = new ActionOrAsyncFunc(scheduledAction);
+            this._dayRestrictions = new DayRestrictions();
+            this._timeRestrictions = new TimeRestrictions();
+        }
+
+        public ScheduledTask(Func<Task> scheduledAsyncTask) {
+             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
         }
@@ -35,7 +42,7 @@ namespace Coravel.Scheduling.Schedule
             return false;
         }
 
-        public void InvokeScheduledAction() => this._scheduledAction();
+        public async Task InvokeScheduledAction() => await this._scheduledAction.Invoke();
 
         public IScheduleRestriction Daily()
         {

@@ -38,17 +38,22 @@ namespace Demo
             services.AddScheduler(scheduler =>
             {
                 // Run this every five minutes only on Fri and Sat.
-                scheduler.Schedule(() => Console.WriteLine("Every minute")
-                )
+                scheduler.Schedule(() => Console.WriteLine("Every minute"))
                 .EveryMinute();
-                //.Monday();
+
+                scheduler.ScheduleAsync(async () => {
+                    await Task.Delay(500);
+                    Console.WriteLine("async task");
+                })                
+                .EveryMinute();
+                
 
                 // Run this task every minute.
-                scheduler.Schedule(() => Console.WriteLine("Monday at xx:50"))
-                .HourlyAt(04)
-                .Monday();
+                scheduler.Schedule(() => Console.WriteLine("Saturday at xx:44"))
+                .HourlyAt(44)
+                .Saturday();
 
-                scheduler.Schedule(() => Console.WriteLine("During the week at xx:55"))                
+                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))                
                 .HourlyAt(05)
                 .Weekday();                
             });

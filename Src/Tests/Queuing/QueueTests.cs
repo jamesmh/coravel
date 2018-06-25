@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,7 +9,7 @@ namespace Tests.Queuing
     public class QueueTests
     {
         [TestMethod]
-        public void TestQueueRunsProperly(){
+        public async Task TestQueueRunsProperly(){
             int errorsHandled = 0;
             int successfulTasks = 0;
 
@@ -21,12 +22,12 @@ namespace Tests.Queuing
             queue.QueueTask(() => throw new Exception());
             queue.QueueTask(() => successfulTasks++);
 
-            scheduler.RunScheduler(); // This will consume the queue.
+            await scheduler.RunSchedulerAsync(); // This will consume the queue.
             
             queue.QueueTask(() => successfulTasks ++);
             queue.QueueTask(() => throw new Exception());
 
-            scheduler.RunScheduler(); // Consume the two above.
+            await scheduler.RunSchedulerAsync(); // Consume the two above.
 
             // These should not get executed.
             queue.QueueTask(() => successfulTasks++);
