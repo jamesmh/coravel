@@ -37,6 +37,17 @@ namespace Demo.Controllers
             Console.WriteLine("Task Queued");
             return Ok();
         }
+        
+        public IActionResult QueueTaskAsync() {
+            Thread.Sleep(5000);
+            this._queue.QueueTaskAsync(async() => {
+                await Task.Delay(1000);
+                Console.WriteLine("This was queued!");
+                await Task.Delay(1000);
+            });
+            Console.WriteLine("Task Queued");
+            return Ok();
+        }
 
         public IActionResult Contact()
         {
