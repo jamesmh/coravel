@@ -298,7 +298,7 @@ Use the `QueueAsyncTask` to queue up an async Task (which will run async wheneve
  this._queue.QueueAsyncTask(async() => {
     await Task.Delay(1000);
     Console.WriteLine("This was queued!");
- };
+ });
 ```
 
 ### On App Closing
