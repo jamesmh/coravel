@@ -5,6 +5,8 @@ using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Queuing.Interfaces;
+using Coravel.Queuing.HostedService;
+using Coravel.Queuing;
 
 namespace Coravel
 {
@@ -14,16 +16,18 @@ namespace Coravel
         {
             Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
 
-            services.AddHostedService<SchedulerHost>();
+            services.AddHostedService<SchedulerHost>();        
             configScheduledTasks(scheduler);
 
             return scheduler; 
         }
 
-        public static void AddQueue(this IServiceCollection services) {
-            Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
-            IQueue queue = scheduler.UseQueue();
+        public static IHostedQueue AddQueue(this IServiceCollection services) {
+            Queue queue = QueuingHost.GetQueueInstance();            
+            services.AddHostedService<QueuingHost>();          
             services.AddSingleton<IQueue>(queue);
+
+            return queue;
         }
     }
 }

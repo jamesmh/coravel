@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
-using Coravel.Scheduling.Schedule.Tasks;
+using Coravel.Tasks;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -13,7 +13,6 @@ namespace Coravel.Scheduling.Schedule
     {
         private List<ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
-        private Queue _queue;
 
         public Scheduler()
         {
@@ -44,8 +43,6 @@ namespace Coravel.Scheduling.Schedule
         {
             // Minutes is lowest value used in scheduling calculations
             utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
-
-            ConsumeQueuedTasks();
             await InvokeScheduledTasksAsync(utcDate);
         }
 
@@ -55,41 +52,9 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public IQueue UseQueue()
-        {
-            if (this._queue == null)
-            {
-                this._queue = new Queue();
-            }
-            return this._queue;
-        }
-
         public void Dispose()
         {
             this.RunSchedulerAsync().GetAwaiter().GetResult();
-        }
-
-        private void ConsumeQueuedTasks()
-        {
-            if (this._queue == null)
-                return;
-
-            IEnumerable<Action> queuedTasks = this._queue.DequeueAllTasks();
-
-            foreach (Action task in queuedTasks)
-            {
-                try
-                {
-                    task();
-                }
-                catch (Exception e)
-                {
-                    if (this._errorHandler != null)
-                    {
-                        this._errorHandler(e);
-                    }
-                }
-            }
         }
 
         private async Task InvokeScheduledTasksAsync(DateTime utcNow)

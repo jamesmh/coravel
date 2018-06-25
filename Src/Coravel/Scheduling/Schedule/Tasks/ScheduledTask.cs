@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Restrictions;
 
-namespace Coravel.Scheduling.Schedule.Tasks
+namespace Coravel.Tasks
 {
     public class ScheduledTask : IScheduleInterval, IScheduledTask
     {

@@ -8,26 +8,35 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Tests.Queuing
 {
     [TestClass]
-    public class QueueTests
+    public class AsyncQueueTests
     {
         [TestMethod]
-        public async Task TestQueueRunsProperly(){
+        public async Task TestAsyncQueueRunsProperly()
+        {
             int errorsHandled = 0;
             int successfulTasks = 0;
 
             Queue queue = new Queue();
 
-            queue.OnError(ex => errorsHandled++);               
+            queue.OnError(ex => errorsHandled++);
 
             queue.QueueTask(() => successfulTasks++);
-            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTaskAsync(async () =>
+            {
+                await Task.Delay(1);
+                successfulTasks++;
+            });
             queue.QueueTask(() => throw new Exception());
             queue.QueueTask(() => successfulTasks++);
 
             await queue.ConsumeQueueAsync();
-            
-            queue.QueueTask(() => successfulTasks ++);
-            queue.QueueTask(() => throw new Exception());
+
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTaskAsync(async () =>
+            {
+                await Task.Delay(1);
+                throw new Exception();
+            });
 
             await queue.ConsumeQueueAsync(); // Consume the two above.
 
