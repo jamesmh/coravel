@@ -35,6 +35,17 @@ services.AddScheduler(scheduler =>
 );
 ```
 
+For async tasks you may use `ScheduleAsync()`:
+
+```c#
+scheduler.ScheduleAsync(async () =>
+{
+    await Task.Delay(500);
+    Console.WriteLine("async task");
+})
+.EveryMinute();
+```
+
 Easy enough? Look at the documentation to see what methods are available!
 
 ### 2. Task Queuing
@@ -68,6 +79,16 @@ And then call:
 this._queue.QueueTask(() =>
     Console.WriteLine("This was queued!")
 );
+```
+
+Or, for async tasks:
+
+```c#
+this._queue.QueueAsyncTask(async () =>
+{
+    await Task.Delay(100);
+    Console.WriteLine("This was queued!")
+});
 ```
 
 Now you have a fully functional queue!
