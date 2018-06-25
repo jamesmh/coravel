@@ -34,7 +34,7 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
-        public async Task RunScheduler()
+        public async Task RunSchedulerAsync()
         {
             DateTime utcNow = DateTime.UtcNow;
             await this.RunAt(utcNow);
@@ -66,7 +66,7 @@ namespace Coravel.Scheduling.Schedule
 
         public void Dispose()
         {
-            this.RunScheduler().GetAwaiter().GetResult();
+            this.RunSchedulerAsync().GetAwaiter().GetResult();
         }
 
         private void ConsumeQueuedTasks()

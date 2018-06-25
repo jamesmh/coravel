@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RuntimeFrameworkVersion>2.1.1</RuntimeFrameworkVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+  <RuntimeIdentifier>win-x64,linux-x64</RuntimeIdentifier>
+
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

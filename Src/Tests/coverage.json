@@ -448,7 +448,7 @@
      "Branches": {
      }
     },
-    "System.Void Coravel.Scheduling.Schedule.Scheduler::RunScheduler()": {
+    "System.Void Coravel.Scheduling.Schedule.Scheduler::RunSchedulerAsync()": {
      "Lines": {
       "28": {
        "Hits": 2

@@ -31,12 +31,12 @@ namespace Coravel.Scheduling.HostedService
             return Task.CompletedTask;
         }
 
-        private async Task RunScheduler()
+        private async Task RunSchedulerAsync()
         {
             while (!this._shutdown.IsCancellationRequested)
             {
                 await this._signal.WaitAsync(this._shutdown.Token);
-                await GetSchedulerInstance().RunScheduler();                
+                await GetSchedulerInstance().RunSchedulerAsync();                
             }
 
         }

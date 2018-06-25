@@ -21,12 +21,12 @@ namespace Tests.Queuing
             queue.QueueTask(() => throw new Exception());
             queue.QueueTask(() => successfulTasks++);
 
-            scheduler.RunScheduler(); // This will consume the queue.
+            scheduler.RunSchedulerAsync(); // This will consume the queue.
             
             queue.QueueTask(() => successfulTasks ++);
             queue.QueueTask(() => throw new Exception());
 
-            scheduler.RunScheduler(); // Consume the two above.
+            scheduler.RunSchedulerAsync(); // Consume the two above.
 
             // These should not get executed.
             queue.QueueTask(() => successfulTasks++);

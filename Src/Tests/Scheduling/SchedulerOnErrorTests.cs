@@ -44,7 +44,7 @@ namespace Tests.Scheduling
         }
 
          [TestMethod]
-        public void TestSchedulerSkipsErrors()
+        public async Task TestSchedulerSkipsErrors()
         {
             int successfulTaskCount = 0;
             var scheduler = new Scheduler();                      
