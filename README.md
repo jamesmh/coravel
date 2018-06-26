@@ -1,5 +1,7 @@
 # Coravel
 
+__Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
+
 Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
 
 - Task Scheduling
@@ -7,8 +9,6 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Mailer [TBA]
 - Command line tools integrated with coraval features [TBA]
 - More???
-
-__Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
 ## Features
 
