@@ -7,7 +7,7 @@ using Coravel.Tasks;
 
 namespace Coravel.Queuing
 {
-    public class Queue : IQueue, IHostedQueue
+    public class Queue : IQueue, IQueueConfiguration
     {
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
         private Action<Exception> _errorHandler;
@@ -22,7 +22,7 @@ namespace Coravel.Queuing
             this._tasks.Enqueue(new ActionOrAsyncFunc(asyncTask));
         }
 
-        public IHostedQueue OnError(Action<Exception> errorHandler)
+        public IQueueConfiguration OnError(Action<Exception> errorHandler)
         {
             this._errorHandler = errorHandler;
             return this;
