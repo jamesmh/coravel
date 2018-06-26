@@ -8,6 +8,7 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Queuing
 - Mailer [TBA]
 - Command line tools integrated with coraval features [TBA]
+- Caching [TBA]
 - More???
 
 ## Features
