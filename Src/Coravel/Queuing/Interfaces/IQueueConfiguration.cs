@@ -3,7 +3,7 @@ using System;
 namespace Coravel.Queuing.Interfaces
 {
     /// <summary>
-    /// Methods for configuring various aspects of Coravel's queuing mechanism.
+    /// Methods for configuring various aspects of Coravel's queue.
     /// </summary>
     public interface IQueueConfiguration
     {
