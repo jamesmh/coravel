@@ -6,6 +6,4 @@ jobs:
       - image: microsoft/dotnet:2.1-sdk
     steps:
       - checkout
-      - run: 
-          name: test
-          command: 'dotnet test .\coravel\Src\Tests\Tests.csproj'
+      - run: 'dotnet test ./Src/Tests/Tests.csproj'
