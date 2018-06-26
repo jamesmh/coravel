@@ -8,6 +8,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Command line tools integrated with coraval features [TBA]
 - More???
 
+__Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
+
 ## Features
 
 - [Task Scheduling](https://github.com/jamesmh/coravel#task-scheduling)
