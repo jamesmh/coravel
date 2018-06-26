@@ -12,7 +12,7 @@ namespace Coravel
 {
     public static class HostedServiceExtensions
     {
-        public static IHostedScheduler AddScheduler(this IServiceCollection services, Action<IScheduler> configScheduledTasks)
+        public static ISchedulerConfiguration AddScheduler(this IServiceCollection services, Action<IScheduler> configScheduledTasks)
         {
             Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
 
@@ -22,7 +22,7 @@ namespace Coravel
             return scheduler; 
         }
 
-        public static IHostedQueue AddQueue(this IServiceCollection services) {
+        public static IQueueConfiguration AddQueue(this IServiceCollection services) {
             Queue queue = QueuingHost.GetQueueInstance();            
             services.AddHostedService<QueuingHost>();          
             services.AddSingleton<IQueue>(queue);

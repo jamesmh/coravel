@@ -7,7 +7,7 @@ using Coravel.Scheduling.Schedule.Restrictions;
 
 namespace Coravel.Tasks
 {
-    public class ScheduledTask : IScheduleInterval, IScheduledTask
+    public class ScheduledTask : IScheduleInterval
     {
         private TimeSpan _scheduledInterval;
         private DateTime _utcLastRun;
