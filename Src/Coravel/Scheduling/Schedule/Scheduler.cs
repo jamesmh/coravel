@@ -9,7 +9,7 @@ using Coravel.Tasks;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class Scheduler : IScheduler, IHostedScheduler, IDisposable
+    public class Scheduler : IScheduler, ISchedulerConfiguration, IDisposable
     {
         private List<ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
@@ -46,7 +46,7 @@ namespace Coravel.Scheduling.Schedule
             await InvokeScheduledTasksAsync(utcDate);
         }
 
-        public IHostedScheduler OnError(Action<Exception> onError)
+        public ISchedulerConfiguration OnError(Action<Exception> onError)
         {
             this._errorHandler = onError;
             return this;
