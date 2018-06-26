@@ -1,6 +1,7 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/coravel
     docker: 
       - image: microsoft/dotnet:2.1-sdk
     steps:
