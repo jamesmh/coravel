@@ -5,4 +5,6 @@ jobs:
       - image: microsoft/dotnet:2.1-sdk
     steps:
       - checkout
-      - run: cd ./Src/Test && dotnet restore && dotnet build && dotnet test
+      - run: 
+        name: test
+        command: 'dotnet test ./Src/Test'
