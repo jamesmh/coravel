@@ -8,4 +8,4 @@ jobs:
       - checkout
       - run: 
           name: test
-          command: 'dotnet test ./Src/Test'
+          command: 'dotnet test .\Src\Tests\Tests.csproj'
