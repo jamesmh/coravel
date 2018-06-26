@@ -8,4 +8,4 @@ jobs:
       - checkout
       - run: 
           name: test
-          command: 'dotnet test .\Src\Tests\Tests.csproj'
+          command: 'dotnet test .\coravel\Src\Tests\Tests.csproj'
