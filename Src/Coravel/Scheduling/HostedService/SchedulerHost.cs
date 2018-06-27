@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Coravel.Scheduling.Schedule;
-using Coravel.Scheduling.Timing;
 using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.HostedService
