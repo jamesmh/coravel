@@ -13,7 +13,7 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 - Caching [TBA]
 - More???
 
-## Features
+## Full Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/docs/scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/docs/queuing.md)
