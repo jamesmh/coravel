@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coravel.Queuing.Interfaces;
 using Coravel.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Queuing
 {
@@ -11,6 +12,7 @@ namespace Coravel.Queuing
     {
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
         private Action<Exception> _errorHandler;
+        private ILogger<IQueue> _logger;
 
         public void QueueTask(Action task)
         {
@@ -28,6 +30,12 @@ namespace Coravel.Queuing
             return this;
         }
 
+        public IQueueConfiguration LogQueuedTaskProgress(ILogger<IQueue> logger)
+        {
+            this._logger = logger;
+            return this;
+        }
+
         public async Task ConsumeQueueAsync()
         {
             IEnumerable<ActionOrAsyncFunc> queuedTasks = this.DequeueAllTasks();
@@ -36,7 +44,9 @@ namespace Coravel.Queuing
             {
                 try
                 {
+                    this._logger?.LogInformation("Queued task started...");
                     await task.Invoke();
+                    this._logger?.LogInformation("Queued task finished...");
                 }
                 catch (Exception e)
                 {

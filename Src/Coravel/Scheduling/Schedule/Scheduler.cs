@@ -6,6 +6,7 @@ using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -13,6 +14,7 @@ namespace Coravel.Scheduling.Schedule
     {
         private List<ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
+        private ILogger<IScheduler> _logger;
 
         public Scheduler()
         {
@@ -52,23 +54,32 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
+        public ISchedulerConfiguration LogScheduledTaskProgress(ILogger<IScheduler> logger)
+        {
+            this._logger = logger;
+            return this;
+        }
+
         public void Dispose()
         {
             this.RunSchedulerAsync().GetAwaiter().GetResult();
         }
 
         private async Task InvokeScheduledTasksAsync(DateTime utcNow)
-        {
+        {            
             foreach (var scheduledEvent in this._tasks)
             {
                 if (scheduledEvent.ShouldInvokeNow(utcNow))
                 {
                     try
                     {
+                        this._logger?.LogInformation("Scheduled task started...");
                         await scheduledEvent.InvokeScheduledAction();
+                        this._logger?.LogInformation("Scheduled task finished...");
                     }
                     catch (Exception e)
                     {
+                        this._logger.LogWarning("A scheduled task threw an Exception: " + e.Message);
                         if (this._errorHandler != null)
                         {
                             this._errorHandler(e);

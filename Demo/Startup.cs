@@ -10,17 +10,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Coravel;
+using Microsoft.Extensions.Logging;
+using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Queuing.Interfaces;
 
 namespace Demo
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IServiceProvider services)
         {
             Configuration = configuration;
+            Services = services;
         }
 
         public IConfiguration Configuration { get; }
+        public IServiceProvider Services { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -31,7 +36,7 @@ namespace Demo
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Coravel Scheduling
@@ -41,25 +46,29 @@ namespace Demo
                 scheduler.Schedule(() => Console.WriteLine("Every minute"))
                 .EveryMinute();
 
-                scheduler.ScheduleAsync(async () => {
-                    await Task.Delay(500);
+                scheduler.ScheduleAsync(async () =>
+                {
+                    await Task.Delay(5000);
                     Console.WriteLine("async task");
-                })                
+                })
                 .EveryMinute();
-                
+
 
                 // Run this task every minute.
                 scheduler.Schedule(() => Console.WriteLine("Saturday at xx:44"))
                 .HourlyAt(44)
                 .Saturday();
 
-                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))                
+                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))
                 .HourlyAt(05)
-                .Weekday();                
-            });
+                .Weekday();
+            })
+            .LogScheduledTaskProgress(Services.GetService<ILogger<IScheduler>>());
 
             // Coravel Queuing
-            services.AddQueue();      
+            services
+                .AddQueue()
+                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Scheduling.Schedule.Interfaces
 {
@@ -13,5 +14,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <param name="onError">Error handler to invoke on error.</param>
         /// <returns></returns>
         ISchedulerConfiguration OnError(Action<Exception> onError);
+
+        ISchedulerConfiguration LogScheduledTaskProgress(ILogger<IScheduler> logger);        
     }
 }

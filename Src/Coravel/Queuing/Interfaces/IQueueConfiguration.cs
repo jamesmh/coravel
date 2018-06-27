@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Queuing.Interfaces
 {
@@ -14,5 +15,8 @@ namespace Coravel.Queuing.Interfaces
         /// <param name="errorHandler">The error handler you wish to use.</param>
         /// <returns></returns>
          IQueueConfiguration OnError(Action<Exception> errorHandler);
+
+         
+        IQueueConfiguration LogQueuedTaskProgress(ILogger<IQueue> logger);   
     }
 }
