@@ -79,7 +79,7 @@ namespace Coravel.Scheduling.Schedule
                     }
                     catch (Exception e)
                     {
-                        this._logger.LogWarning("A scheduled task threw an Exception: " + e.Message);
+                        this._logger?.LogWarning("A scheduled task threw an Exception: " + e.Message);
                         if (this._errorHandler != null)
                         {
                             this._errorHandler(e);
