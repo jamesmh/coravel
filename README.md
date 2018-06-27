@@ -15,8 +15,8 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Full Docs
 
-- [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/docs/scheduler.md)
-- [Queuing](https://github.com/jamesmh/coravel/blob/master/docs/queuing.md)
+- [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
+- [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
 
 ## Quick-Start
 
