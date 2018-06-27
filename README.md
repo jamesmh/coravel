@@ -55,7 +55,7 @@ Easy enough? Look at the documentation to see what methods are available!
 
 ### 2. Task Queuing
 
-Tired of having to install and configure other systems to get a queuing system up-and-running? Tired of using databases to issue queued tasks? Look no further!
+Tired of having to install and configure other systems to get a queuing system up-and-running? Look no further!
 
 In `Startup.cs`, put this in `ConfigureServices()`:
 
