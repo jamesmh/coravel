@@ -7,15 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Demo.Models;
 using Coravel.Queuing.Interfaces;
 using System.Threading;
+using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Demo.Controllers
 {
     public class HomeController : Controller
     {
         IQueue _queue;
+        IScheduler _scheduler;
 
-        public HomeController(IQueue queue) {
+        public HomeController(IQueue queue, IScheduler scheduler) {
             this._queue = queue;
+            this._scheduler = scheduler;
         }
 
         public IActionResult Index()
@@ -39,13 +42,21 @@ namespace Demo.Controllers
         }
         
         public IActionResult QueueTaskAsync() {
-            Thread.Sleep(5000);
             this._queue.QueueAsyncTask(async() => {
                 await Task.Delay(1000);
                 Console.WriteLine("This was queued!");
                 await Task.Delay(1000);
             });
             Console.WriteLine("Task Queued");
+            return Ok();
+        }
+
+        public IActionResult ScheduleTask() {
+            this._scheduler.Schedule(
+                () => Console.WriteLine("Scheduled dynamically from http controller.")
+            )
+            .EveryMinute();
+
             return Ok();
         }
 

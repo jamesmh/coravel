@@ -12,20 +12,32 @@ namespace Coravel
 {
     public static class HostedServiceExtensions
     {
-        public static ISchedulerConfiguration AddScheduler(this IServiceCollection services, Action<IScheduler> configScheduledTasks)
+        /// <summary>
+        /// Add Coravel's Scheduler to your app.
+        /// </summary>
+        /// <param name="services">Service collection</param>
+        /// <param name="assignScheduledTasks">Action that assigns all your scheduled tasks</param>
+        /// <returns></returns>
+        public static ISchedulerConfiguration AddScheduler(this IServiceCollection services, Action<IScheduler> assignScheduledTasks)
         {
-            Scheduler scheduler = SchedulerHost.GetSchedulerInstance();
+            Scheduler scheduler = new Scheduler();
+            services.AddSingleton<IScheduler>(scheduler);
+            services.AddHostedService<SchedulerHost>();
+            assignScheduledTasks(scheduler);
 
-            services.AddHostedService<SchedulerHost>();        
-            configScheduledTasks(scheduler);
-
-            return scheduler; 
+            return scheduler;
         }
 
-        public static IQueueConfiguration AddQueue(this IServiceCollection services) {
-            Queue queue = QueuingHost.GetQueueInstance();            
-            services.AddHostedService<QueuingHost>();          
+        /// <summary>
+        /// Add Coravel's queueing to your app.
+        /// </summary>
+        /// <param name="services">Service collection</param>
+        /// <returns></returns>
+        public static IQueueConfiguration AddQueue(this IServiceCollection services)
+        {
+            Queue queue = new Queue();
             services.AddSingleton<IQueue>(queue);
+            services.AddHostedService<QueuingHost>();
 
             return queue;
         }

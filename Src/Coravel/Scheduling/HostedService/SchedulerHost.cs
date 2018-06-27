@@ -5,28 +5,30 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Coravel.Scheduling.Schedule;
-using Coravel.Scheduling.Timing;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Scheduling.HostedService
 {
     internal class SchedulerHost : IHostedService, IDisposable
     {
         private CancellationTokenSource _shutdown = new CancellationTokenSource();
-        private static Schedule.Scheduler _scheduler;
-         private SemaphoreSlim _signal = new SemaphoreSlim(0);
-          private Timer _timer;
+        private Scheduler _scheduler;
+        private SemaphoreSlim _signal = new SemaphoreSlim(0);
+        private Timer _timer;
+        private ILogger<SchedulerHost> _logger;
 
-        public static Scheduler GetSchedulerInstance()
+        public SchedulerHost(ILogger<SchedulerHost> logger, IScheduler scheduler)
         {
-            if (_scheduler == null)
-                _scheduler = new Scheduler();
-            return _scheduler;
+            this._logger = logger;
+            this._scheduler = scheduler as Scheduler;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
-        {            
-            this._timer = new Timer((state) => this._signal.Release(),null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+        {
+            this._logger.LogInformation("Schedule service starting...");
+
+            this._timer = new Timer((state) => this._signal.Release(), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
             Task.Run(RunSchedulerAsync);
             return Task.CompletedTask;
         }
@@ -36,12 +38,17 @@ namespace Coravel.Scheduling.HostedService
             while (!this._shutdown.IsCancellationRequested)
             {
                 await this._signal.WaitAsync(this._shutdown.Token);
-                await GetSchedulerInstance().RunSchedulerAsync();                           
+
+                this._logger.LogInformation("Scheduler checking for tasks to execute...");
+                await this._scheduler.RunSchedulerAsync();
+                this._logger.LogInformation("Scheduler iteration completed.");
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
+            this._logger.LogInformation("Schedule service received shutdown request.");
+
             // Signal to background thread that we are done :)
             this._shutdown.Cancel();
 
@@ -51,13 +58,15 @@ namespace Coravel.Scheduling.HostedService
 
         public void Dispose()
         {
+            this._logger.LogInformation("Schedule service running one last time being shutdown.");
+
             this._timer?.Dispose();
 
             // Run the scheduler one last time.
             // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
-            GetSchedulerInstance()?.Dispose();
+            this._scheduler?.Dispose();
 
-            Console.WriteLine("disposed");
+            this._logger.LogInformation("Schedule service was gracefully disposed.");
         }
     }
 }

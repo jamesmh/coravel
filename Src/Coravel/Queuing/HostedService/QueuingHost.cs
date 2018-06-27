@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Queuing.Interfaces;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Coravel.Queuing.HostedService
 {
@@ -13,18 +14,19 @@ namespace Coravel.Queuing.HostedService
         private CancellationTokenSource _shutdown = new CancellationTokenSource();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
         private Timer _timer;
-        private static Queue _queue;
+        private Queue _queue;
+        private ILogger<QueuingHost> _logger;
 
-        public static Queue GetQueueInstance()
+        public QueuingHost(ILogger<QueuingHost> logger, IQueue queue)
         {
-            if (_queue == null)
-                _queue = new Queue();
-            return _queue;
+            this._logger = logger;
+            this._queue = queue as Queue;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
-        {            
-            this._timer = new Timer((state) => this._signal.Release(),null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+        {
+            this._logger?.LogInformation("Queue service has started.");
+            this._timer = new Timer((state) => this._signal.Release(), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
             Task.Run(ConsumeQueueAsync);
             return Task.CompletedTask;
         }
@@ -34,13 +36,17 @@ namespace Coravel.Queuing.HostedService
             while (!this._shutdown.IsCancellationRequested)
             {
                 await this._signal.WaitAsync(this._shutdown.Token);
-                await GetQueueInstance().ConsumeQueueAsync();                         
+
+                this._logger?.LogInformation("Queued items are being executed.");
+                await this._queue.ConsumeQueueAsync();
+                this._logger?.LogInformation("Queue iteration done.");
             }
-        }    
+        }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            // Signal to background thread that we are done :)
+            this._logger?.LogInformation("Queue service is has received request to shutdown.");
+
             this._shutdown.Cancel();
 
             this._timer?.Change(Timeout.Infinite, 0);
@@ -49,13 +55,15 @@ namespace Coravel.Queuing.HostedService
 
         public void Dispose()
         {
+            this._logger?.LogInformation("Queue service is executing one last time before shutdown.");
+
             this._timer?.Dispose();
 
             // Run the scheduler one last time.
             // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
-            GetQueueInstance().ConsumeQueueAsync().GetAwaiter().GetResult();
+            this._queue.ConsumeQueueAsync().GetAwaiter().GetResult();
 
-            Console.WriteLine("disposed");
+            this._logger?.LogInformation("Queue successfully disposed.");
         }
     }
 }
