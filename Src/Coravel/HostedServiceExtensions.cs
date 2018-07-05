@@ -7,6 +7,9 @@ using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Queuing.Interfaces;
 using Coravel.Queuing.HostedService;
 using Coravel.Queuing;
+using Coravel.Cache.Interfaces;
+using Coravel.Cache;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Coravel
 {
@@ -40,6 +43,13 @@ namespace Coravel
             services.AddHostedService<QueuingHost>();
 
             return queue;
+        }
+
+        public static void AddCache(this IServiceCollection services) {
+            services.AddMemoryCache(); 
+            services.AddTransient<ICache>(provider => 
+                new InMemoryCache(provider.GetService<IMemoryCache>())
+            );            
         }
     }
 }
