@@ -69,6 +69,9 @@ namespace Demo
             services
                 .AddQueue()
                 .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+
+            // Coravel Caching
+            services.AddCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

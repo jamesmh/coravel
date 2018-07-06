@@ -6,9 +6,10 @@ namespace Coravel.Cache.Interfaces
 {
     public interface ICache
     {
-        TResult Cache<TResult>(Expression<Func<TResult>> expression);
-        TResult Cache<TResult>(Expression<Func<TResult>> expression, TimeSpan expiresIn);
-        Task<TResult> CacheAsync<TResult>(Expression<Func<Task<TResult>>> expression);
-        Task<TResult> CacheAsync<TResult>(Expression<Func<Task<TResult>>> expression, TimeSpan expiresIn);
+        TResult Remember<TResult>(string key, Func<TResult> cacheFunc, TimeSpan expiresIn);
+        Task<TResult> RememberAsync<TResult>(string key, Func<Task<TResult>> cacheFunc, TimeSpan expiresIn);
+
+        TResult Forever<TResult>(string key, Func<TResult> cacheFunc);
+        Task<TResult> ForeverAsync<TResult>(string key, Func<Task<TResult>> cacheFunc);
     }
 }
