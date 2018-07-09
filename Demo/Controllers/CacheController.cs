@@ -19,7 +19,7 @@ namespace Demo.Controllers
         {
             Func<string> bigData = () =>
             {
-                Thread.Sleep(2000); // Simulate some work.
+                Thread.Sleep(500); // Simulate some work.
                 return "I AM A BIG PEICE OF DATA!";
             };
 
@@ -35,7 +35,7 @@ namespace Demo.Controllers
 
             Func<Task<string>> bigData = async () =>
             {
-                await Task.Delay(2000);
+                await Task.Delay(500);
                 return "I AM A BIG PEICE OF DATA!";
             };
 
@@ -46,11 +46,11 @@ namespace Demo.Controllers
             return content;
         }
 
-                public IActionResult Forever()
+        public IActionResult Forever()
         {
             Func<string> bigData = () =>
             {
-                Thread.Sleep(5000); // Simulate some work.
+                Thread.Sleep(500); // Simulate some work.
                 return "I AM A BIG PEICE OF DATA!";
             };
 
