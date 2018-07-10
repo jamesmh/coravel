@@ -25,7 +25,7 @@ namespace TestMvcApp.Controllers
             };
 
             var content = Content(
-                this._cache.Remember("bigdata", BigData, TimeSpan.FromSeconds(5))
+                this._cache.Remember("Remember", BigData, TimeSpan.FromSeconds(5))
             );
 
             content.Content += wasCached.ToString();
@@ -38,12 +38,13 @@ namespace TestMvcApp.Controllers
             bool wasCached = false;
             Func<Task<string>> BigData = async () =>
             {
+                wasCached = true;
                 await Task.Delay(0);
                  return "Was Cached:";
             };
 
             var content = Content(
-                await this._cache.RememberAsync("bigdataasync", BigData, TimeSpan.FromSeconds(10))
+                await this._cache.RememberAsync("RememberAsync", BigData, TimeSpan.FromSeconds(10))
             );
 
             content.Content += wasCached.ToString();
@@ -61,7 +62,7 @@ namespace TestMvcApp.Controllers
             };
 
             var content = Content(
-                this._cache.Forever("bigdata", BigData)
+                this._cache.Forever("Forever", BigData)
             );
 
             content.Content += wasCached.ToString();
@@ -80,7 +81,7 @@ namespace TestMvcApp.Controllers
             };
 
             var content = Content(
-                await this._cache.ForeverAsync("bigdata", BigData)
+                await this._cache.ForeverAsync("ForeverAsync", BigData)
             );
 
             content.Content += wasCached.ToString();

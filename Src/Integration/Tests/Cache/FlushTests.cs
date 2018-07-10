@@ -14,7 +14,7 @@ namespace Tests.Cache
         }
 
         [Fact]
-        public async Task FlushCacheWorking()
+        public async Task Flush_Cache_Working()
         {
             var client = _factory.CreateClient();
 

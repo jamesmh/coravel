@@ -7,3 +7,4 @@ jobs:
     steps:
       - checkout
       - run: 'dotnet test ./Src/Tests/Tests.csproj'
+      - run: 'dotnet test ./Src/Integration/Tests/Tests.csproj'
