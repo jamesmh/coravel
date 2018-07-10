@@ -47,7 +47,7 @@ namespace Coravel
 
         public static void AddCache(this IServiceCollection services) {
             services.AddMemoryCache(); 
-            services.AddTransient<ICache>(provider => 
+            services.AddSingleton<ICache>(provider => 
                 new InMemoryCache(provider.GetService<IMemoryCache>())
             );            
         }

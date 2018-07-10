@@ -74,8 +74,10 @@ namespace Coravel.Cache
 
         public void Flush() {
             foreach(string key in this._keys){
-                this.Forget(key);
+                this._cache.Remove(key);
             }
+
+            this._keys.Clear();
         }
     }
 }
