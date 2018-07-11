@@ -18,7 +18,7 @@ namespace TestMvcApp.Controllers
         public IActionResult Remember()
         {
             bool wasCached = false;
-            Func<string> BigData = () =>
+            string BigData()
             {
                 wasCached = true;
                 return "Was Cached:";
@@ -36,7 +36,7 @@ namespace TestMvcApp.Controllers
         public async Task<IActionResult> RememberAsync()
         {
             bool wasCached = false;
-            Func<Task<string>> BigData = async () =>
+            async Task<string> BigData()
             {
                 wasCached = true;
                 await Task.Delay(0);
@@ -55,7 +55,7 @@ namespace TestMvcApp.Controllers
         public IActionResult Forever()
         {
             bool wasCached = false;
-            Func<string> BigData = () =>
+            string BigData()
             {
                 wasCached = true;
                 return "Was Cached:";
@@ -73,7 +73,7 @@ namespace TestMvcApp.Controllers
         public async Task<IActionResult> ForeverAsync()
         {
             bool wasCached = false;
-            Func<Task<string>> BigData = async () =>
+            async Task<string> BigData()
             {
                 wasCached = true;
                 await Task.Delay(0);
