@@ -45,11 +45,12 @@ namespace Coravel
             return queue;
         }
 
-        public static void AddCache(this IServiceCollection services) {
-            services.AddMemoryCache(); 
-            services.AddSingleton<ICache>(provider => 
+        public static void AddCache(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<ICache>(provider =>
                 new InMemoryCache(provider.GetService<IMemoryCache>())
-            );            
-        }
+            );
+        }        
     }
 }
