@@ -103,5 +103,21 @@ this._cache.Flush();
 this._cache.Forget("BigDataCacheKey");
 ```
 
+## Extending Coravel With Custom Drivers
+
+If you wish, you can create your own cache driver that extends `Coravel.Cache.Interfaces.ICache`. Maybe you want to use Coravel but use a Redis store? 
+
+First, implement a class that extends the `ICache` interface.
+
+Next, to register your driver to be used, just pass it into the `AddCache` method:
+
+```c#
+services.AddCache(new RedisCache());
+
+// Or, if you need the service provider to create your object:
+
+services.AddCache(provider => new RedisCache(provider.GetService<ISomeRegisteredInterface>()));
+```
+
 
 

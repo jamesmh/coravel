@@ -48,9 +48,19 @@ namespace Coravel
         public static void AddCache(this IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.AddSingleton<ICache>(provider =>
+            services.AddCache(provider =>
                 new InMemoryCache(provider.GetService<IMemoryCache>())
             );
-        }        
+        }    
+
+        public static void AddCache(this IServiceCollection services, ICache driver)
+        {
+            services.AddSingleton<ICache>(driver);
+        }     
+
+        public static void AddCache(this IServiceCollection services, Func<IServiceProvider, ICache> driverFunc)
+        {
+            services.AddSingleton<ICache>(driverFunc);
+        }     
     }
 }
