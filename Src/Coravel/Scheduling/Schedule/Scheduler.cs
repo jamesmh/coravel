@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Coravel.Helpers;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
@@ -23,6 +24,11 @@ namespace Coravel.Scheduling.Schedule
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
+            if (actionToSchedule.IsThisAsync()){
+                System.Diagnostics.Debug.WriteLine($"Action is async but it will be called synchronously. " +
+                                  "You could use ScheduleAsync method to have it run asynchronously");
+            }
+
             ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
