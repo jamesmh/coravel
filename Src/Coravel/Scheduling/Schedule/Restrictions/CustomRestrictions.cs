@@ -1,8 +1,9 @@
 ﻿using System;
+using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule.Restrictions
 {
-    public class CustomRestrictions : IRestrictions
+    public class CustomRestrictions : IRestriction
     {
         private Func<bool> func;
 
