@@ -5,7 +5,7 @@ using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule.Restrictions
 {
-    public class DayRestrictions : IScheduleRestriction
+    public class DayRestrictions : IScheduleRestriction, IRestriction
     {
         private List<DayOfWeek> _restrictions;
 
