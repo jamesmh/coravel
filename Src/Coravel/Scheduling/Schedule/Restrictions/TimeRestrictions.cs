@@ -3,7 +3,7 @@ using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule.Restrictions
 {
-    public class TimeRestrictions : IRestriction
+    public class TimeRestrictions
     {
         private int? _hourRestriction = null;
         private int? _minuteRestriction = null;

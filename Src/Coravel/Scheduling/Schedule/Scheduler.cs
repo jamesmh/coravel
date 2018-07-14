@@ -42,30 +42,6 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
-        public IScheduleInterval Schedule(Action actionToSchedule, Func<bool> customRestriction)
-        {
-            if (actionToSchedule.IsThisAsync())
-            {
-                System.Diagnostics.Debug.WriteLine($"Action is async but it will be called synchronously. " +
-                                  "You could use ScheduleAsync method to have it run asynchronously");
-            }
-
-            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
-            scheduled.SetCustomRestriction(customRestriction);
-
-            this._tasks.Add(scheduled);
-            return scheduled;
-        }
-
-        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule, Func<bool> customRestriction)
-        {
-            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
-            scheduled.SetCustomRestriction(customRestriction);
-
-            this._tasks.Add(scheduled);
-            return scheduled;
-        }
-
         public async Task RunSchedulerAsync()
         {
             DateTime utcNow = DateTime.UtcNow;

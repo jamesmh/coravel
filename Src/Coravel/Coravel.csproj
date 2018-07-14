@@ -19,4 +19,8 @@
   <ItemGroup>
     <Folder Include="Helpers\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Scheduling\Schedule\Interfaces\IRestriction.cs" />
+    <Compile Remove="Scheduling\Schedule\Restrictions\CustomRestrictions.cs" />
+  </ItemGroup>
 </Project>
