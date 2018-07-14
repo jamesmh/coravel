@@ -1,4 +1,5 @@
 using System;
+using Coravel.Scheduling.Schedule.Interfaces;
 
 namespace Coravel.Scheduling.Schedule.Restrictions
 {
