@@ -18,5 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Coravel\Coravel.csproj" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Compile Remove="Scheduling\Async\AsyncSchedulerWithCustomRestrictionsTest.cs" />
+  </ItemGroup>
 </Project>
