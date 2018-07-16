@@ -22,46 +22,16 @@ namespace Coravel.Scheduling.Schedule
             this._tasks = new List<ScheduledTask>();
         }
 
-        public IScheduleInterval Schedule(Action actionToSchedule)
+        public IScheduleFilterInterval Schedule(Action actionToSchedule)
         {
-            if (actionToSchedule.IsThisAsync()) 
-            { 
-                System.Diagnostics.Debug.WriteLine($"Action is async but it will be called synchronously. " +
-                                  "You could use ScheduleAsync method to have it run asynchronously");
-            }
-
             ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
         }
 
-        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
+        public IScheduleFilterInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
             ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
-            this._tasks.Add(scheduled);
-            return scheduled;
-        }
-
-        public IScheduleInterval Schedule(Action actionToSchedule, Func<bool> customRestriction)
-        {
-            if (actionToSchedule.IsThisAsync())
-            {
-                System.Diagnostics.Debug.WriteLine($"Action is async but it will be called synchronously. " +
-                                  "You could use ScheduleAsync method to have it run asynchronously");
-            }
-
-            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
-            scheduled.SetCustomRestriction(customRestriction);
-
-            this._tasks.Add(scheduled);
-            return scheduled;
-        }
-
-        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule, Func<bool> customRestriction)
-        {
-            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
-            scheduled.SetCustomRestriction(customRestriction);
-
             this._tasks.Add(scheduled);
             return scheduled;
         }

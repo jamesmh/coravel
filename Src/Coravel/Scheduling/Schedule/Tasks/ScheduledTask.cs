@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Restrictions;
 
 namespace Coravel.Tasks
 {
-    public class ScheduledTask : IScheduleInterval
+    public class ScheduledTask : IScheduleFilterInterval, IScheduleInterval
     {
         private TimeSpan _scheduledInterval;
         private DateTime _utcLastRun;
@@ -134,5 +132,11 @@ namespace Coravel.Tasks
             this._dayRestrictions.PassesRestrictions(utcNow)
             && this._timeRestrictions.PassesRestrictions(utcNow)
                 && this._customRestrictions.PassesRestrictions(utcNow);
+
+        public IScheduleInterval Where(Func<bool> func)
+        {
+            this._customRestrictions.SetRestriction(func);
+            return this;
+        }
     }
 }
