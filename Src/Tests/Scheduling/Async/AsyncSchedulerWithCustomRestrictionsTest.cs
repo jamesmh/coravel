@@ -38,22 +38,19 @@ namespace Tests.Scheduling.Async
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }, () => taskRunCount < 2)
-                     .EveryMinute();
+            }).Where(() => taskRunCount < 2).EveryMinute();
 
             scheduler.ScheduleAsync(async () =>
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }, () => taskRunCount == 2)
-                     .EveryMinute();
+            }).Where (() => taskRunCount == 2).EveryMinute();
 
             scheduler.ScheduleAsync(async () =>
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }, () => taskRunCount == 3)
-                     .EveryMinute();
+            }).Where(() => taskRunCount == 3).EveryMinute();
 
             await RunScheduledTasksFromMinutes(scheduler, 0);
 
