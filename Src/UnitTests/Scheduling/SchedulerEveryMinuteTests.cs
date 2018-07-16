@@ -1,21 +1,20 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
+using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace Tests.Scheduling
+namespace UnitTests.Scheduling
 {
-    [TestClass]
     public class SchedulerEveryMinuteTests
     {
-        [TestMethod]
-        [DataRow(1)]
-        [DataRow(2)]
-        [DataRow(3)]
-        [DataRow(15)]
-        [DataRow(30)]
-        [DataRow(59)]
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(15)]
+        [InlineData(30)]
+        [InlineData(59)]
         public async Task ValidEveryMinute(int minutes)
         {
             var scheduler = new Scheduler();
@@ -24,7 +23,7 @@ namespace Tests.Scheduling
             scheduler.Schedule(() => wasRun = true).EveryMinute();
             await scheduler.RunAtAsync(DateTime.Today.Add(TimeSpan.FromMinutes(minutes)));
 
-            Assert.IsTrue(wasRun);
+            Assert.True(wasRun);
         }
     }
 }

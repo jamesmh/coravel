@@ -1,20 +1,19 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
+using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace Tests.Scheduling
+namespace UnitTests.Scheduling
 {
-    [TestClass]
     public class SchedulerEveryFifteenMinuteTests
     {
-        [TestMethod]
-        [DataRow(0, 15, 30, 45)]
-        [DataRow(5, 20, 35, 50)]
-        [DataRow(6, 21, 36, 51)]
-        [DataRow(5, 20, 40, 59)]
-        [DataRow(0, 17, 40, 59)]
+        [Theory]
+        [InlineData(0, 15, 30, 45)]
+        [InlineData(5, 20, 35, 50)]
+        [InlineData(6, 21, 36, 51)]
+        [InlineData(5, 20, 40, 59)]
+        [InlineData(0, 17, 40, 59)]
         public async Task ValidEveryFifteenMinutes(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
@@ -27,13 +26,13 @@ namespace Tests.Scheduling
             await RunScheduledTasksFromMinutes(scheduler, third);
             await RunScheduledTasksFromMinutes(scheduler, fourth);
 
-            Assert.IsTrue(taskRunCount == 4);
+            Assert.True(taskRunCount == 4);
         }
 
-        [TestMethod]
-        [DataRow(0, 5, 14, 59)]
-        [DataRow(15, 20, 29, 30)]
-        [DataRow(30, 44, 45, 59)]
+        [Theory]
+        [InlineData(0, 5, 14, 59)]
+        [InlineData(15, 20, 29, 30)]
+        [InlineData(30, 44, 45, 59)]
 
         public async Task ValidEveryFifteenMinutes_2RunsOnly(int first, int second, int third, int fourth)
         {
@@ -47,7 +46,7 @@ namespace Tests.Scheduling
             await RunScheduledTasksFromMinutes(scheduler, third);
             await RunScheduledTasksFromMinutes(scheduler, fourth);
 
-            Assert.IsTrue(taskRunCount == 2);
+            Assert.True(taskRunCount == 2);
         }
     }
 }

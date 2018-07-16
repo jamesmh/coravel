@@ -1,15 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
+using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace Tests.Scheduling
+namespace UnitTests.Scheduling
 {
-    [TestClass]
     public class SchedulerOnErrorTests
     {
-        [TestMethod]
+        [Fact]
         public async Task TestSchedulerHandlesErrors()
         {
             var scheduler = new Scheduler();
@@ -39,15 +38,15 @@ namespace Tests.Scheduling
 
             await scheduler.RunAtAsync(DateTime.UtcNow); // All tasks will run.
 
-            Assert.IsTrue(errorHandledCount == 2);
-            Assert.IsTrue(successfulTaskCount == 4);
+            Assert.True(errorHandledCount == 2);
+            Assert.True(successfulTaskCount == 4);
         }
 
-         [TestMethod]
+        [Fact]
         public async Task TestSchedulerSkipsErrors()
         {
             int successfulTaskCount = 0;
-            var scheduler = new Scheduler();                      
+            var scheduler = new Scheduler();
 
             void DummyTask()
             {
@@ -63,12 +62,9 @@ namespace Tests.Scheduling
             scheduler.Schedule(ThrowsErrorTask).EveryMinute();
             scheduler.Schedule(DummyTask).EveryMinute();
 
-           await scheduler.RunAtAsync(DateTime.UtcNow);
+            await scheduler.RunAtAsync(DateTime.UtcNow);
 
-            Assert.IsTrue(successfulTaskCount == 1);
+            Assert.True(successfulTaskCount == 1);
         }
-
-
-        // add test for tasks with errors when theres no handler
     }
 }

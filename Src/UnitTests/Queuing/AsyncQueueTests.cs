@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
-namespace Tests.Queuing
+namespace UnitTests.Queuing
 {
-    [TestClass]
     public class AsyncQueueTests
     {
-        [TestMethod]
+        [Fact]
         public async Task TestAsyncQueueRunsProperly()
         {
             int errorsHandled = 0;
@@ -44,8 +43,8 @@ namespace Tests.Queuing
             queue.QueueTask(() => successfulTasks++);
             queue.QueueTask(() => throw new Exception());
 
-            Assert.IsTrue(errorsHandled == 2);
-            Assert.IsTrue(successfulTasks == 4);
+            Assert.True(errorsHandled == 2);
+            Assert.True(successfulTasks == 4);
         }
     }
 }

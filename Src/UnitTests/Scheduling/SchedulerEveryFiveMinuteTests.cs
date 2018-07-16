@@ -1,19 +1,18 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
+using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace Tests.Scheduling
+namespace UnitTests.Scheduling
 {
-    [TestClass]
     public class SchedulerEveryFiveMinuteTests
     {
-        [TestMethod]
-        [DataRow(0, 5, 10, 15)]
-        [DataRow(20, 25, 30, 35)]
-        [DataRow(4, 10, 21, 50)]
-        [DataRow(30, 37, 50, 59)]
+        [Theory]
+        [InlineData(0, 5, 10, 15)]
+        [InlineData(20, 25, 30, 35)]
+        [InlineData(4, 10, 21, 50)]
+        [InlineData(30, 37, 50, 59)]
         public async Task ValidEveryFiveMinutes(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
@@ -26,13 +25,13 @@ namespace Tests.Scheduling
             await RunScheduledTasksFromMinutes(scheduler, third);
             await RunScheduledTasksFromMinutes(scheduler, fourth);
 
-            Assert.IsTrue(taskRunCount == 4);
+            Assert.True(taskRunCount == 4);
         }
 
-        [TestMethod]
+        [Theory]
         // Each case ought to run twice.
-        [DataRow(0, 3, 4, 5)]
-        [DataRow(15, 16, 17, 30)]
+        [InlineData(0, 3, 4, 5)]
+        [InlineData(15, 16, 17, 30)]
 
 
         public async Task ValidEveryFiveMinutes_2RunsOnly(int first, int second, int third, int fourth)
@@ -47,7 +46,7 @@ namespace Tests.Scheduling
             await RunScheduledTasksFromMinutes(scheduler, third);
             await RunScheduledTasksFromMinutes(scheduler, fourth);
 
-            Assert.IsTrue(taskRunCount == 2);
+            Assert.True(taskRunCount == 2);
         }
     }
 }
