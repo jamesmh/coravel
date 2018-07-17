@@ -10,6 +10,7 @@
 
     <ItemGroup>
     <ProjectReference Include="../../Coravel/Coravel.csproj" />
+        <ProjectReference Include="../../Coravel.RazorViews/Coravel.RazorViews.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,294 @@
+﻿@page
+@{
+    string title = (string) ViewData["Title"];
+    string preview = (string) ViewData["Preview"];
+    string logoSrc = (string) ViewData["LogoSrc"];
+    string heading = (string) ViewData["Heading"];
+
+    string address = (string) ViewData["CompanyAddress"];
+    IEnumerable<string> links = (IEnumerable<string>)ViewData["Links"];
+    string companyName = (string) ViewData["CompanyName"];
+}
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>@title</title>
+
+     <!--[if mso]>
+        <style>
+            * {
+                font-family: Arial, sans-serif !important;
+            }
+        </style>
+    <![endif]-->
+   
+    <!--[if !mso]><!-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,500" rel="stylesheet">
+    <!--<![endif]-->
+
+    <!-- CSS Reset -->
+    <style>
+
+        html,
+        body {
+            margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+        }
+
+        * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        div[style*="margin: 16px 0"] {
+            margin:0 !important;
+        }
+
+        table,
+        td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
+        }
+
+        table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+        }
+        table table table {
+            table-layout: auto;
+        }
+
+        img {
+            -ms-interpolation-mode:bicubic;
+        }
+
+        *[x-apple-data-detectors], 
+        .x-gmail-data-detectors, 
+        .x-gmail-data-detectors *,
+        .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        .a6S {
+            display: none !important;
+            opacity: 0.01 !important;
+        }
+
+        img.g-img + div {
+            display:none !important;
+           }
+
+        .button-link {
+            text-decoration: none !important;
+        }
+
+        @@media only screen and (min-device-width: 375px) and (max-device-width: 413px) { /* iPhone 6 and 6+ */
+            .email-container {
+                min-width: 375px !important;
+            }
+        }
+
+    </style>
+
+    <!-- Progressive Enhancements -->
+    <style>
+
+        .button-td,
+        .button-a {
+            transition: all 100ms ease-in;
+        }
+        .button-td:hover,
+        .button-a:hover {
+            background: #555555 !important;
+            border-color: #555555 !important;
+        }
+
+        /* Media Queries */
+        @@media screen and (max-width: 480px) {
+
+            .fluid {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+
+            .stack-column,
+            .stack-column-center {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                direction: ltr !important;
+            }
+
+            .stack-column-center {
+                text-align: center !important;
+            }
+
+            .center-on-narrow {
+                text-align: center !important;
+                display: block !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                float: none !important;
+            }
+            table.center-on-narrow {
+                display: inline-block !important;
+            }
+
+            .email-container p {
+                font-size: 17px !important;
+                line-height: 22px !important;
+            }
+        }
+
+    </style>
+
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
+
+</head>
+<body width="100%" bgcolor="#F1F1F1" style="margin: 0; mso-line-height-rule: exactly;">
+    <center style="width: 100%; background: #F1F1F1; text-align: left;">
+
+        @if(preview != null)
+        {
+        <!-- Visually Hidden Preheader Text : BEGIN -->
+        <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
+            @preview
+        </div>
+        <!-- Visually Hidden Preheader Text : END -->
+        }
+
+        <div style="max-width: 680px; margin: auto;" class="email-container">
+            <!--[if mso]>
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="680" align="center">
+            <tr>
+            <td>
+            <![endif]-->
+
+            <!-- Email Body : BEGIN -->
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="100%" style="max-width: 680px;" class="email-container">
+
+
+                <!-- HEADER : BEGIN -->
+                <tr>
+                    <td>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            @if(logoSrc != null)
+                            {
+                            <tr>
+                                <td style="padding: 30px 40px 30px 40px; text-align: left;">
+                                    <img src="@logoSrc" width="57" height="13" border="0" style="height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+                                </td>
+                            </tr>
+                            }
+                        </table>
+                    </td>
+                </tr>
+                <!-- HEADER : END -->
+
+        
+
+                <!-- HERO : BEGIN -->
+                <tr>
+                    <td bgcolor="#ffffff" style="border:1px solid #dddddd;">
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            @if(@heading != null)
+                            {
+                            <tr>
+                                <td style="padding: 40px 40px 20px 40px; text-align: left;">
+                                    <h1 style="margin: 0; font-family: 'Montserrat', sans-serif; font-size: 20px; line-height: 26px; color: #333333; font-weight: bold;">@heading</h1>
+                                </td>
+                            </tr>
+                            }
+                            <tr>
+                                <td style="padding: 0px 40px 20px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: left; font-weight:bold;">
+                                  RenderBody()
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <!-- HERO : END -->
+
+                <!-- FOOTER : BEGIN -->
+                <tr>
+                    <td>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                            @if(address != null)
+                            {
+                            <tr>
+                                <td style="padding: 40px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                    <p style="margin: 0;">@address</p>
+                                </td>
+                            </tr>
+                            }
+
+                            @if(links != null)
+                            {
+                            <tr>
+                                <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                    <p style="margin: 0;">
+                                        @foreach(string link in links)
+                                        {
+                                            <text>
+                                            @link
+                                            </text>
+                                        }
+                                    </p>
+                                </td>
+                            </tr>
+                            }
+
+                            @if(companyName != null)
+                            {
+                            <tr>
+                                <td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                    <p style="margin: 0;">Copyright &copy; @(System.DateTime.Now.Year) <b>@companyName</b>, All Rights Reserved.</p>
+                                </td>
+                            </tr>
+                            }
+
+                        </table>
+                    </td>
+                </tr>
+                <!-- FOOTER : END -->
+
+            </table>
+            <!-- Email Body : END -->
+
+            <!--[if mso]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </div>
+
+    </center>
+</body>
+</html>
+
