@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Coravel.Mail.Exceptions;
+using Coravel.Mail.Helpers;
 using Coravel.Mail.Interfaces;
 
 namespace Coravel.Mail
@@ -104,7 +107,7 @@ namespace Coravel.Mail
         public void View(string viewPath, T viewData)
         {
             this._viewPath = viewPath;
-            this._viewData = viewData;            
+            this._viewData = viewData;
         }
 
         public abstract void Build();
@@ -140,31 +143,48 @@ namespace Coravel.Mail
 
             if (this._viewPath != null)
             {
-                T viewData = this.BuildViewData();
-                return await mailer.GetViewRenderer().RenderViewToStringAsync<T>(this._viewPath, viewData);
+                this.BindViewModelToFields();
+                return await mailer.GetViewRenderer().RenderViewToStringAsync<T>(this._viewPath, this._viewData);
             }
 
             throw new NoMailRendererFound(NoRenderFoundMessage);
         }
 
-        private T BuildViewData()
+        private void BindViewModelToFields()
         {
-            if (this._viewData == null)
+            if (this._viewData != null)
             {
-                return default(T);
+                Type type = this._viewData.GetType();
+
+                BindEmailField(type);
+                BindSubjectField();
             }
+        }
 
-            Type type = this._viewData.GetType();
-
+        private void BindEmailField(Type type)
+        {
             var emailField = type.GetField("Email");
 
             if (emailField != null)
             {
-                string viewDataEmailTo = (string) emailField.GetValue(this._viewData);
-                this.To(new string[] { viewDataEmailTo });
-            }
+                object emailTo = emailField.GetValue(this._viewData);
 
-            return this._viewData;
+                if (emailTo is IEnumerable<string> enumerableTo)
+                {
+                    this.To(enumerableTo);
+                }
+                else if (emailTo is string stringTo)
+                {
+                    this.To(stringTo);
+                }
+            }
+        }
+
+        private void BindSubjectField()
+        {
+            if(this._subject == null) {
+                this._subject = this.GetType().Name.ToSnakeCase();
+            }
         }
     }
 }

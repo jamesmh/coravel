@@ -17,7 +17,7 @@ namespace TestMvcApp.Controllers
         public async Task<IActionResult> WithHtml() {
 
             UserModel user = new UserModel(){
-                Email = "test@test.com",
+                Email = "FromUserModel@test.com",
                 Name = "Coravel Test Person"
             };
 
@@ -29,7 +29,7 @@ namespace TestMvcApp.Controllers
         public async Task<IActionResult> RenderHtml() {
 
             UserModel user = new UserModel(){
-                Email = "test@test.com",
+                Email =  "FromUserModel@test.com",
                 Name = "Coravel Test Person"
             };
 
@@ -41,7 +41,7 @@ namespace TestMvcApp.Controllers
        public async Task<IActionResult> WithView() {
 
             UserModel user = new UserModel(){
-                Email = "test@test.com",
+                Email = "FromUserModel@test.com",
                 Name = "Coravel Test Person"
             };
 
@@ -53,7 +53,7 @@ namespace TestMvcApp.Controllers
                public async Task<IActionResult> RenderView() {
 
             UserModel user = new UserModel(){
-                Email = "test@test.com",
+                Email = "FromUserModel@test.com",
                 Name = "Coravel Test Person"
             };
 
