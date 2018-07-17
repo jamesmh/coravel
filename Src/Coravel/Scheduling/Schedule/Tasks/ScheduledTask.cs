@@ -14,19 +14,25 @@ namespace Coravel.Tasks
         private ActionOrAsyncFunc _scheduledAction;
         private DayRestrictions _dayRestrictions;
         private TimeRestrictions _timeRestrictions;
-
+        private CustomRestrictions _customRestrictions;
 
         public ScheduledTask(Action scheduledAction)
         {
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAction);
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
+            this._customRestrictions = new CustomRestrictions();
         }
 
         public ScheduledTask(Func<Task> scheduledAsyncTask) {
-             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
+            this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
+            this._customRestrictions = new CustomRestrictions();
+        }
+
+        public ScheduledTask()
+        {
         }
 
         public bool ShouldInvokeNow(DateTime utcNow)
@@ -43,6 +49,11 @@ namespace Coravel.Tasks
         }
 
         public async Task InvokeScheduledAction() => await this._scheduledAction.Invoke();
+
+        public void SetCustomRestriction(Func<bool> checker)
+        {
+            this._customRestrictions.SetRestriction(checker);
+        }
 
         public IScheduleRestriction Daily()
         {
@@ -121,6 +132,7 @@ namespace Coravel.Tasks
 
         private bool PassesRestrictions(DateTime utcNow) =>
             this._dayRestrictions.PassesRestrictions(utcNow)
-            && this._timeRestrictions.PassesRestrictions(utcNow);
+            && this._timeRestrictions.PassesRestrictions(utcNow)
+                && this._customRestrictions.PassesRestrictions(utcNow);
     }
 }
