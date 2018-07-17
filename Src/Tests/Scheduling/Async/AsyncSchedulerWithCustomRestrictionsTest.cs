@@ -16,12 +16,6 @@ namespace Tests.Scheduling.Async
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
-            // Running async action synchrously to test warning
-            scheduler.Schedule(async () =>
-            {
-                await Task.Delay(1);
-            }).EveryMinute();
-
             scheduler.ScheduleAsync(async () =>
             {
                 await Task.Delay(1);
@@ -38,19 +32,19 @@ namespace Tests.Scheduling.Async
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }).Where(() => taskRunCount < 2).EveryMinute();
+            }).When(() => taskRunCount < 2).EveryMinute();
 
             scheduler.ScheduleAsync(async () =>
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }).Where (() => taskRunCount == 2).EveryMinute();
+            }).When (() => taskRunCount == 2).EveryMinute();
 
             scheduler.ScheduleAsync(async () =>
             {
                 await Task.Delay(1);
                 taskRunCount++;
-            }).Where(() => taskRunCount == 3).EveryMinute();
+            }).When(() => taskRunCount == 3).EveryMinute();
 
             await RunScheduledTasksFromMinutes(scheduler, 0);
 
