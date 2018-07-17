@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Helpers;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;

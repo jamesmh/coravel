@@ -9,6 +9,6 @@ namespace Coravel.Scheduling.Schedule.Interfaces
     /// </summary>
     public interface IScheduleFilterInterval : IScheduleInterval
     {
-        IScheduleInterval Where(Func<bool> func);
+        IScheduleInterval When(Func<bool> func);
     }
 }

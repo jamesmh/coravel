@@ -48,11 +48,6 @@ namespace Coravel.Tasks
 
         public async Task InvokeScheduledAction() => await this._scheduledAction.Invoke();
 
-        public void SetCustomRestriction(Func<bool> checker)
-        {
-            this._customRestrictions.SetRestriction(checker);
-        }
-
         public IScheduleRestriction Daily()
         {
             this._scheduledInterval = TimeSpan.FromDays(1);
@@ -133,7 +128,7 @@ namespace Coravel.Tasks
             && this._timeRestrictions.PassesRestrictions(utcNow)
                 && this._customRestrictions.PassesRestrictions(utcNow);
 
-        public IScheduleInterval Where(Func<bool> func)
+        public IScheduleInterval When(Func<bool> func)
         {
             this._customRestrictions.SetRestriction(func);
             return this;
