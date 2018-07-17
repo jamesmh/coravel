@@ -6,7 +6,7 @@ using Coravel.Mail.Interfaces;
 
 namespace Coravel.Mail
 {
-    public abstract class Mailable : IViewMailable
+    public abstract class Mailable<T>
     {
         private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View()";
 
@@ -53,39 +53,47 @@ namespace Coravel.Mail
         /// <summary>
         /// View data to pass to the view to render.
         /// </summary>
-        private object _viewData;
+        private T _viewData;
 
-        public Mailable From(MailRecipient from)
+        public Mailable<T> From(string email, string name)
         {
-            this._from = from;
+            this._from = new MailRecipient
+            {
+                Email = email,
+                Name = name
+            };
             return this;
         }
 
-        public Mailable To(IEnumerable<string> to)
+        public Mailable<T> From(string email) => this.From(email, null);
+
+        public Mailable<T> To(IEnumerable<string> to)
         {
             this._to = to;
             return this;
         }
 
-        public Mailable Cc(IEnumerable<string> cc)
+        public Mailable<T> To(string to) => this.To(new string[] { to });
+
+        public Mailable<T> Cc(IEnumerable<string> cc)
         {
             this._cc = cc;
             return this;
         }
 
-        public Mailable Bcc(IEnumerable<string> bcc)
+        public Mailable<T> Bcc(IEnumerable<string> bcc)
         {
             this._bcc = bcc;
             return this;
         }
 
-        public Mailable ReplyTo(string replyTo)
+        public Mailable<T> ReplyTo(string replyTo)
         {
             this._replyTo = replyTo;
             return this;
         }
 
-        public Mailable Subject(string subject)
+        public Mailable<T> Subject(string subject)
         {
             this._subject = subject;
             return this;
@@ -93,19 +101,20 @@ namespace Coravel.Mail
 
         public void Html(string html) => this._html = html;
 
-        public IViewMailable WithViewData(object viewData)
+        public void View(string viewPath, T viewData)
         {
-            this._viewData = viewData;
-            return this;
+            this._viewPath = viewPath;
+            this._viewData = viewData;            
         }
-
-        public void View(string viewPath) => this._viewPath = viewPath;
 
         public abstract void Build();
 
         public async Task SendAsync(IMailer mailer)
         {
-            string message = this.BuildMessage();
+            this.Build();
+
+            string message = await this.BuildMessage(mailer);
+
             await mailer.SendAsync(
                 message,
                 this._subject,
@@ -116,12 +125,13 @@ namespace Coravel.Mail
             );
         }
 
-        public string Render(){
-            string message = this.BuildMessage();
-            return message;
+        public async Task<string> Render(IMailer mailer)
+        {
+            this.Build();
+            return await this.BuildMessage(mailer);
         }
 
-        private string BuildMessage()
+        private async Task<string> BuildMessage(IMailer mailer)
         {
             if (this._html != null)
             {
@@ -130,17 +140,18 @@ namespace Coravel.Mail
 
             if (this._viewPath != null)
             {
-                object viewData = this.BuildViewData();
+                T viewData = this.BuildViewData();
+                return await mailer.GetViewRenderer().RenderViewToStringAsync<T>(this._viewPath, viewData);
             }
 
             throw new NoMailRendererFound(NoRenderFoundMessage);
         }
 
-        private object BuildViewData()
+        private T BuildViewData()
         {
             if (this._viewData == null)
             {
-                return null;
+                return default(T);
             }
 
             Type type = this._viewData.GetType();
@@ -149,7 +160,7 @@ namespace Coravel.Mail
 
             if (emailField != null)
             {
-                string viewDataEmailTo = (string)emailField.GetValue(this._viewData);
+                string viewDataEmailTo = (string) emailField.GetValue(this._viewData);
                 this.To(new string[] { viewDataEmailTo });
             }
 
