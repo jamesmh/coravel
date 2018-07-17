@@ -10,6 +10,9 @@ using Coravel.Queuing;
 using Coravel.Cache.Interfaces;
 using Coravel.Cache;
 using Microsoft.Extensions.Caching.Memory;
+using Coravel.Mail.Interfaces;
+using Coravel.Mail;
+using Coravel.Mail.Mailers;
 
 namespace Coravel
 {
@@ -61,6 +64,12 @@ namespace Coravel
         public static void AddCache(this IServiceCollection services, Func<IServiceProvider, ICache> driverFunc)
         {
             services.AddSingleton<ICache>(driverFunc);
-        }     
+        }    
+
+        public static void AddMailer(this IServiceCollection services) {
+             services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+             services.AddTransient<IMailer>(provider => 
+                new LogMailer(provider.GetService<IRazorViewToStringRenderer>()));
+        }
     }
 }
