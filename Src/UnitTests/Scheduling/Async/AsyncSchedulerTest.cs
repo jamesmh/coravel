@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Tests.Scheduling.Helpers.SchedulingTestHelpers;
+using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace Tests.Scheduling.Async
+namespace UnitTests.Scheduling.Async
 {
-    [TestClass]
     public class AsyncSchedulerTest
     {
-        [TestMethod]
+        [Fact]
         public async Task AsyncSchedulesTest(){
             var scheduler = new Scheduler();
             int taskRunCount = 0;
@@ -25,7 +24,7 @@ namespace Tests.Scheduling.Async
 
             await RunScheduledTasksFromMinutes(scheduler, 0);
 
-            Assert.AreEqual(2, taskRunCount);
+            Assert.Equal(2, taskRunCount);
         }
     }
 }
