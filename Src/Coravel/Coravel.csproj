@@ -18,4 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
   </ItemGroup>
+  <ItemGroup>
+      <ProjectReference Include="..\Coravel.RazorViews\Coravel.RazorViews.csproj" />
+  </ItemGroup>
 </Project>

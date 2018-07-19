@@ -36,7 +36,7 @@ namespace TestMvcApp
 
             services.AddCache();
 
-            services.AddLogMailer();
+            services.AddFileLogMailer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

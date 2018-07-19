@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Mail.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using TestMvcApp.Mailables;
-using TestMvcApp.Models;
+using Demo.Mailables;
+using Demo.Models;
 
-namespace TestMvcApp.Controllers
+namespace Demo.Controllers
 {
     public class MailController : Controller
     {

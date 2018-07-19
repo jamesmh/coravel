@@ -72,6 +72,9 @@ namespace Demo
 
             // Coravel Caching
             services.AddCache();
+
+            // Coravel File Logger for mailing
+            services.AddFileLogMailer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

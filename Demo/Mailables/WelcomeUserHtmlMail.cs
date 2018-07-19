@@ -1,13 +1,13 @@
 using Coravel.Mail;
-using TestMvcApp.Models;
+using Demo.Models;
 
-namespace TestMvcApp.Mailables
+namespace Demo.Mailables
 {
-    public class NewUserFromHtmlMailable : Mailable<string>
+    public class WelcomeUserHtmlMail : Mailable<string>
     {
         private UserModel _user;
 
-        public NewUserFromHtmlMailable(UserModel user) => this._user = user;
+        public WelcomeUserHtmlMail(UserModel user) => this._user = user;
 
         public override void Build()
         {

@@ -116,7 +116,7 @@ namespace Coravel.Mail
         {
             this.Build();
 
-            string message = await this.BuildMessage(mailer);
+            string message = await this.BuildMessage(mailer).ConfigureAwait(false);
 
             await mailer.SendAsync(
                 message,
@@ -125,13 +125,13 @@ namespace Coravel.Mail
                 this._replyTo,
                 this._cc,
                 this._bcc
-            );
+            ).ConfigureAwait(false);
         }
 
         public async Task<string> Render(IMailer mailer)
         {
             this.Build();
-            return await this.BuildMessage(mailer);
+            return await this.BuildMessage(mailer).ConfigureAwait(false);
         }
 
         private async Task<string> BuildMessage(IMailer mailer)
@@ -144,7 +144,11 @@ namespace Coravel.Mail
             if (this._viewPath != null)
             {
                 this.BindViewModelToFields();
-                return await mailer.GetViewRenderer().RenderViewToStringAsync<T>(this._viewPath, this._viewData);
+                
+                return await mailer
+                    .GetViewRenderer()
+                    .RenderViewToStringAsync<T>(this._viewPath, this._viewData)
+                    .ConfigureAwait(false);
             }
 
             throw new NoMailRendererFound(NoRenderFoundMessage);

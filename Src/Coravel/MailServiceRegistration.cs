@@ -1,6 +1,7 @@
 using Coravel.Mail;
 using Coravel.Mail.Interfaces;
 using Coravel.Mail.Mailers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -15,10 +16,10 @@ namespace Coravel
         /// Useful for testing.
         /// </summary>
         /// <param name="services"></param>
-        public static void AddLogMailer(this IServiceCollection services)
+        public static void AddFileLogMailer(this IServiceCollection services)
         {
-            services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
-            services.AddSingleton<IMailer, LogMailer>();
+            services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+            services.AddScoped<IMailer, FileLogMailer>();
         }
     }
 }
