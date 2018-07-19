@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Coravel.Mail.Interfaces;
+using Coravel.Mail.Renderers;
 
 namespace Coravel.Mail.Mailers
 {
@@ -19,7 +20,7 @@ namespace Coravel.Mail.Mailers
 
         public IRazorViewToStringRenderer GetViewRenderer() => this._razorToStringRenderer;
 
-        public async Task SendAsync(string message, string subject, IEnumerable<string> to, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
         {
             using (var writer = File.CreateText(FilePath))
             {
@@ -27,6 +28,7 @@ namespace Coravel.Mail.Mailers
                     ---------------------------------------------
                     Subject: {subject}
                     To: {CommaSeparated(to)}    
+                    From: {from}
                     ReplyTo: {replyTo}
                     Cc: {CommaSeparated(cc)}
                     Bcc: {CommaSeparated(bcc)}
@@ -47,5 +49,9 @@ namespace Coravel.Mail.Mailers
             return string.Join(",", str);
         }
 
+        public async Task SendAsync<T>(Mailable<T> mailable)
+        {
+            await mailable.SendAsync(this);
+        }
     }
 }

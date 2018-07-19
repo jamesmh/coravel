@@ -122,6 +122,7 @@ namespace Coravel.Mail
                 message,
                 this._subject,
                 this._to,
+                this._from.Email,
                 this._replyTo,
                 this._cc,
                 this._bcc
