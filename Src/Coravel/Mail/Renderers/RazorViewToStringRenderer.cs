@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 
-namespace Coravel.Mail
+namespace Coravel.Mail.Renderers
 {
     public class RazorViewToStringRenderer : IRazorViewToStringRenderer    
     {
