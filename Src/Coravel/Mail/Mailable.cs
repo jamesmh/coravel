@@ -124,11 +124,11 @@ namespace Coravel.Mail
 
         public virtual void Build() { }
 
-        public async Task SendAsync(IMailer mailer)
+        internal async Task SendAsync(IRazorRenderer renderer, IMailer mailer)
         {
             this.Build();
 
-            string message = await this.BuildMessage(mailer).ConfigureAwait(false);
+            string message = await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
 
             await mailer.SendAsync(
                 message,
@@ -141,13 +141,13 @@ namespace Coravel.Mail
             ).ConfigureAwait(false);
         }
 
-        public async Task<string> Render(IMailer mailer)
+        internal async Task<string> Render(IRazorRenderer renderer, IMailer mailer)
         {
             this.Build();
-            return await this.BuildMessage(mailer).ConfigureAwait(false);
+            return await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
         }
 
-        private async Task<string> BuildMessage(IMailer mailer)
+        private async Task<string> BuildMessage(IRazorRenderer renderer, IMailer mailer)
         {
             this.BindViewModelToFields();
 
@@ -158,8 +158,7 @@ namespace Coravel.Mail
 
             if (this._viewPath != null)
             {
-                return await mailer
-                    .GetViewRenderer()
+                return await renderer
                     .RenderViewToStringAsync<T>(this._viewPath, this._viewModel)
                     .ConfigureAwait(false);
             }

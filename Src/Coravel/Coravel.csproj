@@ -15,10 +15,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0"/>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0"/>
+    <PackageReference Include="MailKit" Version="2.0.5"/>
   </ItemGroup>
   <ItemGroup>
-      <ProjectReference Include="..\Coravel.RazorViews\Coravel.RazorViews.csproj" />
+    <ProjectReference Include="..\Coravel.RazorViews\Coravel.RazorViews.csproj"/>
   </ItemGroup>
 </Project>

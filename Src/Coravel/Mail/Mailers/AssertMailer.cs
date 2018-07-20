@@ -4,7 +4,7 @@ using Coravel.Mail.Interfaces;
 using System;
 using Coravel.Mail;
 
-namespace UnitTests.Mail.Shared.Mailers
+namespace  Coravel.Mail.Mailers
 {
     public class AssertMailer : IMailer
     {
@@ -26,11 +26,6 @@ namespace UnitTests.Mail.Shared.Mailers
             this._assertAction = assertAction;
         }
 
-        public IRazorViewToStringRenderer GetViewRenderer()
-        {
-            return null; // Not needed for html mail.
-        }
-
         public Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
         {
             this._assertAction(new Data
@@ -48,7 +43,9 @@ namespace UnitTests.Mail.Shared.Mailers
 
         public async Task SendAsync<T>(Mailable<T> mailable)
         {
-            await mailable.SendAsync(this);
+            await mailable.SendAsync(null, this);
         }
+
+        public async Task<string> Render<T>(Mailable<T> mailable) => await mailable.Render(null, this);
     }
 }

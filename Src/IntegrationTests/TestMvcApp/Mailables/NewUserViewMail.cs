@@ -13,7 +13,7 @@ namespace TestMvcApp.Mailables
         {
             this.To(this._user)
                 .From("replyto@test.com")
-                .View("~/Views/Mail/NewUser.cshtml");
+                .View("~/Views/Mail/NewUser.cshtml", this._user);
         }
     }
 }

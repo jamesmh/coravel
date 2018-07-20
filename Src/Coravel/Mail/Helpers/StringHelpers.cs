@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -37,13 +38,24 @@ namespace Coravel.Mail.Helpers
             var indexOfLastWord = indexOfLastSpace + 1;
             var lastWord = span.Slice(indexOfLastWord);
 
-            if(lastWord.SequenceEqual(word.AsSpan()))
+            if (lastWord.SequenceEqual(word.AsSpan()))
             {
                 return span.Slice(0, indexOfLastSpace).ToString();
             }
-            else {
+            else
+            {
                 return str;
             }
+        }
+
+        public static string CommaSeparated(this IEnumerable<string> str)
+        {
+            if (str == null)
+            {
+                return string.Empty;
+            }
+
+            return string.Join(",", str);
         }
     }
 }

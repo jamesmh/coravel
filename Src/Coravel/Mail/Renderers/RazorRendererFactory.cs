@@ -15,7 +15,7 @@ namespace Coravel.Mail.Renderers
     /// Provides methods to generate an instance of the RazorViewToStringRenderer.async
     /// Useful when wanting to render Razor views in non-mvc / non-asp environments.
     /// </summary>
-    public class RazorViewRendererFactory
+    public class RazorRendererFactory
     {
         /// <summary>
         /// Get an instance of RazorViewToStringRenderer. 
@@ -23,7 +23,7 @@ namespace Coravel.Mail.Renderers
         /// Useful in non-asp environments for rendering Razor views.
         /// </summary>
         /// <returns></returns>
-        public static RazorViewToStringRenderer GetInstanceForNonAspEnvironment()
+        public static RazorRenderer GetInstanceForNonAspEnvironment()
         {
             var services = new ServiceCollection();
             var applicationEnvironment = PlatformServices.Default.Application;
@@ -50,9 +50,9 @@ namespace Coravel.Mail.Renderers
 
             services.AddLogging();
             services.AddMvc();
-            services.AddSingleton<RazorViewToStringRenderer>();
+            services.AddSingleton<RazorRenderer>();
             var provider = services.BuildServiceProvider();
-            return provider.GetRequiredService<RazorViewToStringRenderer>();
+            return provider.GetRequiredService<RazorRenderer>();
         }
     }
 }

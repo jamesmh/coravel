@@ -16,13 +16,13 @@ using Microsoft.AspNetCore.Routing;
 
 namespace Coravel.Mail.Renderers
 {
-    public class RazorViewToStringRenderer : IRazorViewToStringRenderer    
+    public class RazorRenderer : IRazorRenderer    
     {
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
 
-        public RazorViewToStringRenderer(
+        public RazorRenderer(
             IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider)
