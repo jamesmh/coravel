@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Coravel.Mail.Exceptions;
@@ -9,7 +10,7 @@ using Coravel.Mail.Interfaces;
 
 namespace Coravel.Mail
 {
-    public abstract class Mailable<T>
+    public class Mailable<T>
     {
         private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View()";
 
@@ -54,9 +55,14 @@ namespace Coravel.Mail
         private string _viewPath;
 
         /// <summary>
+        /// Model that we want to mail to.
+        /// </summary>
+        private object _mailToModel;
+
+        /// <summary>
         /// View data to pass to the view to render.
         /// </summary>
-        private T _viewData;
+        private T _viewModel;
 
         public Mailable<T> From(string email, string name)
         {
@@ -77,6 +83,12 @@ namespace Coravel.Mail
         }
 
         public Mailable<T> To(string to) => this.To(new string[] { to });
+
+        public Mailable<T> To(object mailToModel)
+        {
+            this._mailToModel = mailToModel;
+            return this;
+        }
 
         public Mailable<T> Cc(IEnumerable<string> cc)
         {
@@ -104,13 +116,13 @@ namespace Coravel.Mail
 
         public void Html(string html) => this._html = html;
 
-        public void View(string viewPath, T viewData)
+        public void View(string viewPath, T viewModel)
         {
+            this._viewModel = viewModel;
             this._viewPath = viewPath;
-            this._viewData = viewData;
         }
 
-        public abstract void Build();
+        public virtual void Build() { }
 
         public async Task SendAsync(IMailer mailer)
         {
@@ -137,6 +149,8 @@ namespace Coravel.Mail
 
         private async Task<string> BuildMessage(IMailer mailer)
         {
+            this.BindViewModelToFields();
+
             if (this._html != null)
             {
                 return this._html;
@@ -144,11 +158,9 @@ namespace Coravel.Mail
 
             if (this._viewPath != null)
             {
-                this.BindViewModelToFields();
-                
                 return await mailer
                     .GetViewRenderer()
-                    .RenderViewToStringAsync<T>(this._viewPath, this._viewData)
+                    .RenderViewToStringAsync<T>(this._viewPath, this._viewModel)
                     .ConfigureAwait(false);
             }
 
@@ -157,38 +169,51 @@ namespace Coravel.Mail
 
         private void BindViewModelToFields()
         {
-            if (this._viewData != null)
+            if (this._mailToModel != null)
             {
-                Type type = this._viewData.GetType();
-
-                BindEmailField(type);
+                BindEmailField();
                 BindSubjectField();
             }
         }
 
-        private void BindEmailField(Type type)
+        private void BindEmailField()
         {
-            var emailField = type.GetField("Email");
+            Type modelType = this._mailToModel.GetType();
+            MemberInfo emailMember = modelType.GetProperty("Email") as MemberInfo ?? modelType.GetField("Email");
 
-            if (emailField != null)
+            object emailTo = null;
+            if (emailMember == null)
             {
-                object emailTo = emailField.GetValue(this._viewData);
+                return;
+            }
+            else if (emailMember is PropertyInfo prop)
+            {
+                emailTo = prop.GetValue(this._mailToModel);
+            }
+            else if (emailMember is FieldInfo field)
+            {
+                emailTo = field.GetValue(this._mailToModel);
+            }
 
-                if (emailTo is IEnumerable<string> enumerableTo)
-                {
-                    this.To(enumerableTo);
-                }
-                else if (emailTo is string stringTo)
-                {
-                    this.To(stringTo);
-                }
+            if (emailTo is IEnumerable<string> enumerableTo)
+            {
+                this.To(enumerableTo);
+            }
+            else if (emailTo is string stringTo)
+            {
+                this.To(stringTo);
             }
         }
 
         private void BindSubjectField()
         {
-            if(this._subject == null) {
-                this._subject = this.GetType().Name.ToSnakeCase();
+            if (this._subject == null)
+            {
+                string classNameOfThisMailable = this.GetType().Name;
+
+                this._subject = classNameOfThisMailable
+                    .ToSnakeCase()
+                    .RemoveLastOccuranceOfWord("Mailable");
             }
         }
     }

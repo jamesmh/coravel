@@ -11,8 +11,8 @@ namespace Demo.Mailables
 
         public override void Build()
         {
-            this.To(this._user.Email)
-              //  .From("replyto@test.com")
+            this.To(this._user)
+                .From("from@test.com")
                 .View("~/Views/Mail/NewUser.cshtml", this._user);
         }
     }

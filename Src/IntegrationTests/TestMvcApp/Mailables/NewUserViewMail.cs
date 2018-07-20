@@ -11,9 +11,9 @@ namespace TestMvcApp.Mailables
 
         public override void Build()
         {
-            this.To(this._user.Email)
+            this.To(this._user)
                 .From("replyto@test.com")
-                .View("~/Views/Mail/NewUser.cshtml", this._user);
+                .View("~/Views/Mail/NewUser.cshtml");
         }
     }
 }

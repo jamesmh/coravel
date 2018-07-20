@@ -11,7 +11,7 @@ namespace TestMvcApp.Mailables
 
         public override void Build()
         {
-            this.To(this._user.Email)
+            this.To(this._user)
                 .From("replyto@test.com")
                 .Html($"<html><body><h1>Welcome {this._user.Name}</h1></body></html>");
         }
