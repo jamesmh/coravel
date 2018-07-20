@@ -177,22 +177,7 @@ namespace Coravel.Mail
 
         private void BindEmailField()
         {
-            Type modelType = this._mailToModel.GetType();
-            MemberInfo emailMember = modelType.GetProperty("Email") as MemberInfo ?? modelType.GetField("Email");
-
-            object emailTo = null;
-            if (emailMember == null)
-            {
-                return;
-            }
-            else if (emailMember is PropertyInfo prop)
-            {
-                emailTo = prop.GetValue(this._mailToModel);
-            }
-            else if (emailMember is FieldInfo field)
-            {
-                emailTo = field.GetValue(this._mailToModel);
-            }
+            object emailTo = this._mailToModel.GetPropOrFieldValue("Email");
 
             if (emailTo is IEnumerable<string> enumerableTo)
             {

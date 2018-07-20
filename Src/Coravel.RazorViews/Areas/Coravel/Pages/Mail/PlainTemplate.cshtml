@@ -1,5 +1,4 @@
 ﻿@{
-    string title = ViewBag.Title;
     string preview = ViewBag.Preview;
     string logoSrc = ViewBag.LogoSrc;
     string heading = ViewBag.Heading;
@@ -16,7 +15,6 @@
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="x-apple-disable-message-reformatting">
-    <title>@title</title>
 
      <!--[if mso]>
         <style>
@@ -201,7 +199,7 @@
                             {
                             <tr>
                                 <td style="padding: 30px 40px 30px 40px; text-align: left;">
-                                    <img src="@logoSrc" width="57" height="13" border="0" style="height: auto; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555;">
+                                    <img src="@logoSrc" border="0">
                                 </td>
                             </tr>
                             }
@@ -225,7 +223,7 @@
                             </tr>
                             }
                             <tr>
-                                <td style="padding: 0px 40px 20px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: left; font-weight:bold;">
+                                <td style="padding: 0px 40px 20px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: left;">
                                   @RenderBody()
                                 </td>
                             </tr>
@@ -238,27 +236,27 @@
                 <tr>
                     <td>
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            @if(address != null)
-                            {
-                            <tr>
-                                <td style="padding: 40px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
-                                    <p style="margin: 0;">@address</p>
-                                </td>
-                            </tr>
-                            }
-
                             @if(links != null)
                             {
                             <tr>
-                                <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                <td style="padding: 40px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
                                     <p style="margin: 0;">
                                         @foreach(string link in links)
                                         {
                                             <text>
-                                            @link
+                                            @Html.Raw(link) | 
                                             </text>
                                         }
                                     </p>
+                                </td>
+                            </tr>
+                            }
+                            
+                            @if(address != null)
+                            {
+                            <tr>
+                                <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                    <p style="margin: 0;">@address</p>
                                 </td>
                             </tr>
                             }

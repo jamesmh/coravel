@@ -1,10 +1,20 @@
 @model Demo.Models.UserModel
+@using Coravel.RazorViews.Areas.Coravel.Pages.Mail.Models
 
 @{
-   ViewBag.Title = "Welcome New User: " + Model.Name;
+   ViewBag.Heading = "Welcome New User: " + Model.Name;
+   ViewBag.LogoSrc = "https://www.google.ca/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+   ViewBag.Preview = "This is a view generated preview";
+   ViewBag.CompanyAddress = "1111 some address";
+   ViewBag.CompanyName = "My Company Name";
+   ViewBag.Links = new string[] { "<a href=\"google.com\">This is a link</a>" };
 }
 
 <p>
     This is a test email to @Model.Name.
+
+    How are you today?
+
+    @await Html.PartialAsync("~/Areas/Coravel/Pages/Mail/Components/_Button.cshtml", new ButtonModel("Click here", "google.com"))
 </p>
 
