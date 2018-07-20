@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Net.Security;
 using Coravel.Mail.Interfaces;
 using Coravel.Mail.Mailers;
@@ -13,6 +15,21 @@ namespace Coravel
     /// </summary>
     public static class MailServiceRegistration
     {
+        /// <summary>
+        /// Register Coravel's mailer using the IConfiguration to provide all configuration details.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        public static void AddMailer(this IServiceCollection services, IConfiguration config){
+            string mailerType = config.GetValue<string>("Coravel:Mail:Driver", "FileLog");
+
+            var strategies = new Dictionary<string, Action>();
+            strategies.Add("SMTP", () => AddSmtpMailer(services, config));
+            strategies.Add("FILELOG", () => AddFileLogMailer(services));
+
+            strategies[mailerType.ToUpper()].Invoke();           
+        }
+
         /// <summary>
         /// Register Coravel's mailer using the File Log Mailer - which sends mail to a file.
         /// Useful for testing.
@@ -35,8 +52,10 @@ namespace Coravel
             services.AddScoped<IMailer>(p =>
                 new SmtpMailer(
                     p.GetService<IRazorRenderer>(),
-                    config.GetValue<string>("Coravel:Mail:Host"),
-                    config.GetValue<int>("Coravel:Mail:Port"),
+                    config.GetValue<string>("Coravel:Mail:Host", ""),
+                    config.GetValue<int>("Coravel:Mail:Port", 0),
+                    config.GetValue<string>("Coravel:Mail:Username", ""),
+                    config.GetValue<string>("Coravel:Mail:Password", ""),
                     certCallback
                 )
             );

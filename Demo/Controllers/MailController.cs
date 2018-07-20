@@ -25,7 +25,7 @@ namespace Demo.Controllers
                 Name = "Coravel Test Person"
             };
 
-            await new WelcomeUserHtmlMail(user).SendAsync(this._mailer);
+            await this._mailer.SendAsync(new WelcomeUserHtmlMail(user));
 
             return Ok();
         }
@@ -39,7 +39,7 @@ namespace Demo.Controllers
                 Name = "Coravel Test Person"
             };
 
-            string message = await new WelcomeUserHtmlMail(user).Render(this._mailer);
+            string message = await this._mailer.Render(new WelcomeUserHtmlMail(user));
 
             return Content(message, "text/html");
         }
@@ -53,7 +53,7 @@ namespace Demo.Controllers
                 Name = "Coravel Test Person"
             };
 
-            await new NewUserViewMail(user).SendAsync(this._mailer);
+            await this._mailer.SendAsync(new NewUserViewMail(user));
 
             return Ok();
         }
@@ -67,7 +67,7 @@ namespace Demo.Controllers
                 Name = "Coravel Test Person"
             };
 
-            string message = await new NewUserViewMail(user).Render(this._mailer);
+            string message = await this._mailer.Render(new NewUserViewMail(user));
 
             return Content(message, "text/html");
         }
