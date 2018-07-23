@@ -20,6 +20,6 @@
     <PackageReference Include="MailKit" Version="2.0.5"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Coravel.RazorViews\Coravel.RazorViews.csproj"/>
+    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj"/>
   </ItemGroup>
 </Project>
