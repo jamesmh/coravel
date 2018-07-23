@@ -3,7 +3,6 @@
 @{
    ViewBag.Heading = "Welcome New User: " + Model.Name;
    ViewBag.Preview = "This is a view generated preview";
-   ViewBag.Links = new string[] { "<a href=\"google.com\">This is a link</a>" };
 }
 
 <p>
@@ -14,4 +13,22 @@
     @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com" })
 </p>
 
+@*
+-- Use the template footer but define the links part of the footer
+*@
+@section links
+{
+    <a href="https://www.google.com">Google</a> | <a href="https://www.google.com">Google</a>
+}
+
+@*
+-- This will overide the entire footer
+*@
+@*
+@section footer
+{
+    <p>This is my address</p>
+    <p><a href="https://www.google.com">Google</a> | <a href="https://www.google.com">Google</a></p>
+}
+*@
 

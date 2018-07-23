@@ -68,18 +68,10 @@ namespace Coravel.Mail.Renderers
 
         private void BindConfigurationToViewBag(dynamic viewBag)
         {
-            string logoSrc = this._config.GetValue<string>("Coravel:Mail:LogoSrc");
-            string companyName = this._config.GetValue<string>("Coravel:Mail:CompanyName");
-            string companyAddress = this._config.GetValue<string>("Coravel:Mail:CompanyAddress");
-
-            void IfNotEmpty(string str, Action a){
-                if(!string.IsNullOrWhiteSpace(str))
-                    a();
-            }
-
-            IfNotEmpty(logoSrc, () => viewBag.LogoSrc = logoSrc);
-            IfNotEmpty(companyName, () => viewBag.CompanyName = companyName);
-            IfNotEmpty(companyAddress, () => viewBag.CompanyAddress = companyAddress);
+            viewBag.LogoSrc = this._config.GetValue<string>("Coravel:Mail:LogoSrc");
+            viewBag.CompanyName = this._config.GetValue<string>("Coravel:Mail:CompanyName");
+            viewBag.CompanyAddress = this._config.GetValue<string>("Coravel:Mail:CompanyAddress");
+            viewBag.PrimaryColor = this._config.GetValue<string>("Coravel:Mail:PrimaryColor");
         }
 
         private IView FindView(ActionContext actionContext, string viewName)

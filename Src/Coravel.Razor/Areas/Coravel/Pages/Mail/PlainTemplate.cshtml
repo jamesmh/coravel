@@ -4,7 +4,6 @@
     string heading = ViewBag.Heading;
 
     string address = ViewBag.CompanyAddress;
-    IEnumerable<string> links = ViewBag.Links;
     string companyName = ViewBag.CompanyName;
 }
 
@@ -236,38 +235,44 @@
                 <tr>
                     <td>
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                            @if(links != null)
-                            {
                             <tr>
-                                <td style="padding: 40px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
-                                    <p style="margin: 0;">
-                                        @foreach(string link in links)
-                                        {
-                                            <text>
-                                            @Html.Raw(link) | 
-                                            </text>
-                                        }
-                                    </p>
-                                </td>
+                                <td style="padding-bottom:40px;"></td>
                             </tr>
-                            }
-                            
-                            @if(address != null)
-                            {
-                            <tr>
-                                <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
-                                    <p style="margin: 0;">@address</p>
-                                </td>
-                            </tr>
-                            }
+                              @if(IsSectionDefined("footer")) 
+                              {
+                                 <tr>
+                                    <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                        @RenderSection("footer")
+                                    </td>
+                                </tr>
+                              }
+                              else {
+                                @if(IsSectionDefined("links"))
+                                {
+                                <tr>
+                                    <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                    @RenderSection("links")
+                                    </td>
+                                </tr>
+                                }
+                                
+                                @if(address != null)
+                                {
+                                <tr>
+                                    <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                        <p style="margin: 0;">@address</p>
+                                    </td>
+                                </tr>
+                                }
 
-                            @if(companyName != null)
-                            {
-                            <tr>
-                                <td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
-                                    <p style="margin: 0;">Copyright &copy; @(System.DateTime.Now.Year) <b>@companyName</b>, All Rights Reserved.</p>
-                                </td>
-                            </tr>
+                                @if(companyName != null)
+                                {
+                                <tr>
+                                    <td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
+                                        <p style="margin: 0;">Copyright &copy; @(System.DateTime.Now.Year) <b>@companyName</b>, All Rights Reserved.</p>
+                                    </td>
+                                </tr>
+                                }
                             }
 
                         </table>
