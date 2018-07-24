@@ -4,20 +4,17 @@
 
 __Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
+Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features to .Net Core apps so you can get started building the "meat" of your app and avoid getting tied up configuring additional infrastructure (mail, cache, scheduling, etc.)
 
-- Task Scheduling
-- Queuing
-- Caching
-- Mailer [TBA]
-- Command line tools integrated with coraval features [TBA]
-- More?
+Right now, Coravel features:
 
 ## Full Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
 - [Caching](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md)
+- [Mailing](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md)
+- [Coravel-Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md)
 
 ## Requirements
 
@@ -151,3 +148,6 @@ this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
 
 There are more methods for clearing your cache, async methods, etc. See the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md) for more info.
 
+### 4. Mailing
+
+Coravel gives you a super simple way to get e-mailing right away!
