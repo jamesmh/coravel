@@ -8,18 +8,16 @@ namespace Coravel.Cli
 {
     class Program
     {
-        static void Main(string[] args)
+        public static int Main(string[] args)
         {
             var app = new CommandLineApplication{
-                   Name = "coravel-cli",
-                   Description = "Tools to build apps using coravel - fast!" 
+                Name = "coravel-cli"
             };
 
             app.HelpOption(inherited: true);
 
             app.OnExecute(() =>
             {
-                Console.WriteLine("Please specify a subcommand ;)");
                 app.ShowHelp();
                 return 1;
             });
@@ -55,6 +53,8 @@ namespace Coravel.Cli
                     );
                 });
             });
+
+            return app.Execute(args);
         }
     }
 }
