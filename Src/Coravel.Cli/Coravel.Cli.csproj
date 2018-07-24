@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+  <PackAsTool>true</PackAsTool>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <ToolCommandName>coravel</ToolCommandName>
+    <PackageId>coravel-cli</PackageId>
+    <PackageVersion>0.1.0</PackageVersion>
+    <AssemblyName>Coravel.Cli</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
+  </ItemGroup>
+
+</Project>
