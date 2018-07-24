@@ -8,7 +8,6 @@ namespace Coravel.Cli
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             var app = new CommandLineApplication{
