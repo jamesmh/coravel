@@ -6,29 +6,12 @@
 }
 
 <p>
-    This is a test email to @Model.Name.
-
-    How are you today?
-
+    Hi @Model.Name!
     @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com" })
 </p>
 
-@*
--- Use the template footer but define the links part of the footer
-*@
 @section links
 {
     <a href="https://www.google.com">Google</a> | <a href="https://www.google.com">Google</a>
 }
-
-@*
--- This will overide the entire footer
-*@
-@*
-@section footer
-{
-    <p>This is my address</p>
-    <p><a href="https://www.google.com">Google</a> | <a href="https://www.google.com">Google</a></p>
-}
-*@
 
