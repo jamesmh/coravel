@@ -243,7 +243,6 @@ Coravel will use the name of your class (removing any postfix of "Mailable") to 
 
 @{
    ViewBag.Heading = "Welcome New User: " + Model.Name;
-   ViewBag.Preview = "This is a view generated preview";
 }
 
 <p>
@@ -259,15 +258,16 @@ Coravel will use the name of your class (removing any postfix of "Mailable") to 
 
 ### Sending Mail
 
-Inject an instance of `Coravel.Mail.IMailer` into your controller etc. and use the `SendAsync` method:
+Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to send mail:
 
 ```c#
 await this._mailer.SendAsync(new NewUserViewMailable(user));
 ```
 
-This e-mail looks like this:
+This e-mail from this quick-start would look like this:
 
 ![email sample](https://github.com/jamesmh/coravel/blob/master/Docs/email-sample.png)
 
+This is a quick look at Coravel's mailing! Check out the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md) to see all the available features!
 
 
