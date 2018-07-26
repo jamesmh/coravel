@@ -20,14 +20,15 @@ namespace Coravel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
-        public static void AddMailer(this IServiceCollection services, IConfiguration config){
+        public static void AddMailer(this IServiceCollection services, IConfiguration config)
+        {
             string mailerType = config.GetValue<string>("Coravel:Mail:Driver", "FileLog");
 
             var strategies = new Dictionary<string, Action>();
             strategies.Add("SMTP", () => AddSmtpMailer(services, config));
             strategies.Add("FILELOG", () => AddFileLogMailer(services));
 
-            strategies[mailerType.ToUpper()].Invoke();           
+            strategies[mailerType.ToUpper()].Invoke();
         }
 
         /// <summary>
@@ -47,7 +48,8 @@ namespace Coravel
         /// <param name="services"></param>
         /// <param name="config"></param>
         /// <param name="certCallback"></param>
-        public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config, RemoteCertificateValidationCallback certCallback) {
+        public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config, RemoteCertificateValidationCallback certCallback)
+        {
             services.AddScoped<IRazorRenderer, RazorRenderer>();
             services.AddScoped<IMailer>(p =>
                 new SmtpMailer(
@@ -66,8 +68,20 @@ namespace Coravel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="config"></param>
-         public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config) {
-             AddSmtpMailer(services, config, null);
-         }
+        public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config)
+        {
+            AddSmtpMailer(services, config, null);
+        }
+
+        /// <summary>
+        /// Register Coravel's mailer using the Custom Mailer.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="sendMailAsync"></param>
+        public static void AddCustomMailer(this IServiceCollection services, CustomMailer.SendAsyncFunc sendMailAsync)
+        {
+            services.AddScoped<IRazorRenderer, RazorRenderer>();
+            services.AddScoped<IMailer>(p => new CustomMailer(p.GetService<IRazorRenderer>(), sendMailAsync));
+        }
     }
 }
