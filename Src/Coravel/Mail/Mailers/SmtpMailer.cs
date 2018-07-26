@@ -47,24 +47,24 @@ namespace Coravel.Mail.Mailers
             await mailable.SendAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
             var mail = new MimeMessage();
-            mail.From.Add(new MailboxAddress(from));
+            mail.From.Add(AsMailboxAddress(from));
 
-            foreach (var recipientAddress in to)
+            foreach (var recipientAddress in to ?? Enumerable.Empty<MailRecipient>())
             {
-                mail.To.Add(new MailboxAddress(recipientAddress));
+                mail.To.Add(AsMailboxAddress(recipientAddress));
             }
 
-            foreach (var ccReciepient in cc ?? Enumerable.Empty<string>())
+            foreach (var ccReciepient in cc ?? Enumerable.Empty<MailRecipient>())
             {
-                mail.Cc.Add(new MailboxAddress(ccReciepient));
+                mail.Cc.Add(AsMailboxAddress(ccReciepient));
             }
 
-            foreach (var bccReciepient in bcc ?? Enumerable.Empty<string>())
+            foreach (var bccReciepient in bcc ?? Enumerable.Empty<MailRecipient>())
             {
-                mail.Bcc.Add(new MailboxAddress(bccReciepient));
+                mail.Bcc.Add(AsMailboxAddress(bccReciepient));
             }
 
             mail.Subject = subject;
@@ -88,5 +88,8 @@ namespace Coravel.Mail.Mailers
                 await client.DisconnectAsync(true).ConfigureAwait(false);
             }
         }
+
+        private static MailboxAddress AsMailboxAddress(MailRecipient recipient) =>
+            new MailboxAddress(recipient.Name, recipient.Email);
     }
 }

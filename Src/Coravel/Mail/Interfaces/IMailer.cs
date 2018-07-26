@@ -8,6 +8,6 @@ namespace Coravel.Mail.Interfaces
     {
         Task<string> Render<T>(Mailable<T> mailable);
         Task SendAsync<T>(Mailable<T> mailable);
-        Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc);      
+        Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc);      
     }
 }

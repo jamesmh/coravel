@@ -26,7 +26,7 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("to@test.com", data.to.First());
+                Assert.Equal("to@test.com", data.to.First().Email);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
@@ -37,7 +37,7 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("from@test.com", data.from);
+                Assert.Equal("from@test.com", data.from.Email);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
@@ -48,7 +48,7 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("replyTo@test.com", data.replyTo);
+                Assert.Equal("replyTo@test.com", data.replyTo.Email);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
@@ -59,7 +59,7 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("cc@test.com", data.cc.First());
+                Assert.Equal("cc@test.com", data.cc.First().Email);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
@@ -70,7 +70,7 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("bcc@test.com", data.bcc.First());
+                Assert.Equal("bcc@test.com", data.bcc.First().Email);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());

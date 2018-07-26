@@ -12,7 +12,7 @@ namespace Coravel.Mail
 {
     public class Mailable<T>
     {
-        private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View()";
+        private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View())";
 
         /// <summary>
         /// Who the email is from.
@@ -22,22 +22,22 @@ namespace Coravel.Mail
         /// <summary>
         /// Recipients of the message.
         /// </summary>
-        private IEnumerable<string> _to;
+        private IEnumerable<MailRecipient> _to;
 
         /// <summary>
         /// cc recipients of the message.
         /// </summary>
-        private IEnumerable<string> _cc;
+        private IEnumerable<MailRecipient> _cc;
 
         /// <summary>
         /// bcc recipients of the message.
         /// </summary>
-        private IEnumerable<string> _bcc;
+        private IEnumerable<MailRecipient> _bcc;
 
         /// <summary>
         /// Who the recipients should reply to.
         /// </summary>
-        private string _replyTo;
+        private MailRecipient _replyTo;
 
         /// <summary>
         /// Mail's subject.
@@ -64,25 +64,29 @@ namespace Coravel.Mail
         /// </summary>
         private T _viewModel;
 
-        public Mailable<T> From(string email, string name)
+        public Mailable<T> From(MailRecipient recipient)
         {
-            this._from = new MailRecipient
-            {
-                Email = email,
-                Name = name
-            };
+            this._from = recipient;
             return this;
         }
 
-        public Mailable<T> From(string email) => this.From(email, null);
+        public Mailable<T> From(string email) =>
+            this.From(new MailRecipient(email));
 
-        public Mailable<T> To(IEnumerable<string> to)
+        public Mailable<T> To(IEnumerable<MailRecipient> recipients)
         {
-            this._to = to;
+            this._to = recipients;
             return this;
         }
 
-        public Mailable<T> To(string to) => this.To(new string[] { to });
+        public Mailable<T> To(MailRecipient recipient) =>
+            this.To(new MailRecipient[] { recipient });
+
+        public Mailable<T> To(IEnumerable<string> addresses) =>
+            this.To(addresses.Select(address => new MailRecipient(address)));
+
+        public Mailable<T> To(string email) =>
+            this.To(new MailRecipient(email));
 
         public Mailable<T> To(object mailToModel)
         {
@@ -90,21 +94,33 @@ namespace Coravel.Mail
             return this;
         }
 
-        public Mailable<T> Cc(IEnumerable<string> cc)
+        public Mailable<T> Cc(IEnumerable<MailRecipient> recipients)
         {
-            this._cc = cc;
+            this._cc = recipients;
             return this;
         }
 
-        public Mailable<T> Bcc(IEnumerable<string> bcc)
+        public Mailable<T> Cc(IEnumerable<string> addresses) =>
+            this.Cc(addresses.Select(address => new MailRecipient(address)));
+
+        public Mailable<T> Bcc(IEnumerable<MailRecipient> recipients)
         {
-            this._bcc = bcc;
+            this._bcc = recipients;
             return this;
         }
 
-        public Mailable<T> ReplyTo(string replyTo)
+        public Mailable<T> Bcc(IEnumerable<string> addresses) =>
+            this.Bcc(addresses.Select(address => new MailRecipient(address)));
+
+        public Mailable<T> ReplyTo(MailRecipient replyTo)
         {
             this._replyTo = replyTo;
+            return this;
+        }
+
+        public Mailable<T> ReplyTo(string address)
+        {
+            this._replyTo = new MailRecipient(address);
             return this;
         }
 
@@ -134,7 +150,7 @@ namespace Coravel.Mail
                 message,
                 this._subject,
                 this._to,
-                this._from.Email,
+                this._from,
                 this._replyTo,
                 this._cc,
                 this._bcc
@@ -177,15 +193,19 @@ namespace Coravel.Mail
 
         private void BindEmailField()
         {
-            object emailTo = this._mailToModel.GetPropOrFieldValue("Email");
+            object propEmail = this._mailToModel.GetPropOrFieldValue("Email");
+            object propName = this._mailToModel.GetPropOrFieldValue("Name");
 
-            if (emailTo is IEnumerable<string> enumerableTo)
+            if (propEmail is string address)
             {
-                this.To(enumerableTo);
-            }
-            else if (emailTo is string stringTo)
-            {
-                this.To(stringTo);
+                if (propName is string name)
+                {
+                    this.To(new MailRecipient(address, name));
+                }
+                else
+                {
+                    this.To(address);
+                }
             }
         }
 

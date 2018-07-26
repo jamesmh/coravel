@@ -27,7 +27,7 @@ namespace UnitTests.Mail.Shared
         }
 
         [Fact]
-        public async Task CheckToFieldIsGeneratedFromMailableName()
+        public async Task CheckToFieldIsGenerated()
         {
             var user = new TestUser
             {
@@ -37,7 +37,24 @@ namespace UnitTests.Mail.Shared
 
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal(user.Email, data.to.First());
+                Assert.Equal(user.Email, data.to.First().Email);
+            };
+
+            await new AssertMailer(AssertMail).SendAsync(new AutoToAndSubjectMailable(user));
+        }
+
+        [Fact]
+        public async Task CheckNameFieldIsGenerated()
+        {
+            var user = new TestUser
+            {
+                Name = "My Name",
+                Email = "autoassigned@test.com"
+            };
+
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(user.Name, data.to.First().Name);
             };
 
             await new AssertMailer(AssertMail).SendAsync(new AutoToAndSubjectMailable(user));

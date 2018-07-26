@@ -12,11 +12,11 @@ namespace  Coravel.Mail.Mailers
         {
             public string message { get; set; }
             public string subject { get; set; }
-            public IEnumerable<string> to { get; set; }
-            public string from {get;set;}
-            public string replyTo { get; set; }
-            public IEnumerable<string> cc { get; set; }
-            public IEnumerable<string> bcc { get; set; }
+            public IEnumerable<MailRecipient> to { get; set; }
+            public MailRecipient from {get;set;}
+            public MailRecipient replyTo { get; set; }
+            public IEnumerable<MailRecipient> cc { get; set; }
+            public IEnumerable<MailRecipient> bcc { get; set; }
         }
 
         private Action<Data> _assertAction;
@@ -26,7 +26,7 @@ namespace  Coravel.Mail.Mailers
             this._assertAction = assertAction;
         }
 
-        public Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
+        public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
             this._assertAction(new Data
             {

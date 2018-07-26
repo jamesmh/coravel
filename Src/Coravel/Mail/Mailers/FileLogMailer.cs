@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Mail.Interfaces;
 using Coravel.Mail.Renderers;
@@ -26,18 +27,18 @@ namespace Coravel.Mail.Mailers
             return await mailable.Render(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<string> to, string from, string replyTo, IEnumerable<string> cc, IEnumerable<string> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
             using (var writer = File.CreateText(FilePath))
             {
                 await writer.WriteAsync($@"
                     ---------------------------------------------
                     Subject: {subject}
-                    To: {to.CommaSeparated()}    
-                    From: {from}
-                    ReplyTo: {replyTo}
-                    Cc: {cc.CommaSeparated()}
-                    Bcc: {bcc.CommaSeparated()}
+                    To: {CommaSeparated(to)}    
+                    From: {from?.Name}<{from?.Email}>
+                    ReplyTo: {replyTo?.Name}<{replyTo?.Email}>
+                    Cc: {CommaSeparated(cc)}
+                    Bcc: {CommaSeparated(bcc)}
                     ---------------------------------------------
 
                     {message}
@@ -49,5 +50,10 @@ namespace Coravel.Mail.Mailers
         {
             await mailable.SendAsync(this._renderer, this);
         }
+
+        private static string CommaSeparated(IEnumerable<MailRecipient> recipients) =>
+            (recipients ?? Enumerable.Empty<MailRecipient>())
+                .Select(r => $"{r?.Name}<{r?.Email}>")
+                .CommaSeparated();
     }
 }
