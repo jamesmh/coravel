@@ -138,6 +138,10 @@ namespace Coravel.Mail
             this._viewPath = viewPath;
         }
 
+        public void View(string viewPath) {
+            this.View(viewPath, default(T));
+        }
+
         public virtual void Build() { }
 
         internal async Task SendAsync(IRazorRenderer renderer, IMailer mailer)
