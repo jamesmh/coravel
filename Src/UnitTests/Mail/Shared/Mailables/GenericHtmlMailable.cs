@@ -12,13 +12,7 @@ namespace UnitTests.Mail.Shared.Mailables
 
         public override void Build()
         {
-            this.To("to@test.com")
-                .From("from@test.com")
-                .Subject("test")
-                .ReplyTo("replyTo@test.com")
-                .Cc(new string[] { "cc@test.com"})
-                .Bcc(new string[] { "bcc@test.com" })
-                .Html($"<html><body>Hi!</body></html>");
+            // For testing, methods issued by caller.
         }
     }
 }

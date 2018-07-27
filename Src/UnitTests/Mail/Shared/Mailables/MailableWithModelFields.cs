@@ -3,11 +3,11 @@ using UnitTests.Mail.Shared.Models;
 
 namespace UnitTests.Mail.Shared.Mailables
 {
-    public class MailableWithModelFields : Mailable<TestUserWithFields>
+    public class MailableWithModelProperties : Mailable<TestUserWithFields>
     {
-        private TestUserWithFields _user;
+        private TestUser _user;
 
-        public MailableWithModelFields(TestUserWithFields user) {
+        public MailableWithModelProperties(TestUser user) {
             this._user = user;
         }
 

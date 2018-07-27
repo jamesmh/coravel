@@ -158,25 +158,15 @@ The Coravel mailer offers features such as:
 - Drivers supporting SMTP and e-mailing to a local log file (for development)
 - Quick and simple configuration via appsettings.json
 
-### Installation / Configuration
+### Basic Installation / Configuration
 
-First, we need to define our e-mail driver and settings in our appsettings.json by adding this:
+First, at minimum, we need to define our e-mail driver in our appsettings.json by adding this:
 
 ```json
 "Coravel": {
   "Mail": {
     // Driver config
-    "Driver": "SMTP",
-    "Host": "smtp.mailtrap.io",
-    "Port": 2525,
-    "Username": "[insert]",
-    "Password": "[insert]",
-
-    // E-mail template globals
-    "LogoSrc": "https://www.google.ca/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-    "CompanyAddress": "1111 My Company's Address",
-    "CompanyName": "My Company's Name",
-    "PrimaryColor": "#539be2"
+    "Driver": "FileLog"
   }
 }
 ```
@@ -197,12 +187,14 @@ Finally, create a `_ViewStart.cshtml` file in `~/Views/Mail`:
 }
 ```
 
+This will automatically point to one of Coravel's built-in templates ;)
+
 ### Creating Mailables
 
 Coravel uses **Mailables** to send mail. Each Mailable is a C# class that represents a specific type of e-mail that you can send, such as
 "New User Sign-up", "Completed Order", etc.
 
-Consider this class:
+Consider this class and code comments highlighting the important basic details:
 
 ```c#
 using Coravel.Mail;
@@ -210,28 +202,33 @@ using App.Models;
 
 namespace App.Mailables
 {
+    // Inherit from Mailable<T>
     public class NewUserViewMailable : Mailable<UserModel>
     {
+        // Inject your model.
         private UserModel _user;
 
         public NewUserViewMail(UserModel user) => this._user = user;
 
+        // Build is called before sending mail.
+        // This is where you can configure this mail for easy reusability!
         public override void Build()
         {
+            // The UserModel public property "Email" is auto-bound (and optionally a "Name" prop too)
             this.To(this._user)
                 .From("from@test.com")
                 .View("~/Views/Mail/NewUser.cshtml", this._user);
+
+            // View() will render the specified view, passing in your instance of
+            // UserModel just like calling View() from an mvc controller!
         }
     }
 }
 ```
 
-Mailables inherit from `Coravel.Mail.Mailable` and accept a generic type that represent the object you want associated with sending your mail. In the `Build()` method, you define the properties of your email using various methods that are available via the `Mailable` base class.
+Coravel will also use the name of your class (removing any postfix of "Mailable") to generate the subject. In this case, the subject would be "New User View". Of course, there is a `Subject()` method if needed.
 
-Assuming `UserModel` has a `public` property or field called `Email`, this will send an e-mail to that user, from `from@test.com`, using
-a razor view found at `~/Views/Mail/NewUser.cshtml`. The `UserModel` is bound to the razor view so you can generate e-mails with dynamic content.
-
-Coravel will use the name of your class (removing any postfix of "Mailable") to generate the subject. In this case, the subject would be "New User View". Of course, there is a `Subject()` method if needed.
+### Using Razor Templates
 
 `~/Views/Mail/NewUser.cshtml` might look like this:
 
@@ -253,6 +250,8 @@ Coravel will use the name of your class (removing any postfix of "Mailable") to 
 }
 ```
 
+This file is using the Coravel supplied template that we specified in `_ViewStart.cshtml`.
+
 ### Sending Mail
 
 Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to send mail:
@@ -261,7 +260,7 @@ Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to s
 await this._mailer.SendAsync(new NewUserViewMailable(user));
 ```
 
-The e-mail from this quick-start would look like this:
+A basic e-mail using Coravel's default template looks like this:
 
 ![email sample](https://github.com/jamesmh/coravel/blob/master/Docs/email-sample.png)
 

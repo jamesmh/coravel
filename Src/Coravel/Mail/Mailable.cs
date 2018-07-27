@@ -130,16 +130,21 @@ namespace Coravel.Mail
             return this;
         }
 
-        public void Html(string html) => this._html = html;
+        public Mailable<T> Html(string html) {
+            this._html = html;
+            return this;
+        }
 
-        public void View(string viewPath, T viewModel)
+        public Mailable<T> View(string viewPath, T viewModel)
         {
             this._viewModel = viewModel;
             this._viewPath = viewPath;
+            return this;
         }
 
-        public void View(string viewPath) {
+        public Mailable<T> View(string viewPath) {
             this.View(viewPath, default(T));
+            return this;
         }
 
         public virtual void Build() { }
@@ -169,7 +174,7 @@ namespace Coravel.Mail
 
         private async Task<string> BuildMessage(IRazorRenderer renderer, IMailer mailer)
         {
-            this.BindViewModelToFields();
+            this.BindDynamicProperties();
 
             if (this._html != null)
             {
@@ -186,14 +191,22 @@ namespace Coravel.Mail
             throw new NoMailRendererFound(NoRenderFoundMessage);
         }
 
-        private void BindViewModelToFields()
+        private void BindDynamicProperties()
         {
-            if (this._mailToModel != null)
+            if (this.HasMailToModel())
             {
-                BindEmailField();
-                BindSubjectField();
+                this.BindEmailField();
+            }
+
+            if(this.HasNoSubject())
+            {
+                this.BindSubjectField();
             }
         }
+
+        private bool HasNoSubject() => this._subject == null;    
+
+        private bool HasMailToModel() =>  this._mailToModel != null;        
 
         private void BindEmailField()
         {

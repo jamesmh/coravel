@@ -3,11 +3,11 @@ using UnitTests.Mail.Shared.Models;
 
 namespace UnitTests.Mail.Shared.Mailables
 {
-    public class AutoToAndSubjectMailable : Mailable<TestUser>
+    public class MailableWithModelFields : Mailable<TestUserWithFields>
     {
-        private TestUser _user;
+        private TestUserWithFields _user;
 
-        public AutoToAndSubjectMailable(TestUser user) {
+        public MailableWithModelFields(TestUserWithFields user) {
             this._user = user;
         }
 
@@ -15,7 +15,7 @@ namespace UnitTests.Mail.Shared.Mailables
         {
             this.To(this._user)
                 .From("from@test.com")
-                .Html($"<html><body>Hi {this._user.Name}</body></html>");
+                .Html($"<html><body>Hi</body></html>");
         }
     }
 }

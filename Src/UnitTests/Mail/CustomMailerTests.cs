@@ -27,7 +27,14 @@ namespace UnitTests.Mail
                 null, // We aren't rendering anything, so it's null.
                 SendMailCustom
             );
-            await mailer.SendAsync(new GenericHtmlMailable());
+
+            await mailer.SendAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .To("to@test.com")
+                    .Html("test")
+            );
         }
     }
 }

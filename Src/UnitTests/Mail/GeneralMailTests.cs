@@ -18,62 +18,274 @@ namespace UnitTests.Mail
                 Assert.Equal("test", data.subject);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
 
         [Fact]
-        public async Task MailableHasToField()
+        public async Task MailableSubjectIsGeneratedFromMailableName()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("Generic Html", data.subject);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task CheckToAndNameFieldsAreGeneratedFromModel()
+        {
+            var user = new TestUser
+            {
+                Name = "My Name",
+                Email = "autoassigned@test.com"
+            };
+
+            void AssertMail(AssertMailer.Data data)
+            {
+                var model = data.to.First();
+                Assert.Equal(user.Email, model.Email);
+                Assert.Equal(user.Name, model.Name);
+            };
+
+            await new AssertMailer(AssertMail).SendAsync(new MailableWithModelProperties(user));
+        }
+
+        [Fact]
+        public async Task MailableHasToField_OneAddress()
         {
             void AssertMail(AssertMailer.Data data)
             {
                 Assert.Equal("to@test.com", data.to.First().Email);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
 
         [Fact]
-        public async Task MailableHasFromField()
+        public async Task MailableHasToField_OneMailRecipient()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                var recipient = data.to.First();
+                Assert.Equal("to@test.com", recipient.Email);
+                Assert.Equal("My Name", recipient.Name);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To(new MailRecipient("to@test.com", "My Name"))
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasToField_MultiAddress()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(3, data.to.Count());
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To(new string[] { "one@test.com", "two@test.com", "three@test.com" })
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasToField_MultiMailRecipient()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(3, data.to.Count());
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To(new MailRecipient[] {
+                    new MailRecipient("one@test.com"),
+                    new MailRecipient("two@test.com"),
+                    new MailRecipient("three@test.com")
+                })
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasFromField_FromAddress()
         {
             void AssertMail(AssertMailer.Data data)
             {
                 Assert.Equal("from@test.com", data.from.Email);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
 
         [Fact]
-        public async Task MailableHasReplyToField()
+        public async Task MailableHasFromField_FromMailRecipient()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("from@test.com", data.from.Email);
+                Assert.Equal("From", data.from.Name);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From(new MailRecipient("from@test.com", "From"))
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasReplyToField_FromAddress()
         {
             void AssertMail(AssertMailer.Data data)
             {
                 Assert.Equal("replyTo@test.com", data.replyTo.Email);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .ReplyTo("replyTo@test.com")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
 
         [Fact]
-        public async Task MailableHasCcField()
+        public async Task MailableHasReplyToField_FromMailRecipient()
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("cc@test.com", data.cc.First().Email);
+                Assert.Equal("replyTo@test.com", data.replyTo.Email);
+                Assert.Equal("ReplyTo", data.replyTo.Name);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .ReplyTo(new MailRecipient("replyTo@test.com", "ReplyTo"))
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
 
         [Fact]
-        public async Task MailableHasBccField()
+        public async Task MailableHasCcField_FromAddresses()
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("bcc@test.com", data.bcc.First().Email);
+                Assert.Equal(3, data.cc.Count());
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new GenericHtmlMailable());
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Cc(new string[] { "one@test.com", "two@test.com", "three@test.com" })
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasCcField_FromMailRecipients()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(3, data.cc.Count());
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Cc(new MailRecipient[] {
+                    new MailRecipient("one@test.com"),
+                    new MailRecipient("two@test.com"),
+                    new MailRecipient("three@test.com")
+                })
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHasBccField_FromAddresses()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(3, data.bcc.Count());
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Bcc(new string[] { "one@test.com", "two@test.com", "three@test.com" })
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task MailableHaBccField_FromMailRecipients()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(3, data.bcc.Count());
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Bcc(new MailRecipient[] {
+                    new MailRecipient("one@test.com"),
+                    new MailRecipient("two@test.com"),
+                    new MailRecipient("three@test.com")
+                })
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
         }
     }
 }
