@@ -4,6 +4,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.ObjectPool;
@@ -23,9 +24,10 @@ namespace Coravel.Mail.Renderers
         /// Useful in non-asp environments for rendering Razor views.
         /// </summary>
         /// <returns></returns>
-        public static RazorRenderer GetInstanceForNonAspEnvironment()
+        public static RazorRenderer MakeInstance(IConfiguration config)
         {
             var services = new ServiceCollection();
+            services.AddSingleton<IConfiguration>(config);
             var applicationEnvironment = PlatformServices.Default.Application;
             services.AddSingleton(applicationEnvironment);
 

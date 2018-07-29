@@ -17,12 +17,15 @@ using Microsoft.Extensions.Configuration;
 
 namespace Coravel.Mail.Renderers
 {
-    public class RazorRenderer : IRazorRenderer    
+    public class RazorRenderer    
     {
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
-        private IConfiguration _config;
+        private string _logoSrc;
+        private string _companyName; 
+        private string _companyAddress;
+        private string _primaryColor;
 
         public RazorRenderer(
             IRazorViewEngine viewEngine,
@@ -33,7 +36,11 @@ namespace Coravel.Mail.Renderers
             this._viewEngine = viewEngine;
             this._tempDataProvider = tempDataProvider;
             this._serviceProvider = serviceProvider;
-            this._config = config;
+            
+            this._logoSrc = config.GetValue<string>("Coravel:Mail:LogoSrc");
+            this._companyName = config.GetValue<string>("Coravel:Mail:CompanyName");
+            this._companyAddress = config.GetValue<string>("Coravel:Mail:CompanyAddress");
+            this._primaryColor = config.GetValue<string>("Coravel:Mail:PrimaryColor");
         }
 
         public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
@@ -68,10 +75,10 @@ namespace Coravel.Mail.Renderers
 
         private void BindConfigurationToViewBag(dynamic viewBag)
         {
-            viewBag.LogoSrc = this._config.GetValue<string>("Coravel:Mail:LogoSrc");
-            viewBag.CompanyName = this._config.GetValue<string>("Coravel:Mail:CompanyName");
-            viewBag.CompanyAddress = this._config.GetValue<string>("Coravel:Mail:CompanyAddress");
-            viewBag.PrimaryColor = this._config.GetValue<string>("Coravel:Mail:PrimaryColor");
+            viewBag.LogoSrc = this._logoSrc;
+            viewBag.CompanyName = this._companyName;
+            viewBag.CompanyAddress = this._companyAddress;
+            viewBag.PrimaryColor = this._primaryColor;
         }
 
         private IView FindView(ActionContext actionContext, string viewName)

@@ -7,12 +7,13 @@ using MailKit.Net.Smtp;
 using System;
 using System.Net.Security;
 using System.Linq;
+using Coravel.Mail.Renderers;
 
 namespace Coravel.Mail.Mailers
 {
     public class SmtpMailer : IMailer
     {
-        private IRazorRenderer _renderer;
+        private RazorRenderer _renderer;
         private string _host;
         private int _port;
         private string _username;
@@ -20,7 +21,7 @@ namespace Coravel.Mail.Mailers
         private RemoteCertificateValidationCallback _certCallback;
 
         public SmtpMailer(
-            IRazorRenderer renderer,
+            RazorRenderer renderer,
             string host,
             int port,
             string username,

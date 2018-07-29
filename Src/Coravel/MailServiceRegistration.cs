@@ -26,7 +26,7 @@ namespace Coravel
 
             var strategies = new Dictionary<string, Action>();
             strategies.Add("SMTP", () => AddSmtpMailer(services, config));
-            strategies.Add("FILELOG", () => AddFileLogMailer(services));
+            strategies.Add("FILELOG", () => AddFileLogMailer(services, config));
 
             strategies[mailerType.ToUpper()].Invoke();
         }
@@ -36,10 +36,11 @@ namespace Coravel
         /// Useful for testing.
         /// </summary>
         /// <param name="services"></param>
-        public static void AddFileLogMailer(this IServiceCollection services)
+        public static void AddFileLogMailer(this IServiceCollection services, IConfiguration config)
         {
-            services.AddScoped<IRazorRenderer, RazorRenderer>();
-            services.AddScoped<IMailer, FileLogMailer>();
+            RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
+            var mailer = new FileLogMailer(renderer);
+            services.AddSingleton<IMailer>(mailer);
         }
 
         /// <summary>
@@ -50,17 +51,16 @@ namespace Coravel
         /// <param name="certCallback"></param>
         public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config, RemoteCertificateValidationCallback certCallback)
         {
-            services.AddScoped<IRazorRenderer, RazorRenderer>();
-            services.AddScoped<IMailer>(p =>
-                new SmtpMailer(
-                    p.GetService<IRazorRenderer>(),
-                    config.GetValue<string>("Coravel:Mail:Host", ""),
-                    config.GetValue<int>("Coravel:Mail:Port", 0),
-                    config.GetValue<string>("Coravel:Mail:Username", ""),
-                    config.GetValue<string>("Coravel:Mail:Password", ""),
-                    certCallback
-                )
+            RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
+            IMailer mailer = new SmtpMailer(
+                renderer,
+                config.GetValue<string>("Coravel:Mail:Host", ""),
+                config.GetValue<int>("Coravel:Mail:Port", 0),
+                config.GetValue<string>("Coravel:Mail:Username", ""),
+                config.GetValue<string>("Coravel:Mail:Password", ""),
+                certCallback
             );
+            services.AddSingleton<IMailer>(mailer);
         }
 
         /// <summary>
@@ -78,10 +78,11 @@ namespace Coravel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="sendMailAsync"></param>
-        public static void AddCustomMailer(this IServiceCollection services, CustomMailer.SendAsyncFunc sendMailAsync)
+        public static void AddCustomMailer(this IServiceCollection services, IConfiguration config, CustomMailer.SendAsyncFunc sendMailAsync)
         {
-            services.AddScoped<IRazorRenderer, RazorRenderer>();
-            services.AddScoped<IMailer>(p => new CustomMailer(p.GetService<IRazorRenderer>(), sendMailAsync));
+            RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
+            var mailer = new CustomMailer(renderer, sendMailAsync);
+            services.AddSingleton<IMailer>(mailer);
         }
     }
 }

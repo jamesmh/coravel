@@ -76,7 +76,7 @@ async Task SendMailCustomAsync(
     // Do your stuff....
 }
 
-services.AddCustomMailer(SendMailCustomAsync);
+services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
 ```
 
 ### Register View Templates
@@ -309,7 +309,9 @@ To use in your razor template, do this:
 @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com" })
 ```
 
-You may supply two further optional arguments, `backgroundColor` and `textColor`, to change the color of the button. 
+The default color of the button is `#539be2` (blue), but you may set two further optional arguments to change the color of the button:
+- `backgroundColor` 
+- `textColor`, 
 
 Both arguments accept either a hex value or rgb/rgba value:
 
@@ -323,4 +325,40 @@ Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to s
 
 ```c#
 await this._mailer.SendAsync(new NewUserViewMailable(user));
+```
+
+That's it!
+
+## Queuing Mail
+
+Coravel is configured so that you can queue mail! (of course...)
+
+```c#
+this._queue.QueueAsyncTask(async () =>
+    await this._mailer.SendAsync(new MyMailable())
+);   
+```
+
+## On-The-Fly Mailables
+
+There may be instances when you want to be able to build / configure a Mailable dynamically. You can do this the following way.
+
+1. Define an empty Mailable class.
+
+```c#
+public GenericMailable : Mailable<string>
+{
+    public override void Build() {}
+}
+```
+
+2. "Build" your Mailable dynamically when sending:
+
+```c#
+var mail = new GenericMailable()
+    .To("to@test.com")
+    .From("from@test.com")
+    .Html("<html><body><h1>Hi!</h1></body></html>");
+
+await this._mailer.SendAsync(mail);
 ```

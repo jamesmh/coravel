@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Coravel.Mail.Exceptions;
 using Coravel.Mail.Helpers;
 using Coravel.Mail.Interfaces;
+using Coravel.Mail.Renderers;
 
 namespace Coravel.Mail
 {
@@ -149,7 +150,7 @@ namespace Coravel.Mail
 
         public virtual void Build() { }
 
-        internal async Task SendAsync(IRazorRenderer renderer, IMailer mailer)
+        internal async Task SendAsync(RazorRenderer renderer, IMailer mailer)
         {
             this.Build();
 
@@ -166,13 +167,13 @@ namespace Coravel.Mail
             ).ConfigureAwait(false);
         }
 
-        internal async Task<string> Render(IRazorRenderer renderer, IMailer mailer)
+        internal async Task<string> Render(RazorRenderer renderer, IMailer mailer)
         {
             this.Build();
             return await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
         }
 
-        private async Task<string> BuildMessage(IRazorRenderer renderer, IMailer mailer)
+        private async Task<string> BuildMessage(RazorRenderer renderer, IMailer mailer)
         {
             this.BindDynamicProperties();
 

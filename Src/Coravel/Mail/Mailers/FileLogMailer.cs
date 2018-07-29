@@ -13,14 +13,14 @@ namespace Coravel.Mail.Mailers
     public class FileLogMailer : IMailer
     {
         private static readonly string FilePath = "mail.log";
-        private IRazorRenderer _renderer;
+        private RazorRenderer _renderer;
 
-        public FileLogMailer(IRazorRenderer renderer)
+        public FileLogMailer(RazorRenderer renderer)
         {
             this._renderer = renderer;
         }
 
-        public IRazorRenderer GetViewRenderer() => this._renderer;
+        public RazorRenderer GetViewRenderer() => this._renderer;
 
         public async Task<string> Render<T>(Mailable<T> mailable)
         {
