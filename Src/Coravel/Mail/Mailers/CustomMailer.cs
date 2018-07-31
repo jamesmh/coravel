@@ -17,8 +17,8 @@ namespace Coravel.Mail.Mailers
              this._sendAsyncFunc = sendAsyncFunc;
         }
 
-        public Task<string> Render<T>(Mailable<T> mailable) =>
-            mailable.Render(this._renderer, this);        
+        public Task<string> RenderAsync<T>(Mailable<T> mailable) =>
+            mailable.RenderAsync(this._renderer, this);        
 
         public async Task SendAsync<T>(Mailable<T> mailable) =>
             await mailable.SendAsync(this._renderer, this);

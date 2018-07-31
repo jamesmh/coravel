@@ -2,14 +2,14 @@
 
 You love configuring e-mails! Especially building an an e-mail friendly template that you can re-use throughout your app. O yah! 
 
-Sending email through your database is also super easy, right? And don't forget about storing e-mail templates **in your database**! Super maintainable and easy to use!
+Sending email through your database is so easy to confiugure and use, right? And don't forget about storing e-mail templates **in your database**! So maintainable and easy to use!
 
 Satire aside now - e-mails are not as easy as they should be. Luckily for you, Coravel solves this by offering:
 
 - Built-in e-mail friendly razor templates
 - Simple and flexible mailing API
-- Render your emails enabling quick e-mail development and testing
-- Drivers supporting SMTP and e-mailing to a local log file (for development probably...)
+- Render your emails enabling easy e-mail visual testing
+- Drivers supporting SMTP, e-mailing to a local log file or BYOM ("bring your own mailer") driver
 - Quick and simple configuration via `appsettings.json`
 - And more!
 
@@ -17,7 +17,6 @@ Satire aside now - e-mails are not as easy as they should be. Luckily for you, C
 
 ```c#
 // In Startup.ConfigureServices()
-
 services.AddMailer(this.Configuration); // Instance of IConfiguration.
 ```
 
@@ -77,6 +76,8 @@ async Task SendMailCustomAsync(
 }
 
 services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
+
+// Now you never have to see that ugly mailing code again!
 ```
 
 ### Register View Templates
@@ -91,7 +92,7 @@ To use these templates, create a `_ViewStart.cshtml` file in `~/Views/Mail`:
 }
 ```
 
-Or, if you want to use a simple / plain template:
+Or, if you want to use a more "plain" template:
 
 ```c#
 @{
@@ -101,14 +102,14 @@ Or, if you want to use a simple / plain template:
 
 ## Building Mailables
 
-Coravel uses **Mailables** to send mail. Each Mailable is a C# class that represents a specific type of e-mail that you can send, such as
+Coravel uses **Mailables** to send mail. Each Mailable is a c# class that represents a specific type of e-mail that you can send, such as
 "New User Sign-up", "Completed Order", etc.
 
 All of the configuration for a Mailable is done in the `Build()` method. You can then call various methods like `To` and `From` to configure the recipients, sender, etc.
 
-Mailables inherit from `Coravel.Mail.Mailable` and accept a generic type that represent the object you want associated with sending your mail.
+Mailables inherit from `Coravel.Mail.Mailable` and accept a generic type which represents a model you want associated with sending your mail.
 
-Here is a sample Mailable class:
+Here's a sample Mailable class:
 
 ```c#
 using Coravel.Mail;
@@ -134,10 +135,13 @@ namespace App.Mailables
 
 ### Sender
 
-To specify who the sender of the email is, use the `From()` method - supplying:
+To specify who the sender of the email is, use the `From()` method:
 
-- The e-mail address of the sender: `From("test@test.com")`
-- An instance of `Coravel.Mail.MailRecipient`: `From(new MailRecipient(email, name))`
+`From("test@test.com")`
+
+You may also supply an instance of `Coravel.Mail.MailRecipient` to include the address and sender name:
+
+`From(new MailRecipient(email, name))`
 
 ### Recipient
 
@@ -148,13 +152,13 @@ Using the `To` method, you can supply:
 - An instance of `MailRecipient`
 - An instance of `IEnumerable<MailRecipient>`
 
-You may also pass some `object` that exposes a `public` field or property `Email` and `Name` that Coravel will automatically use. You can inject this object via your Mailable's constructor to that it can be passed into the `To` method.
+You may also pass some `object` that exposes a `public` field or property `Email` and `Name` which Coravel will automatically use. You can inject this object via your Mailable's constructor so that it can be referenced in the `Build` method.
 
 ### Subject
 
 Coravel will use the name of your class (removing any postfix of "Mailable") to generate the subject.
 
-Give a mailable with the name `OrderCompletedMailable`, a subject of "Order Completed" will be generated for you.
+Given a mailable with the name `OrderCompletedMailable`, a subject of "Order Completed" will be generated for you.
 
 Alternatively, you may set the subject with the `Subject()` method.
 
@@ -170,7 +174,7 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 
 Using a razor view to send e-mails is done using the `View(string viewPath, T viewModel)` method.
 
-The type of the `viewModel` parameter must match the type of your Mailable's generic type parameter. For example, a `Mailable<UserModel>` will have the method `View(string viewPath, UserModel viewModel)`. Coravel will automatically bind the model to your view so you can generate dynamic content.
+The type of the `viewModel` parameter must match the type of your Mailable's generic type parameter. For example, a `Mailable<UserModel>` will have the method `View(string viewPath, UserModel viewModel)`. Coravel will automatically bind the model to your view so you can generate dynamic content (just like using `View` inside your MVC controllers).
 
 For views that do not require a view model, just inherit your Mailable from `Mailable<string>` and use `View(string viewPath)`.
 
@@ -205,9 +209,11 @@ In this case, your Mailable class should use the `string` generic type: `public 
 
 ## View Templates
 
-Coravel gives you out-of-the-box e-mail friendly templates. 
+Coravel gives you e-mail friendly templates out-of-the-box. 
 
-Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`. It might look like this:
+Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`. 
+
+It might look like this:
 
 ```c#
 @model App.Models.UserModel
@@ -243,7 +249,7 @@ In your `appsettings.json`, you may add the following global values that will po
         "CompanyAddress": "1111 My Company's Address",
         // If set, displayed in the footer inside the copywrite statement.
         "CompanyName": "My Company's Name",
-        // If set, is used to color the header (when using Template.cshtml) etc.
+        // If set, is used to color the header (when using Template.cshtml)
         "PrimaryColor": "#539be2"
     }
 }
@@ -311,7 +317,7 @@ To use in your razor template, do this:
 
 The default color of the button is `#539be2` (blue), but you may set two further optional arguments to change the color of the button:
 - `backgroundColor` 
-- `textColor`, 
+- `textColor` 
 
 Both arguments accept either a hex value or rgb/rgba value:
 
@@ -324,14 +330,39 @@ Both arguments accept either a hex value or rgb/rgba value:
 Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to send mail:
 
 ```c#
+private readonly IMailer _mailer;
+
+public MyController(IMailer mailer)
+{
+    this._mailer = mailer;
+}
+
+// Inside a controller action...
 await this._mailer.SendAsync(new NewUserViewMailable(user));
 ```
 
-That's it!
+## Rendering Mail / Visual Testing
+
+Testing the visuals of your e-mails should be easy, right?  With Coravel - it can be!
+
+It's just like sending mail, except you call `RenderAsync` instead of `SendAsync`.
+
+Here's how you might render a Mailable and return it as an Html response - for viewing in the browser:
+
+```c#
+// Controller action that returns a Mailable viewable in the browser!
+public async Task<IActionResult> RenderView()
+{
+    string message = await this._mailer.RenderAsync(new PendingOrderMailable());
+    return Content(message, "text/html");
+}
+```
 
 ## Queuing Mail
 
-Coravel is configured so that you can queue mail! (of course...)
+Coravel is configured so that you can queue mail! 
+
+Assuming you are using Coravel's queuing feature, you can do this:
 
 ```c#
 this._queue.QueueAsyncTask(async () =>
@@ -348,11 +379,11 @@ There may be instances when you want to be able to build / configure a Mailable 
 ```c#
 public GenericMailable : Mailable<string>
 {
-    public override void Build() {}
+    public override void Build() { }
 }
 ```
 
-2. "Build" your Mailable dynamically when sending:
+2. "Build" your Mailable dynamically before sending:
 
 ```c#
 var mail = new GenericMailable()

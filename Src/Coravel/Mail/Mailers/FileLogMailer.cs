@@ -22,9 +22,9 @@ namespace Coravel.Mail.Mailers
 
         public RazorRenderer GetViewRenderer() => this._renderer;
 
-        public async Task<string> Render<T>(Mailable<T> mailable)
+        public async Task<string> RenderAsync<T>(Mailable<T> mailable)
         {
-            return await mailable.Render(this._renderer, this);
+            return await mailable.RenderAsync(this._renderer, this);
         }
 
         public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)

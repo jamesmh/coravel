@@ -39,7 +39,7 @@ namespace TestMvcApp.Controllers
                 Name = "Coravel Test Person"
             };
 
-            string message = await this._mailer.Render(new WelcomeUserHtmlMail(user));
+            string message = await this._mailer.RenderAsync(new WelcomeUserHtmlMail(user));
 
             return Content(message, "text/html");
         }
@@ -67,7 +67,7 @@ namespace TestMvcApp.Controllers
                 Name = "Coravel Test Person"
             };
 
-            string message = await this._mailer.Render(new NewUserViewMail(user));
+            string message = await this._mailer.RenderAsync(new NewUserViewMail(user));
 
             return Content(message, "text/html");
         }

@@ -167,7 +167,7 @@ namespace Coravel.Mail
             ).ConfigureAwait(false);
         }
 
-        internal async Task<string> Render(RazorRenderer renderer, IMailer mailer)
+        internal async Task<string> RenderAsync(RazorRenderer renderer, IMailer mailer)
         {
             this.Build();
             return await this.BuildMessage(renderer, mailer).ConfigureAwait(false);

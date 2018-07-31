@@ -46,6 +46,6 @@ namespace  Coravel.Mail.Mailers
             await mailable.SendAsync(null, this);
         }
 
-        public async Task<string> Render<T>(Mailable<T> mailable) => await mailable.Render(null, this);
+        public async Task<string> RenderAsync<T>(Mailable<T> mailable) => await mailable.RenderAsync(null, this);
     }
 }

@@ -13,15 +13,18 @@ using Microsoft.Extensions.PlatformAbstractions;
 namespace Coravel.Mail.Renderers
 {
     /// <summary>
-    /// Provides methods to generate an instance of the RazorViewToStringRenderer.async
-    /// Useful when wanting to render Razor views in non-mvc / non-asp environments.
+    /// Provides methods to generate an instance of the RazorRenderer.
+    /// 
+    /// Note: Coravel uses this vs building an instance of RazorRenderer from the outer app's
+    /// container. Coravel needs the viewer renderer to be a singleton so that we can queue mail properly.
+    /// Dependencies of the RazorRenderer are scoped etc. so an instance of RazorRenderer will be null when running
+    /// a queued Mail item (since the scope no longer exists an dependencies were Disposed).
     /// </summary>
     public class RazorRendererFactory
     {
         /// <summary>
-        /// Get an instance of RazorViewToStringRenderer. 
-        /// The returned instance should be cached by the caller as this is a costly operation.async
-        /// Useful in non-asp environments for rendering Razor views.
+        /// Get an instance of RazorRenderer. 
+        /// The returned instance should be cached by the caller as this is a costly operation.
         /// </summary>
         /// <returns></returns>
         public static RazorRenderer MakeInstance(IConfiguration config)

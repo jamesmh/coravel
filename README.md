@@ -26,6 +26,12 @@ If you wish to encourage and support my efforts:
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
 
+## Contributing
+
+If you are fixing a typo in one file / place - issue a PR. 
+
+Otherwise, please **always** create an issue first.
+
 ## Quick-Start
 
 Add the nuget package `Coravel` to your .NET Core app. Done!
@@ -150,23 +156,14 @@ There are more methods for clearing your cache, async methods, etc. See the [ful
 
 ### 4. Mailing
 
-The Coravel mailer offers features such as:
-
-- Built-in e-mail friendly razor templates
-- Simple and flexible mailing API
-- Render your emails enabling quick e-mail development and testing
-- Drivers supporting SMTP and e-mailing to a local log file (for development)
-- Quick and simple configuration via appsettings.json
-
 ### Basic Installation / Configuration
 
-First, at minimum, we need to define our e-mail driver in our appsettings.json by adding this:
+At minimum, we need to define our e-mail driver from our appsettings.json by adding this:
 
 ```json
 "Coravel": {
   "Mail": {
-    // Driver config
-    "Driver": "FileLog"
+    "Driver": "FileLog" // Basic driver that logs to a file ;)
   }
 }
 ```
@@ -187,14 +184,14 @@ Finally, create a `_ViewStart.cshtml` file in `~/Views/Mail`:
 }
 ```
 
-This will automatically point to one of Coravel's built-in templates ;)
+This will automatically point your mail templates to one of Coravel's built-in templates ;)
 
 ### Creating Mailables
 
 Coravel uses **Mailables** to send mail. Each Mailable is a C# class that represents a specific type of e-mail that you can send, such as
 "New User Sign-up", "Completed Order", etc.
 
-Consider this class and code comments highlighting the important basic details:
+Consider this class and code comments highlighting the important basics:
 
 ```c#
 using Coravel.Mail;
@@ -205,7 +202,7 @@ namespace App.Mailables
     // Inherit from Mailable<T>
     public class NewUserViewMailable : Mailable<UserModel>
     {
-        // Inject your model.
+        // Inject your model
         private UserModel _user;
 
         public NewUserViewMail(UserModel user) => this._user = user;
@@ -214,13 +211,13 @@ namespace App.Mailables
         // This is where you can configure this mail for easy reusability!
         public override void Build()
         {
-            // The UserModel public property "Email" is auto-bound (and optionally a "Name" prop too)
+            // The UserModel public property "Email" is auto-bound
+            // (and optionally a "Name" property also)
             this.To(this._user)
                 .From("from@test.com")
                 .View("~/Views/Mail/NewUser.cshtml", this._user);
 
-            // View() will render the specified view, passing in your instance of
-            // UserModel just like calling View() from an mvc controller!
+            // View() is similar to calling View() from a controller.
         }
     }
 }
@@ -260,13 +257,14 @@ Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to s
 await this._mailer.SendAsync(new NewUserViewMailable(user));
 ```
 
-A basic e-mail using Coravel's default template looks like this:
+A basic e-mail using Coravel's "plain" template might look like this:
 
 ![email sample](https://github.com/jamesmh/coravel/blob/master/Docs/email-sample.png)
 
-
 ### There's Much More! 
 
-This is a quick look at Coravel's mailing! Check out the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md) to see all the available features in-depth!
+This is a quick look at Coravel's mailing! 
+
+Check out the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md) to see all the available features in-depth!
 
 
