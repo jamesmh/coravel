@@ -2,17 +2,18 @@
 
   <PropertyGroup>
     <PackAsTool>true</PackAsTool>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <ToolCommandName>coravel</ToolCommandName>
     <PackageId>coravel-cli</PackageId>
-    <PackageVersion>0.1.0</PackageVersion>
+    <PackageVersion>0.1.4</PackageVersion>
     <AssemblyName>Coravel.Cli</AssemblyName>
 
-    <Version>0.1.0</Version>
+    <Version>0.1.4</Version>
     <Authors>James Hickey</Authors>
     <Description>Cli for Coravel</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

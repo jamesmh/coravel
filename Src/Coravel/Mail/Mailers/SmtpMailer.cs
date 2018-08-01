@@ -18,6 +18,7 @@ namespace Coravel.Mail.Mailers
         private int _port;
         private string _username;
         private string _password;
+        private MailRecipient _globalFrom;
         private RemoteCertificateValidationCallback _certCallback;
 
         public SmtpMailer(
@@ -26,13 +27,15 @@ namespace Coravel.Mail.Mailers
             int port,
             string username,
             string password,
-            RemoteCertificateValidationCallback certificateCallback)
+            MailRecipient globalFrom = null,
+            RemoteCertificateValidationCallback certificateCallback = null)
         {
             this._renderer = renderer;
             this._host = host;
             this._port = port;
             this._username = username;
             this._password = password;
+            this._globalFrom = globalFrom;
 
             this._certCallback = certificateCallback;
             if (this._certCallback == null)
@@ -52,7 +55,7 @@ namespace Coravel.Mail.Mailers
         public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
             var mail = new MimeMessage();
-            mail.From.Add(AsMailboxAddress(from));
+            mail.From.Add(AsMailboxAddress(this._globalFrom ?? from));
 
             foreach (var recipientAddress in to ?? Enumerable.Empty<MailRecipient>())
             {

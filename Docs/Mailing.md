@@ -143,6 +143,27 @@ You may also supply an instance of `Coravel.Mail.MailRecipient` to include the a
 
 `From(new MailRecipient(email, name))`
 
+#### Global From Address
+
+Specifying the "from" field for every Mailable - if your app will send **all** mail from the same sender - can be a hassle. 
+
+Luckily (for you...), you can configure a global from address.
+
+In your `appsettings.json` file, add the following keys:
+
+```json
+"Coravel": {
+    "Mail": {
+        // Other mail keys / values
+
+        "From": {
+            "Address": "global@test.com",
+            "Name": "Always Sent From Me"
+        }
+    }
+}
+```
+
 ### Recipient
 
 Using the `To` method, you can supply:

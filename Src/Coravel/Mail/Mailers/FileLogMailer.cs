@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Coravel.Mail.Interfaces;
 using Coravel.Mail.Renderers;
 using Coravel.Mail.Helpers;
+using Microsoft.Extensions.Configuration;
 
 namespace Coravel.Mail.Mailers
 {
@@ -14,10 +15,12 @@ namespace Coravel.Mail.Mailers
     {
         private static readonly string FilePath = "mail.log";
         private RazorRenderer _renderer;
+        private MailRecipient _globalFrom;
 
-        public FileLogMailer(RazorRenderer renderer)
+        public FileLogMailer(RazorRenderer renderer, MailRecipient globalFrom)
         {
             this._renderer = renderer;
+            this._globalFrom = globalFrom;
         }
 
         public RazorRenderer GetViewRenderer() => this._renderer;
@@ -29,6 +32,9 @@ namespace Coravel.Mail.Mailers
 
         public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
+            
+            from = this._globalFrom ?? from;
+
             using (var writer = File.CreateText(FilePath))
             {
                 await writer.WriteAsync($@"

@@ -8,10 +8,10 @@ namespace Coravel.Cli
 {
     class Program
     {
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
             var app = new CommandLineApplication{
-                Name = "coravel-cli"
+                Name = "coravel"
             };
 
             app.HelpOption(inherited: true);
@@ -47,14 +47,21 @@ namespace Coravel.Cli
                 config.Command("new", newConfig =>
                 {
                     newConfig.Description = "Create a new coravel Mailable class.";
-                    var mailableName = newConfig.Argument("name", "Name of the Mailable to generate.");
+                    var mailableName = newConfig.Argument<string>("name", "Name of the Mailable to generate.");
                     newConfig.OnExecute(() =>
-                        new CreateMailCommand().Execute(mailableName.Value)
+                        new CreateMailCommand().Execute(mailableName.Value ?? "NewMailable")
                     );
                 });
             });
 
-            return app.Execute(args);
+            try {
+                int code = app.Execute(args);
+                Environment.Exit(code);
+            }
+            catch(Exception e) {
+                Console.WriteLine("Coravel had some trouble... try again.");
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }

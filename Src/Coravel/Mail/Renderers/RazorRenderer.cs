@@ -37,10 +37,10 @@ namespace Coravel.Mail.Renderers
             this._tempDataProvider = tempDataProvider;
             this._serviceProvider = serviceProvider;
             
-            this._logoSrc = config.GetValue<string>("Coravel:Mail:LogoSrc");
-            this._companyName = config.GetValue<string>("Coravel:Mail:CompanyName");
-            this._companyAddress = config.GetValue<string>("Coravel:Mail:CompanyAddress");
-            this._primaryColor = config.GetValue<string>("Coravel:Mail:PrimaryColor");
+            this._logoSrc = config?.GetValue<string>("Coravel:Mail:LogoSrc");
+            this._companyName = config?.GetValue<string>("Coravel:Mail:CompanyName");
+            this._companyAddress = config?.GetValue<string>("Coravel:Mail:CompanyAddress");
+            this._primaryColor = config?.GetValue<string>("Coravel:Mail:PrimaryColor");
         }
 
         public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
+using Coravel.Mail;
 using Coravel.Mail.Interfaces;
 using Coravel.Mail.Mailers;
 using Coravel.Mail.Renderers;
@@ -38,8 +39,10 @@ namespace Coravel
         /// <param name="services"></param>
         public static void AddFileLogMailer(this IServiceCollection services, IConfiguration config)
         {
+            var globalFrom = GetGlobalFromRecipient(config);
+
             RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
-            var mailer = new FileLogMailer(renderer);
+            var mailer = new FileLogMailer(renderer, globalFrom);
             services.AddSingleton<IMailer>(mailer);
         }
 
@@ -51,6 +54,7 @@ namespace Coravel
         /// <param name="certCallback"></param>
         public static void AddSmtpMailer(this IServiceCollection services, IConfiguration config, RemoteCertificateValidationCallback certCallback)
         {
+            var globalFrom = GetGlobalFromRecipient(config);
             RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
             IMailer mailer = new SmtpMailer(
                 renderer,
@@ -58,6 +62,7 @@ namespace Coravel
                 config.GetValue<int>("Coravel:Mail:Port", 0),
                 config.GetValue<string>("Coravel:Mail:Username", ""),
                 config.GetValue<string>("Coravel:Mail:Password", ""),
+                globalFrom,
                 certCallback
             );
             services.AddSingleton<IMailer>(mailer);
@@ -80,9 +85,25 @@ namespace Coravel
         /// <param name="sendMailAsync"></param>
         public static void AddCustomMailer(this IServiceCollection services, IConfiguration config, CustomMailer.SendAsyncFunc sendMailAsync)
         {
+            var globalFrom = GetGlobalFromRecipient(config);
             RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
-            var mailer = new CustomMailer(renderer, sendMailAsync);
+            var mailer = new CustomMailer(renderer, sendMailAsync, globalFrom);
             services.AddSingleton<IMailer>(mailer);
+        }
+
+        private static MailRecipient GetGlobalFromRecipient(IConfiguration config)
+        {
+            string globalFromAddress = config.GetValue<string>("Coravel:Mail:From:Address", null);
+            string globalFromName = config.GetValue<string>("Coravel:Mail:From:Name", null);
+
+            if (globalFromAddress != null)
+            {
+                return new MailRecipient(globalFromAddress, globalFromName);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

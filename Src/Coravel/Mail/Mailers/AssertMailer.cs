@@ -41,11 +41,11 @@ namespace  Coravel.Mail.Mailers
             return Task.CompletedTask;
         }
 
-        public async Task SendAsync<T>(Mailable<T> mailable)
-        {
+        public async Task SendAsync<T>(Mailable<T> mailable) =>
             await mailable.SendAsync(null, this);
-        }
+        
 
-        public async Task<string> RenderAsync<T>(Mailable<T> mailable) => await mailable.RenderAsync(null, this);
+        public async Task<string> RenderAsync<T>(Mailable<T> mailable) => 
+            await mailable.RenderAsync(null, this);
     }
 }

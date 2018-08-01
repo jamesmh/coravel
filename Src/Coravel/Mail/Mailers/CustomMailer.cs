@@ -11,10 +11,12 @@ namespace Coravel.Mail.Mailers
         public delegate Task SendAsyncFunc(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc);
         private RazorRenderer _renderer;
         private SendAsyncFunc _sendAsyncFunc;
+        private MailRecipient _globalFrom;
 
-        public CustomMailer(RazorRenderer renderer, SendAsyncFunc sendAsyncFunc){
+        public CustomMailer(RazorRenderer renderer, SendAsyncFunc sendAsyncFunc, MailRecipient globalFrom = null){
              this._renderer = renderer;
              this._sendAsyncFunc = sendAsyncFunc;
+             this._globalFrom = globalFrom;
         }
 
         public Task<string> RenderAsync<T>(Mailable<T> mailable) =>
@@ -26,7 +28,7 @@ namespace Coravel.Mail.Mailers
         public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
             await this._sendAsyncFunc(
-                message, subject, to, from, replyTo, cc, bcc               
+                message, subject, to, this._globalFrom ?? from, replyTo, cc, bcc               
             );
         }
     }
