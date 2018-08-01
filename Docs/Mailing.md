@@ -15,6 +15,24 @@ Satire aside now - e-mails are not as easy as they should be. Luckily for you, C
 
 ## Installation
 
+### Cli
+
+Install the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md):
+
+`dotnet tool install --global coravel-cli`
+
+Using the cli, installer the mailer feature:
+
+`coravel mail install`
+
+This will scaffold some basic files for you:
+- `~/Views/Mail/_ViewStart.cshtml` - Registers mail views to use Coravel's e-mail templates
+- `~/Views/Mail/_ViewImports.cshtml` - Allows you use Coravel's view components
+- `~/Views/Mail/Example.cshtml` - A sample mail view
+- `~/Mailables/Example.cs` - A sample Mailable
+
+### Configure Services
+
 ```c#
 // In Startup.ConfigureServices()
 services.AddMailer(this.Configuration); // Instance of IConfiguration.
@@ -76,23 +94,17 @@ async Task SendMailCustomAsync(
 }
 
 services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
-
-// Now you never have to see that ugly mailing code again!
 ```
+
+Now you never have to see that ugly mailing code again!
 
 ### Register View Templates
 
 Coravel's mailer comes with some pre-built e-mail friendly razor templates! This means you don't have to worry about building a reusable template and store it in your database. But.... no one ever does that.
 
-To use these templates, create a `_ViewStart.cshtml` file in `~/Views/Mail`:
+The Coravel Cli already created the file `~/Views/Mail/_ViewStart.cshtml`. It defaults to use Coravel's colorful template.
 
-```c#
-@{
-    Layout = "~/Areas/Coravel/Pages/Mail/Template.cshtml";
-}
-```
-
-Or, if you want to use a more "plain" template:
+If you wish to use a more _plain_ template, replace the file contents with this:
 
 ```c#
 @{
@@ -104,6 +116,8 @@ Or, if you want to use a more "plain" template:
 
 Coravel uses **Mailables** to send mail. Each Mailable is a c# class that represents a specific type of e-mail that you can send, such as
 "New User Sign-up", "Completed Order", etc.
+
+> Note: The Coravel Cli already generated a sample Mailable in your `~/Mailables` folder!
 
 All of the configuration for a Mailable is done in the `Build()` method. You can then call various methods like `To` and `From` to configure the recipients, sender, etc.
 
@@ -133,7 +147,7 @@ namespace App.Mailables
 }
 ```
 
-### Sender
+### From
 
 To specify who the sender of the email is, use the `From()` method:
 
@@ -195,11 +209,9 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 
 Using a razor view to send e-mails is done using the `View(string viewPath, T viewModel)` method.
 
-The type of the `viewModel` parameter must match the type of your Mailable's generic type parameter. For example, a `Mailable<UserModel>` will have the method `View(string viewPath, UserModel viewModel)`. Coravel will automatically bind the model to your view so you can generate dynamic content (just like using `View` inside your MVC controllers).
+The type of the `viewModel` parameter must match the type of your Mailable's generic type parameter. For example, a `Mailable<UserModel>` will have the method `View(string viewPath, UserModel viewModel)`. Coravel will automatically bind the model to your view so you can generate dynamic content (just like using `View()` inside your MVC controllers).
 
 For views that do not require a view model, just inherit your Mailable from `Mailable<string>` and use `View(string viewPath)`.
-
-Ex.
 
 ```
 public class MyMailable : Mailable<string>
@@ -228,9 +240,11 @@ public override void Build()
 
 In this case, your Mailable class should use the `string` generic type: `public class MyMailable : Mailable<string>`.
 
-## View Templates
+## Mail Views
 
-Coravel gives you e-mail friendly templates out-of-the-box. 
+Coravel gives you e-mail friendly templates out-of-the-box! 
+
+The cli already configured this for you at `~/Views/Example.cshtml`.
 
 Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`. 
 
@@ -255,7 +269,49 @@ It might look like this:
 }
 ```
 
-### Global Configuration
+### Template Parts
+
+#### Heading
+
+Assigning a value to `ViewBag.Heading` will show up as the main heading in your e-mail.
+
+#### Preview
+
+Assigned a value to `ViewBag.Preview` will display as a "preview" on some email clients that support this feature.
+
+#### Footer
+
+The footer will grab values from your `appsettings.json` file, if they are set (see section below).
+
+## Template Sections
+
+There are two main sections you can define in Coravel's templates by using the `@section` syntax.
+
+### Links
+
+Links that are displayed in the footer.
+
+```c#
+@section links
+{
+    @* Put some html here *@
+}
+```
+
+### Footer
+
+Override the entire footer with custom content.
+
+```c#
+@section footer
+{
+    @* Put some html here *@
+}
+```
+
+### Mail View Global Configuration
+
+What about static content like the mail footer and logo? Coravel's got you covered.
 
 In your `appsettings.json`, you may add the following global values that will populate when using Coravel's built-in templates:
 
@@ -276,55 +332,9 @@ In your `appsettings.json`, you may add the following global values that will po
 }
 ```
 
-### Template Parts
-
-#### Heading
-
-Assigning a value to `ViewBag.Heading` will show up as the main heading in your e-mail.
-
-#### Preview
-
-Assigned a value to `ViewBag.Preview` will display as a "preview" on some email clients that support this feature.
-
-#### Footer
-
-The footer will grab values from your `appsettings.json` file, if they are set.
-
-## Template Sections
-
-There are two main sections you can define in Coravel's templates by using the `@section` syntax.
-
-### Links
-
-Links that are displayed in the footer.
-
-```c#
-@section links
-{
-
-}
-```
-
-### Footer
-
-Override the entire footer with custom content.
-
-```c#
-@section footer
-{
-
-}
-```
-
 ## E-mail Components
 
-To enable, create a `_ViewImports.cshtml` file in the root of your mail views (e.g. `~/Views/Mail/`):
-
-```c#
-@namespace App
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, Coravel.Razor.ViewComponents // Add this line if file already created ;)
-```
+The Cli generated a `_ViewImports.cshtml` file in the root of your mail views. This allows you to use Coravel's view components.
 
 ### Email Link Button
 
@@ -413,4 +423,25 @@ var mail = new GenericMailable()
     .Html("<html><body><h1>Hi!</h1></body></html>");
 
 await this._mailer.SendAsync(mail);
+```
+
+You may choose to call **some** methods inside you `Build` method and leave the caller to decide about further methods:
+
+```c#
+public GenericMailable : Mailable<string>
+{
+    public override void Build() 
+    { 
+        this.Subject("This is a static subject")
+            .Html("<html><body>Static content</body></html>");
+    }
+}
+```
+
+```c#
+var mail = new GenericMailable()
+    .To("to@test.com")
+    .From("from@test.com");
+
+// etc...
 ```

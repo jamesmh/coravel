@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coravel.Cli.Commands;
+using Coravel.Cli.Commands.Mail.Install;
+using Coravel.Cli.Commands.Mail.Mailable;
+using Coravel.Cli.Commands.Mail.View;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace Coravel.Cli
@@ -24,7 +27,7 @@ namespace Coravel.Cli
 
             app.Command("install", config =>
                 config.OnExecute(() =>
-                    new Install().Execute()
+                    new InstallCoravelCommand().Execute()
                 )
             );
 
@@ -49,8 +52,11 @@ namespace Coravel.Cli
                     newConfig.Description = "Create a new coravel Mailable class.";
                     var mailableName = newConfig.Argument<string>("name", "Name of the Mailable to generate.");
                     newConfig.OnExecute(() =>
-                        new CreateMailCommand().Execute(mailableName.Value ?? "NewMailable")
-                    );
+                    {
+                        string mailable = mailableName.Value ?? "Mailable";
+                        new CreateMailableCommand().Execute(mailable);
+                        new CreateMailViewCommand().Execute(mailable);
+                    });
                 });
             });
 

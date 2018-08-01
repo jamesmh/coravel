@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Coravel.Cli.Commands
 {
-    public struct Install
+    public struct InstallCoravelCommand
     {
         public void Execute()
         {
