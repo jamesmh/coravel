@@ -51,19 +51,18 @@ To use this driver, use the key `FileLog` in your `appsettings.json` file:
 ```json
 "Coravel": {
   "Mail": {
-    "Driver": "FileLog" // <---- here...
+    "Driver": "FileLog"
   }
 }
 ```
 
 #### Smtp Driver
 
-This will allow you to send mail via SMTP.
+This will allow you to send mail via SMTP. Add the following keys:
 
 ```json
 "Coravel": {
   "Mail": {
-    // Driver config
     "Driver": "SMTP",
     "Host": "smtp.mailtrap.io",
     "Port": 2525,
@@ -168,8 +167,6 @@ In your `appsettings.json` file, add the following keys:
 ```json
 "Coravel": {
     "Mail": {
-        // Other mail keys / values
-
         "From": {
             "Address": "global@test.com",
             "Name": "Always Sent From Me"
@@ -318,15 +315,13 @@ In your `appsettings.json`, you may add the following global values that will po
 ```json
 "Coravel": {
     "Mail": {
-        // Other mail settings.
-
-        // Your app's logo that will be shown at the top of your e-mails.
+        /* Your app's logo that will be shown at the top of your e-mails. */
         "LogoSrc": "https://www.google.ca/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
-        // If set, displayed in the footer.
+        /* If set, displayed in the footer. */
         "CompanyAddress": "1111 My Company's Address",
-        // If set, displayed in the footer inside the copywrite statement.
+        /* If set, displayed in the footer inside the copywrite statement. */
         "CompanyName": "My Company's Name",
-        // If set, is used to color the header (when using Template.cshtml)
+        /* If set, is used to color the header (when using Template.cshtml) */
         "PrimaryColor": "#539be2"
     }
 }
