@@ -26,7 +26,7 @@ Using the cli, installer the mailer feature:
 `coravel mail install`
 
 This will scaffold some basic files for you:
-- `~/Views/Mail/_ViewStart.cshtml` - Registers mail views to use Coravel's e-mail templates
+- `~/Views/Mail/_ViewStart.cshtml` - Configures mail views to use Coravel's e-mail templates
 - `~/Views/Mail/_ViewImports.cshtml` - Allows you use Coravel's view components
 - `~/Views/Mail/Example.cshtml` - A sample mail view
 - `~/Mailables/Example.cs` - A sample Mailable

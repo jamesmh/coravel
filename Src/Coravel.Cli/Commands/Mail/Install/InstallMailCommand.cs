@@ -14,16 +14,16 @@ namespace Coravel.Cli.Commands.Mail.Install
             new CreateViewStartCommand().Execute();
             new CreateMailableCommand().Execute("Example");
             new CreateMailViewCommand().Execute("Example");
-            new CreateViewStartCommand().Execute();
+            new CreateViewImportsCommand().Execute();
 
             Console.WriteLine();
             Console.WriteLine("-------------------------------------------------------------------------------------------");
-            Console.WriteLine("Check out ~/Views/Mail - we created: ");
-            Console.WriteLine("    _ViewStart.cshtml: Registers Coravel's e-mail templates as the default layout for your mail views.");
-            Console.WriteLine("    Example.cshtml: A sample mail view.");
+            Console.WriteLine("Check out ~/Views/Mail - the following was generated: ");
+            Console.WriteLine("    _ViewStart.cshtml    - Configures mail views to use Coravel's e-mail templates");
+            Console.WriteLine("    _ViewImports.cshtml  - Allows you use Coravel's view components");
+            Console.WriteLine("    Example.cshtml`      - A sample mail view");
             Console.WriteLine();
             Console.WriteLine("Coravel also created a new ~/Mailables folder with a sample Mailable for you!");
-
             Console.WriteLine("Don't forget to register the mailer in your ConfigureServices() method inside Startup.cs ;)");
         }
     }

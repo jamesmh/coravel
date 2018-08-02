@@ -27,7 +27,7 @@ namespace Coravel.Cli.Commands.Mail.View
                 .AppendLine("}")
                 .ToString();
 
-            Files.WriteFileIfNotCreatedYet(MailDirectory, fileName, content);
+            Files.WriteFileIfNotCreatedYet(MailDirectory, fileName + ".cshtml", content);
         }
     }
 }
