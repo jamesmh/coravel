@@ -20,18 +20,6 @@ Right now, Coravel features:
 
 Coravel is a .Net Core library. You must be including Coravel in an existing .Net Core application (version 2.1.0 +).
 
-## Support
-
-If you wish to encourage and support my efforts:
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
-
-## Contributing
-
-If you are fixing a typo in one file / place - issue a PR. 
-
-Otherwise, please **always** create an issue first ;)
-
 ### Coravel-Cli
 
 Ideally, use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started! 
@@ -59,3 +47,16 @@ Done!
 ### What Do I Do Next?
 
 Check out the top of this readme for an index of Coravel's features, each linking to the appropriate docs!
+
+## Contributing
+
+If you are fixing a typo in one file / place - issue a PR. 
+
+Otherwise, please **always** create an issue first ;)
+
+## Support
+
+If you wish to encourage and support my efforts:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
+
