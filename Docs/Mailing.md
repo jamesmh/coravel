@@ -210,7 +210,7 @@ The type of the `viewModel` parameter must match the type of your Mailable's gen
 
 For views that do not require a view model, just inherit your Mailable from `Mailable<string>` and use `View(string viewPath)`.
 
-```
+```c#
 public class MyMailable : Mailable<string>
 {
     public override void Build()
@@ -241,7 +241,7 @@ In this case, your Mailable class should use the `string` generic type: `public 
 
 Coravel gives you e-mail friendly templates out-of-the-box! 
 
-The cli already configured this for you at `~/Views/Example.cshtml`.
+> Note: The cli generated a sample for you at `~/Views/Example.cshtml`.
 
 Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`. 
 
