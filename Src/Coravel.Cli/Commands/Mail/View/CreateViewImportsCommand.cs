@@ -12,7 +12,7 @@ namespace Coravel.Cli.Commands.Mail.View
             string appName = UserApp.GetAppName();
 
             string content = new StringBuilder()
-                .AppendLine($"@namespace {appName}")
+                .AppendLine($"@using {appName}")
                 .AppendLine("@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers")
                 .AppendLine("@addTagHelper *, Coravel.Razor.ViewComponents")
                 .ToString();
