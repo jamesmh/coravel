@@ -312,7 +312,7 @@ What about static content like the mail footer and logo? Coravel's got you cover
 
 In your `appsettings.json`, you may add the following global values that will populate when using Coravel's built-in templates:
 
-```json
+```
 "Coravel": {
     "Mail": {
         /* Your app's logo that will be shown at the top of your e-mails. */
