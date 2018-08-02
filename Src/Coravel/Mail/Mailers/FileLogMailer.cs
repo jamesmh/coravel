@@ -38,16 +38,16 @@ namespace Coravel.Mail.Mailers
             using (var writer = File.CreateText(FilePath))
             {
                 await writer.WriteAsync($@"
-                    ---------------------------------------------
-                    Subject: {subject}
-                    To: {CommaSeparated(to)}    
-                    From: {from?.Name}<{from?.Email}>
-                    ReplyTo: {replyTo?.Name}<{replyTo?.Email}>
-                    Cc: {CommaSeparated(cc)}
-                    Bcc: {CommaSeparated(bcc)}
-                    ---------------------------------------------
+---------------------------------------------
+Subject: {subject}
+To: {CommaSeparated(to)}    
+From: {from?.Name}<{from?.Email}>
+ReplyTo: {replyTo?.Name}<{replyTo?.Email}>
+Cc: {CommaSeparated(cc)}
+Bcc: {CommaSeparated(bcc)}
+---------------------------------------------
 
-                    {message}
+{message}
                 ").ConfigureAwait(false);
             }
         }
