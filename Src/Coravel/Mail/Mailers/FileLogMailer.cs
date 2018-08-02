@@ -41,8 +41,8 @@ namespace Coravel.Mail.Mailers
 ---------------------------------------------
 Subject: {subject}
 To: {CommaSeparated(to)}    
-From: {from?.Name}<{from?.Email}>
-ReplyTo: {replyTo?.Name}<{replyTo?.Email}>
+From: {DisplayAddress(from)}
+ReplyTo: {DisplayAddress(replyTo)}
 Cc: {CommaSeparated(cc)}
 Bcc: {CommaSeparated(bcc)}
 ---------------------------------------------
@@ -59,7 +59,14 @@ Bcc: {CommaSeparated(bcc)}
 
         private static string CommaSeparated(IEnumerable<MailRecipient> recipients) =>
             (recipients ?? Enumerable.Empty<MailRecipient>())
-                .Select(r => $"{r?.Name}<{r?.Email}>")
+                .Select(r => DisplayAddress(r))
                 .CommaSeparated();
+        
+        private static string DisplayAddress(MailRecipient recipient) {
+            if(recipient == null)
+                return string.Empty;
+            else
+                return $"{recipient.Name} <{recipient.Email}>";
+        }
     }
 }
