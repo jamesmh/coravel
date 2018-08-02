@@ -11,9 +11,6 @@
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
-    <!-- Hack to include P2P references :( -->
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
@@ -25,11 +22,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj" PrivateAssets="all"/>
   </ItemGroup>
-  
-  <!-- Hack to include P2P references :( -->
-  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveProjectReferences">
-    <ItemGroup>
-      <BuildOutputInPackage Include="@(_ResolvedProjectReferencePaths)" />
-    </ItemGroup>
-  </Target>
 </Project>
