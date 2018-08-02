@@ -77,15 +77,15 @@ scheduler.ScheduleAsync(async () =>
 
 Note, that you are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
-## Scheduling Tasks Dynamcially
+## Scheduling Tasks Dynamically
 
 You can add new scheduled tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
 
-### Intervals
+## Intervals
 
 First, methods to apply interval constraints are available.
 
-#### Basic Intervals
+### Basic Intervals
 
 These methods tell your task to execute at basic intervals.
 
@@ -103,7 +103,7 @@ If you restart your app these methods will cause all tasks to run again on start
 - `Daily();`
 - `Weekly();`
 
-#### Intervals With Time Contraints
+### Intervals With Time Contraints
 
 These methods allow you specify an interval and a time constraint so that your scheduling is more specific and consistent.
 
@@ -113,7 +113,7 @@ _Please note that the scheduler is using UTC time. So, for example, using `Daily
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
 
-### Day Constraints
+## Day Constraints
 
 After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
 
