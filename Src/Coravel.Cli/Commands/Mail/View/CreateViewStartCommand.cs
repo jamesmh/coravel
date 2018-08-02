@@ -10,7 +10,7 @@ namespace Coravel.Cli.Commands.Mail.View
         {
             string viewStartContent = new StringBuilder()
                 .AppendLine("@{")
-                .AppendLine("    Layout = \"~/Areas/Coravel/Pages/Mail/Template.cshtml\"")
+                .AppendLine("    Layout = \"~/Areas/Coravel/Pages/Mail/Template.cshtml\";")
                 .AppendLine("}")
                 .ToString();
 

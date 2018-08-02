@@ -18,7 +18,7 @@ namespace Coravel.Cli.Commands.Mail.View
                 .AppendLine("<p>")
                 .AppendLine("   Let's see what you can build!")
                 .AppendLine("   To render a button inside your email, use the EmailLinkButton component:")
-                .AppendLine("   @await Component.InvokeAsync(\"EmailLinkButton\", new  { text = \"Click me\", url = \"www.google.com\" })")
+                .AppendLine("   @await Component.InvokeAsync(\"EmailLinkButton\", new  { text = \"Click Me!\", url = \"https://www.google.com\" })")
                 .AppendLine("</p>")
                 .AppendLine()
                 .AppendLine("@section links")
