@@ -22,7 +22,7 @@ Coravel is a .Net Core library. You must be including Coravel in an existing .Ne
 
 ### Coravel-Cli
 
-Ideally, use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started! 
+Use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started! 
 
 Coravel Cli is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
 
