@@ -4,20 +4,17 @@
 
 __Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
+Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features to .Net Core apps so you can get started building the "meat" of your app and avoid getting tied up configuring additional infrastructure (mail, cache, scheduling, etc.)
 
-- Task Scheduling
-- Queuing
-- Caching
-- Mailer [TBA]
-- Command line tools integrated with coraval features [TBA]
-- More?
+Right now, Coravel features:
 
 ## Full Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
 - [Caching](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md)
+- [Mailing](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md)
+- [Coravel-Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md)
 
 ## Requirements
 
@@ -29,125 +26,36 @@ If you wish to encourage and support my efforts:
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
 
-## Quick-Start
+## Contributing
 
-Add the nuget package `Coravel` to your .NET Core app. Done!
+If you are fixing a typo in one file / place - issue a PR. 
 
-### 1. Scheduling Tasks
+Otherwise, please **always** create an issue first ;)
 
-Tired of using cron and Windows Task Scheduler? Want to use something easy that ties into your existing code?
+### Coravel-Cli
 
-In `Startup.cs`, put this in `ConfigureServices()`:
+Ideally, use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started! 
 
-```c#
-services.AddScheduler(scheduler =>
-    {
-        scheduler.Schedule(
-            () => Console.WriteLine("Run at 1pm utc during week days.")
-        )
-        .DailyAt(13, 00)
-        .Weekday();
-    }
-);
+Coravel Cli is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
+
+Install the tool:
+
+```
+dotnet tool install --global coravel-cli
 ```
 
-For async tasks you may use `ScheduleAsync()`:
+### Installation
 
-```c#
-scheduler.ScheduleAsync(async () =>
-{
-    await Task.Delay(500);
-    Console.WriteLine("async task");
-})
-.EveryMinute();
+With the cli:
+
+```
+coravel install
 ```
 
-Easy enough? Look at the documentation to see what methods are available!
+Alternatively, add the nuget package `Coravel` to your .NET Core app.
 
-### 2. Task Queuing
+Done!
 
-Tired of having to install and configure other systems to get a queuing system up-and-running? Look no further!
+### What Do I Do Next?
 
-In `Startup.cs`, put this in `ConfigureServices()`:
-
-```c#
-services.AddQueue();
-```
-
-Voila! Too hard?
-
-To append to the queue, inject `IQueue` into your controller (or wherever injection occurs):
-
-```c#
-using Coravel.Queuing.Interfaces; // Don't forget this!
-
-// Now inside your MVC Controller...
-IQueue _queue;
-
-public HomeController(IQueue queue) {
-    this._queue = queue;
-}
-```
-
-And then call:
-
-```c#
-this._queue.QueueTask(() =>
-    Console.WriteLine("This was queued!")
-);
-```
-
-Or, for async tasks:
-
-```c#
-this._queue.QueueAsyncTask(async () =>
-{
-    await Task.Delay(100);
-    Console.WriteLine("This was queued!")
-});
-```
-
-Now you have a fully functional queue!
-
-### 3. Caching
-
-Wish there was a simple syntax for enabling caching in your .net core app? Coravel gives you a super simple API to enable caching!
-
-In `Startup.cs`, put this in `ConfigureServices()`:
-
-```c#
-services.AddCache();
-```
-
-Phew! That was hard!
-
-Next, you need to inject `ICache` (from `Coravel.Cache.Interfaces`) via dependency injection. 
-
-```c#
-private ICache _cache;
-
-public CacheController(ICache cache)
-{
-    this._cache = cache;
-}
-```
-
-To cache an object that is refreshed every 10 minutes, for example, Coravel provides the `Remember()` method: 
-
-```c#
-string BigDataLocalFunction() 
-{
-    return "Some Big Data";
-};
-
-this._cache.Remember("BigDataCacheKey", BigDataLocalFunction, TimeSpan.FromMinutes(10));
-```
-
-To cache an item forever:
-
-```c#
-this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
-```
-
-There are more methods for clearing your cache, async methods, etc. See the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md) for more info.
-
+Check out the top of this readme for an index of Coravel's features, each linking to the appropriate docs!

@@ -1,0 +1,17 @@
+@model Demo.Models.UserModel
+
+@{
+   ViewBag.Heading = "Welcome New User: " + Model.Name;
+   ViewBag.Preview = "This is a view generated preview";
+}
+
+<p>
+    Hi @Model.Name!
+    @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com" })
+</p>
+
+@section links
+{
+    <a href="https://www.google.com">Google</a> | <a href="https://www.google.com">Google</a>
+}
+
