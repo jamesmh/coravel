@@ -8,7 +8,7 @@ Satire aside now - e-mails are not as easy as they should be. Luckily for you, C
 
 - Built-in e-mail friendly razor templates
 - Simple and flexible mailing API
-- Render your emails enabling easy e-mail visual testing
+- Render your e-mails enabling easy e-mail visual testing
 - Drivers supporting SMTP, e-mailing to a local log file or BYOM ("bring your own mailer") driver
 - Quick and simple configuration via `appsettings.json`
 - And more!
