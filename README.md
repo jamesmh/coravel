@@ -34,13 +34,13 @@ dotnet tool install --global coravel-cli
 
 ### Installation
 
-With the cli:
+Coravel requires a few dependencies that the cli will manage for you.
+
+To install coravel, run:
 
 ```
 coravel install
 ```
-
-Alternatively, add the nuget package `Coravel` to your .NET Core app.
 
 Done!
 
