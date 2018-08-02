@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
@@ -11,6 +11,9 @@
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- Hack to include P2P references :( -->
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
@@ -20,6 +23,13 @@
     <PackageReference Include="MailKit" Version="2.0.5"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj"/>
+    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj" PrivateAssets="all"/>
   </ItemGroup>
+  
+  <!-- Hack to include P2P references :( -->
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveProjectReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(_ResolvedProjectReferencePaths)" />
+    </ItemGroup>
+  </Target>
 </Project>
