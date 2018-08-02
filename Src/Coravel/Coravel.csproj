@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
@@ -20,6 +20,9 @@
     <PackageReference Include="MailKit" Version="2.0.5"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj" PrivateAssets="all"/>
+  <!-- This will not be included when packaged as nuget. That's why Coravel.Razor
+      is also a nuget package - so the consuming client can use both projects.
+      The cli will include both by running "coravel install" -->
+    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj"/>
   </ItemGroup>
 </Project>
