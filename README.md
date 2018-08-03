@@ -6,9 +6,20 @@ __Note: Coravel is unstable as it's in the "early" stages of development. Once v
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features to .Net Core apps so you can get started building the "meat" of your app and avoid getting tied up configuring additional infrastructure (mail, cache, scheduling, etc.)
 
-Right now, Coravel features:
+## Who Is Coravel For?
 
-## Full Docs
+Coravel is for people who are tired of the repetitive up-front installation, configuration of common infrastructure, repetative cross cutting conerns, and accompanying libraries that take 50 lines of cryptic code to just queue something or send an e-mail. (A bit tongue in cheek - but you get what I mean)
+
+If you have asked yourself one of these questions, then Coravel might be for you:
+
+- What mailing library should I use? Where do I put all that repetitive logic?
+- Do I really need _all this code every time I send an e-mail_?
+- Why is it so hard to just simply use the code I already have and run it once a day at 1 a.m.?
+- Do I need to learn how to use RabbitMQ or Redis when I just want to queue my e-mails in the background?
+
+If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
+
+## Features / Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
@@ -59,4 +70,3 @@ Otherwise, please **always** create an issue first ;)
 If you wish to encourage and support my efforts:
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
-
