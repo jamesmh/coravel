@@ -4,7 +4,7 @@
 
 __Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features to .Net Core apps so you can get started building the "meat" of your app and avoid getting tied up configuring additional infrastructure (mail, cache, scheduling, etc.)
+Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel provides tools to .Net Core apps so you can **get started building your app faster!**
 
 ## Who Is Coravel For?
 
