@@ -1,4 +1,4 @@
-**_Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.) which probably means breaking changes. Please use with this in mind ;) _**
+**_Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.) which probably means breaking changes. Please use with this in mind ;)_**
 
 # Task Scheduling
 
