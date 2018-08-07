@@ -4,7 +4,7 @@
 
 __Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel provides tools to .Net Core apps so you can **get started building your app faster!**
+Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel provides tools for .Net Core apps so you can **get started building your app faster!**
 
 ## Who Is Coravel For?
 Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetative installation and configuration.
