@@ -2,7 +2,7 @@
 
 Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occuring tasks to run. With coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
 
-**Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.)**
+**_Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.)_**
 
 ## Initial Setup
 
