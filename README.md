@@ -8,7 +8,9 @@ Inspired by all the awesome features that are baked into the Laravel PHP framewo
 
 ## Who Is Coravel For?
 
-Coravel is for people who are tired of the repetitive up-front installation, configuration of common infrastructure, repetative cross cutting conerns, and accompanying libraries that take 50 lines of cryptic code to just queue something or send an e-mail. (A bit tongue in cheek - but you get what I mean)
+Coravel is for people who are tired of the repetitive up-front installation, configuration of common infrastructure, repetative cross cutting concerns, and accompanying libraries that take 50 lines of cryptic code to just queue something or send an e-mail. (A bit tongue in cheek - but you get what I mean)
+
+Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetative installation and configuration.
 
 If you have asked yourself one of these questions, then Coravel might be for you:
 
@@ -16,6 +18,7 @@ If you have asked yourself one of these questions, then Coravel might be for you
 - Do I really need _all this code every time I send an e-mail_?
 - Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
 - Do I need to learn how to use RabbitMQ or Redis when I just want to queue my e-mails in the background?
+- I just want to start _building my app!_
 
 If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
 
