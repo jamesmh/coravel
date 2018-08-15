@@ -11,11 +11,11 @@ Coravel's philosophy is basically that you should be focusing on building your a
 
 If you have asked yourself one of these questions, then Coravel might be for you:
 
-- What mailing library should I use? _Where_ do I put all that repetitive logic?
-- Do I really need _all this code every time I send an e-mail_?
+- What mailing library should I use? Where do I put all that repetitive logic?
 - Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
-- Do I need to learn how to use RabbitMQ or Redis when I just want to queue my e-mails in the background?
-- I just want to start _building my app!_
+- Do I need to learn how to use RabbitMQ or Redis when I just want to queue sending my e-mails in the background?
+- I just want to cache my expensive query results and refresh them every 10 minutes - shouldn't there be an easy way to do that?
+- Why does it take so long to actaully get to the point where I'm _finally building my app_?
 
 If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
 
