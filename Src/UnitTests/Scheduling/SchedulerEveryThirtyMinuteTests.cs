@@ -10,9 +10,6 @@ namespace UnitTests.Scheduling
     {
         [Theory]
         [InlineData(0, 30)]
-        [InlineData(6, 36)]
-        [InlineData(6, 40)]
-        [InlineData(10, 41)]
         public async Task ValidEveryThirtyMinutes(int first, int second)
         {
             var scheduler = new Scheduler();
@@ -28,7 +25,6 @@ namespace UnitTests.Scheduling
 
         [Theory]
         [InlineData(0, 25, 30, 59)]
-        [InlineData(5, 20, 34, 36)]
 
         public async Task ValidEveryThirtyMinutes_2RunsOnly(int first, int second, int third, int fourth)
         {

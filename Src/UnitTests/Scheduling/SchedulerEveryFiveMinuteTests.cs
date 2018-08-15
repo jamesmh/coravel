@@ -11,8 +11,8 @@ namespace UnitTests.Scheduling
         [Theory]
         [InlineData(0, 5, 10, 15)]
         [InlineData(20, 25, 30, 35)]
-        [InlineData(4, 10, 21, 50)]
-        [InlineData(30, 37, 50, 59)]
+        [InlineData(30, 40, 50, 55)]
+        [InlineData(0, 30, 35, 40)]
         public async Task ValidEveryFiveMinutes(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();
@@ -29,11 +29,9 @@ namespace UnitTests.Scheduling
         }
 
         [Theory]
-        // Each case ought to run twice.
         [InlineData(0, 3, 4, 5)]
         [InlineData(15, 16, 17, 30)]
-
-
+        [InlineData(19, 44, 45, 55)]
         public async Task ValidEveryFiveMinutes_2RunsOnly(int first, int second, int third, int fourth)
         {
             var scheduler = new Scheduler();

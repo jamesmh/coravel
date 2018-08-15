@@ -27,7 +27,7 @@ namespace UnitTests.Scheduling
         }
 
         [Theory]
-        [InlineData(0, 83)] 
+        [InlineData(0, 23)] 
         [InlineData(10, 83)]
         [InlineData(60, 143)]
         public async Task ValidHourly_RunOnceAtMin23(int first, int second)
@@ -45,9 +45,9 @@ namespace UnitTests.Scheduling
 
         [Theory]
         [InlineData(1, 0, 70)] 
-        [InlineData(5, 0, 66)]
-        [InlineData(2, 0, 63)]
-        [InlineData(2, 0, 61)]
+        [InlineData(5, 4, 66)]
+        [InlineData(2, 60, 63)]
+        [InlineData(2, 1, 3)]
         public async Task HourlyAt_ShouldNotExecuteScheduleTasks(int runAt, int first, int second)
         {
             var scheduler = new Scheduler();

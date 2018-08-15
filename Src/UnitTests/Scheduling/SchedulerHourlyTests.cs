@@ -9,25 +9,24 @@ namespace UnitTests.Scheduling
     public class SchedulerHourlyTests
     {
         [Theory]
-        [InlineData(0, 60)]
-        [InlineData(6, 66)]
-        [InlineData(6, 67)]
-        public async Task ValidHourly(int first, int second)
+        [InlineData(0)]
+                [InlineData(60)]
+                        [InlineData(120)]
+        public async Task ValidHourly(int runAt)
         {
             var scheduler = new Scheduler();
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++).Hourly();
 
-            await RunScheduledTasksFromMinutes(scheduler, first);
-            await RunScheduledTasksFromMinutes(scheduler, second);
+            await RunScheduledTasksFromMinutes(scheduler, runAt);
 
-            Assert.True(taskRunCount == 2);
+            Assert.True(taskRunCount == 1);
         }
 
         [Theory]
         [InlineData(0, 25, 30, 59)]
-        [InlineData(5, 30, 55, 64)]
+        [InlineData(5, 30, 60, 64)]
 
         public async Task ValidHourly_OneRun(int first, int second, int third, int fourth)
         {

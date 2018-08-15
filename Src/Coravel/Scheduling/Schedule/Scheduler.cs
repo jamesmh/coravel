@@ -5,32 +5,34 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
-using Coravel.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using Coravel.Scheduling.Schedule.Helpers;
+using Coravel.Scheduling.Schedule.Event;
 
 namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler : IScheduler, ISchedulerConfiguration, IDisposable
     {
-        private List<ScheduledTask> _tasks;
+        private ConcurrentBag<ScheduledEvent> _tasks;
         private Action<Exception> _errorHandler;
         private ILogger<IScheduler> _logger;
 
         public Scheduler()
         {
-            this._tasks = new List<ScheduledTask>();
+            this._tasks = new ConcurrentBag<ScheduledEvent>();
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
         }
@@ -43,9 +45,16 @@ namespace Coravel.Scheduling.Schedule
 
         public async Task RunAtAsync(DateTime utcDate)
         {
-            // Minutes is lowest value used in scheduling calculations
-            utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
-            await InvokeScheduledTasksAsync(utcDate);
+            var activeTasks = new List<Task>();
+            foreach (var scheduledEvent in this._tasks)
+            {
+                if (scheduledEvent.IsDue(utcDate))
+                {
+                    activeTasks.Add(InvokeTask(scheduledEvent));
+                }
+            }
+
+            await Task.WhenAll(activeTasks);
         }
 
         public ISchedulerConfiguration OnError(Action<Exception> onError)
@@ -65,26 +74,20 @@ namespace Coravel.Scheduling.Schedule
             this.RunSchedulerAsync().GetAwaiter().GetResult();
         }
 
-        private async Task InvokeScheduledTasksAsync(DateTime utcNow)
-        {            
-            foreach (var scheduledEvent in this._tasks)
+        private async Task InvokeTask(ScheduledEvent scheduledEvent)
+        {
+            try
             {
-                if (scheduledEvent.ShouldInvokeNow(utcNow))
+                this._logger?.LogInformation("Scheduled task started...");
+                await scheduledEvent.InvokeScheduledEvent();
+                this._logger?.LogInformation("Scheduled task finished...");
+            }
+            catch (Exception e)
+            {
+                this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
+                if (this._errorHandler != null)
                 {
-                    try
-                    {
-                        this._logger?.LogInformation("Scheduled task started...");
-                        await scheduledEvent.InvokeScheduledAction();
-                        this._logger?.LogInformation("Scheduled task finished...");
-                    }
-                    catch (Exception e)
-                    {
-                        this._logger?.LogWarning("A scheduled task threw an Exception: " + e.Message);
-                        if (this._errorHandler != null)
-                        {
-                            this._errorHandler(e);
-                        }
-                    }
+                    this._errorHandler(e);
                 }
             }
         }

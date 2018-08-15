@@ -3,11 +3,11 @@ using TestMvcApp.Models;
 
 namespace TestMvcApp.Mailables
 {
-    public class WelcomeUserHtmlMail : Mailable<string>
+    public class WelcomeUserMailable : Mailable<string>
     {
         private UserModel _user;
 
-        public WelcomeUserHtmlMail(UserModel user) => this._user = user;
+        public WelcomeUserMailable(UserModel user) => this._user = user;
 
         public override void Build()
         {
