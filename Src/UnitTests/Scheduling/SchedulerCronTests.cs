@@ -1,10 +1,11 @@
 using System;
-using Coravel.Scheduling.Schedule.Cron;
+using System.Threading.Tasks;
+using Coravel.Scheduling.Schedule;
 using Xunit;
 
-namespace UnitTests.Scheduling.Cron
+namespace UnitTests.Scheduling
 {
-    public class CronExpressionTests
+    public class SchedulerCronTests
     {
         [Theory]
         // Always
@@ -120,12 +121,16 @@ namespace UnitTests.Scheduling.Cron
         [InlineData("00 00 */2 * *", "8/12/2018 12:00 am", true)]
         [InlineData("00 00 */2 * *", "8/3/2018 12:00 am", false)]
         [InlineData("00 00 */2 * *", "8/13/2018 12:00 am", false)]
-        public void InvokeCron(string cronExpression, string dateString, bool shouldBeDue)
+        public async Task ScheduledEventCron(string cronExpression, string dateString, bool shouldRun)
         {
-            var expression = new CronExpression(cronExpression);
-            var time = DateTime.Parse(dateString);
-            var isDue = expression.IsDue(time);
-            Assert.Equal(shouldBeDue, isDue);
+            var scheduler = new Scheduler();
+            bool taskRan = false;
+
+            scheduler.Schedule(() => taskRan = true).Cron(cronExpression);
+
+            await scheduler.RunAtAsync(DateTime.Parse(dateString));
+
+            Assert.Equal(shouldRun, taskRan);
         }
     }
 }
