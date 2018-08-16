@@ -9,40 +9,33 @@ namespace UnitTests.Scheduling
     public class SchedulerWeeklyTests
     {
         [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 0, 0 }, new int[] { 7, 0, 0 })]
-        public async Task ValidWeekly(int[] first, int[] second)
+        // Should run
+        [InlineData("2018-7-30 00:00:00 am", true)]
+        [InlineData("2018-8-6 00:00:00 am", true)]
+        [InlineData("2018-8-13 00:00:00 am", true)]
+        [InlineData("2018-8-20 00:00:00 am", true)]
+        [InlineData("2018-8-27 00:00:00 am", true)]
+        [InlineData("2018-9-3 00:00:00 am", true)]
+        [InlineData("2018-9-10 00:00:00 am", true)]
+        [InlineData("2018-9-17 00:00:00 am", true)]
+        [InlineData("2018-9-24 00:00:00 am", true)]
+        // Should not run
+        [InlineData("2018-7-31 00:00:00 am", false)]
+        [InlineData("2018-8-1 00:00:00 am", false)]
+        [InlineData("2018-8-2 00:00:00 am", false)]
+        [InlineData("2018-8-3 00:00:00 am", false)]
+        [InlineData("2018-8-4 00:00:00 am", false)]
+        [InlineData("2018-8-5 00:00:00 am", false)]
+        [InlineData("2018-8-6 00:01:00 am", false)]
+        [InlineData("2018-8-5 12:59:59 pm", false)]
+        public async Task ValidDaily(string dateString, bool shouldRun)
         {
             var scheduler = new Scheduler();
-            int taskRunCount = 0;
+            bool taskRan = false;
 
-            scheduler.Schedule(() => taskRunCount++).Weekly();
-
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second[0], second[1], second[2]);
-
-            Assert.True(taskRunCount == 2);
-        }
-
-        [Theory]
-        [InlineData(1, 2)]
-        [InlineData(1, 3)]
-        [InlineData(1, 4)]
-        [InlineData(1, 5)]
-        [InlineData(1, 6)]
-        [InlineData(6, 1)]
-        [InlineData(1, 0)]
-        public async Task Weekly_ShouldRunOnce(int first, int second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).Weekly();
-
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first, 0, 0);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second, 0, 0);
-
-            Assert.True(taskRunCount == 1);
+            scheduler.Schedule(() => taskRan = true).Weekly();
+            await scheduler.RunAtAsync(DateTime.Parse(dateString));
+            Assert.Equal(shouldRun, taskRan);
         }
     }
 }

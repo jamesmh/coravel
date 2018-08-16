@@ -9,38 +9,33 @@ namespace UnitTests.Scheduling
     public class SchedulerDailyTests
     {
         [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 0, 0 })]
-        [InlineData(new int[] { 2, 0, 0 })]
-        [InlineData(new int[] { 5, 0, 0 })]
-        public async Task ValidDaily(int[] first)
+        // Should run
+        [InlineData(0, 0, 0, true)]
+        [InlineData(1, 0, 0, true)]
+        [InlineData(2, 0, 0, true)]
+        [InlineData(3, 0, 0, true)]
+        [InlineData(4, 0, 0, true)]
+        [InlineData(5, 0, 0, true)]
+        [InlineData(6, 0, 0, true)]
+        // Should not run
+        [InlineData(0, 0, 1, false)]
+        [InlineData(0, 0, 2, false)]
+        [InlineData(0, 1, 0, false)]
+        [InlineData(0, 1, 59, false)]
+        [InlineData(4, 1, 0, false)]
+        [InlineData(4, 23, 59, false)]
+        [InlineData(5, 0, 1, false)]
+
+        public async Task ValidDaily(int day, int hour, int minute, bool shouldRun)
         {
             var scheduler = new Scheduler();
-            int taskRunCount = 0;
+            bool taskRan = false;
 
-            scheduler.Schedule(() => taskRunCount++).Daily();
+            scheduler.Schedule(() => taskRan = true).Daily();
 
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
+            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
 
-            Assert.True(taskRunCount == 1);
-        }
-
-        [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 0, 0 }, new int[] { 0, 23, 59 })]
-        [InlineData(new int[] { 55, 0, 0 }, new int[] { 55,0 ,1 })]
-        [InlineData(new int[] { 4, 0, 0 }, new int[] { 10, 1, 0 })]
-        public async Task Daily_ShouldRunOnce(int[] first, int[] second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).Daily();
-
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second[0], second[1], second[2]);
-
-            Assert.True(taskRunCount == 1);
+            Assert.Equal(shouldRun, taskRan);
         }
     }
 }

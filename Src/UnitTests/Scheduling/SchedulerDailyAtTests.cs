@@ -9,57 +9,40 @@ namespace UnitTests.Scheduling
     public class SchedulerDailyAtTests
     {
         [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 0, 0 }, new int[] { 1, 13, 0 })]
-        [InlineData(new int[] { 0, 5, 59 }, new int[] { 1, 13, 0 })]
-        [InlineData(new int[] { 0, 6, 4 }, new int[] { 5, 13, 0 })]
-        public async Task ValidDailyAt_1pm(int[] first, int[] second)
+        // Should Run
+        [InlineData(0, 0, 0, 0, 0, true)]
+        [InlineData(0, 0, 4, 0, 0, true)]
+        [InlineData(0, 32, 4, 0, 32, true)]
+        [InlineData(0, 32, 6, 0, 32, true)]
+        [InlineData(13, 2, 4, 13, 2, true)]
+        [InlineData(13, 2, 2, 13, 2, true)]
+        [InlineData(6, 59, 4, 6, 59, true)]
+        [InlineData(6, 59, 6, 6, 59, true)]
+        // Should not run
+        [InlineData(6, 59, 4, 6, 58, false)]
+        [InlineData(6, 59, 4, 7, 0, false)]
+        [InlineData(6, 59, 6, 6, 12, false)]
+        [InlineData(6, 59, 6, 7, 0, false)]
+        [InlineData(6, 59, 1, 10, 59, false)]
+        [InlineData(6, 59, 1, 7, 0, false)]
+        [InlineData(6, 59, 1, 6, 58, false)]
+        [InlineData(6, 59, 1, 6, 57, false)]
+        [InlineData(0, 0, 4, 7, 0, false)]
+        [InlineData(0, 0, 0, 0, 1, false)]
+        [InlineData(0, 1, 0, 0, 0, false)]
+        [InlineData(0, 0, 2, 23, 58, false)]
+        [InlineData(0, 0, 2, 23, 59, false)]
+
+        public async Task DailyTests(int atHour, int atMinute, int day, int hour, int minute, bool shouldRun)
         {
             var scheduler = new Scheduler();
-            int taskRunCount = 0;
+            bool taskRan = false;
 
-            scheduler.Schedule(() => taskRunCount++).DailyAt(13, 0);
+            scheduler.Schedule(() => taskRan = true).DailyAt(atHour, atMinute);
 
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second[0], second[1], second[2]);
+            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
 
-            Assert.True(taskRunCount == 1);
-        }
-
-        [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 0, 0 }, new int[] { 0, 0, 34 })]
-        [InlineData(new int[] { 0, 5, 59 }, new int[] { 2, 0, 34 })]
-        [InlineData(new int[] { 0, 6, 4 }, new int[] { 5, 0, 34 })]
-        public async Task ValidDailyAt_34MinAfterMidnight(int[] first, int[] second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).DailyAt(00, 34);
-
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second[0], second[1], second[2]);
-
-            Assert.True(taskRunCount == 1);
-        }
-
-        [Theory]
-        // Note: arrays are [day, hours, minutes]
-        [InlineData(new int[] { 0, 15, 01 }, new int[] { 2, 15, 02 })]
-        [InlineData(new int[] { 0, 14, 59 }, new int[] { 2, 14, 59 })]
-        [InlineData(new int[] { 0, 6, 4 }, new int[] { 5, 14, 00 })]
-        public async Task DailyAt_3pm_ShouldNeverRun(int[] first, int[] second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).DailyAt(00, 34);
-
-            await RunScheduledTasksFromDayHourMinutes(scheduler, first[0], first[1], first[2]);
-            await RunScheduledTasksFromDayHourMinutes(scheduler, second[0], second[1], second[2]);
-
-            Assert.True(taskRunCount == 0);
+            Assert.Equal(shouldRun, taskRan);
         }
     }
 }

@@ -9,56 +9,40 @@ namespace UnitTests.Scheduling
     public class SchedulerHourlyAtTests
     {
         [Theory]
-        [InlineData(-1, 60)] 
-        [InlineData(10, 120)]
-        [InlineData(60, 121)]
-        [InlineData(0, 63)]
-        public async Task ValidHourly_RunOnceOnTheHour(int first, int second)
+        // Should Run
+        [InlineData(0, 0, 0, 0, true)]
+        [InlineData(0, 4, 0, 0, true)]
+        [InlineData(32, 4, 0, 32, true)]
+        [InlineData(32, 6, 0, 32, true)]
+        [InlineData(2, 4, 13, 2, true)]
+        [InlineData(2, 2, 13, 2, true)]
+        [InlineData(59, 4, 6, 59, true)]
+        [InlineData(59, 6, 6, 59, true)]
+        // Should not run
+        [InlineData(59, 4, 6, 58, false)]
+        [InlineData(59, 4, 7, 0, false)]
+        [InlineData(59, 6, 6, 12, false)]
+        [InlineData(59, 6, 7, 0, false)]
+        [InlineData(59, 1, 10, 58, false)]
+        [InlineData(59, 1, 7, 0, false)]
+        [InlineData(59, 1, 6, 58, false)]
+        [InlineData(59, 1, 6, 57, false)]
+        [InlineData(0, 4, 7, 44, false)]
+        [InlineData(0, 0, 0, 1, false)]
+        [InlineData(1, 0, 0, 0, false)]
+        [InlineData(0, 2, 23, 58, false)]
+        [InlineData(0, 2, 23, 59, false)]
+
+        public async Task HourlyAtTests(int atMinute, int day, int hour, int minute, bool shouldRun)
         {
             var scheduler = new Scheduler();
-            int taskRunCount = 0;
+            bool taskRan = false;
 
-            scheduler.Schedule(() => taskRunCount++).HourlyAt(0);
+            scheduler.Schedule(() => taskRan = true).HourlyAt(atMinute);
 
-            await RunScheduledTasksFromMinutes(scheduler, first);
-            await RunScheduledTasksFromMinutes(scheduler, second);
+            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
 
-            Assert.True(taskRunCount == 1);
-        }
-
-        [Theory]
-        [InlineData(0, 23)] 
-        [InlineData(10, 83)]
-        [InlineData(60, 143)]
-        public async Task ValidHourly_RunOnceAtMin23(int first, int second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).HourlyAt(23);
-
-            await RunScheduledTasksFromMinutes(scheduler, first);
-            await RunScheduledTasksFromMinutes(scheduler, second);
-
-            Assert.True(taskRunCount == 1);
-        }
-
-        [Theory]
-        [InlineData(1, 0, 70)] 
-        [InlineData(5, 4, 66)]
-        [InlineData(2, 60, 63)]
-        [InlineData(2, 1, 3)]
-        public async Task HourlyAt_ShouldNotExecuteScheduleTasks(int runAt, int first, int second)
-        {
-            var scheduler = new Scheduler();
-            int taskRunCount = 0;
-
-            scheduler.Schedule(() => taskRunCount++).HourlyAt(runAt);
-
-            await RunScheduledTasksFromMinutes(scheduler, first);
-            await RunScheduledTasksFromMinutes(scheduler, second);
-
-            Assert.True(taskRunCount == 0);
+            Assert.Equal(shouldRun, taskRan);
         }
     }
 }
