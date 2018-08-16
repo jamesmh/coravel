@@ -4,11 +4,22 @@
 
 __Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features to .Net Core apps so you can get started building the "meat" of your app and avoid getting tied up configuring additional infrastructure (mail, cache, scheduling, etc.)
+Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel provides tools for .Net Core apps so you can get started building **your app** faster!
 
-Right now, Coravel features:
+## Who Is Coravel For?
+Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetative installation and configuration.
 
-## Full Docs
+If you have asked yourself one of these questions, then Coravel might be for you:
+
+- What mailing library should I use? Where do I put all that repetitive logic?
+- Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
+- Do I need to learn how to use RabbitMQ or Redis when I just want to queue sending my e-mails in the background?
+- I just want to cache my expensive query results and refresh them every 10 minutes - shouldn't there be an easy way to do that?
+- Why does it take so long to actaully get to the point where I'm _finally building my app_?
+
+If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
+
+## Features / Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
@@ -59,4 +70,3 @@ Otherwise, please **always** create an issue first ;)
 If you wish to encourage and support my efforts:
 
 [![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
-
