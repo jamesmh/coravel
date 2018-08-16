@@ -11,37 +11,37 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// Scheduled task runs every minute.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction EveryMinute();
+        IScheduleOptions EveryMinute();
 
         /// <summary>
         /// Scheduled task runs every five minutes.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction EveryFiveMinutes();
+        IScheduleOptions EveryFiveMinutes();
 
         /// <summary>
         /// Scheduled task runs every ten minutes.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction EveryTenMinutes();
+        IScheduleOptions EveryTenMinutes();
 
         /// <summary>
         /// Scheduled task runs every fifteen minutes.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction EveryFifteenMinutes();
+        IScheduleOptions EveryFifteenMinutes();
 
         /// <summary>
         /// Scheduled task runs every thirty minutes.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction EveryThirtyMinutes();
+        IScheduleOptions EveryThirtyMinutes();
 
         /// <summary>
         /// Scheduled task runs once an hour.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction Hourly();
+        IScheduleOptions Hourly();
 
         /// <summary>
         /// Scheduled task runs once an hour, but only at the time specified.
@@ -51,13 +51,13 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </example>
         /// <param name="minute">Minute each hour that task will run.</param>
         /// <returns></returns>
-        IScheduleRestriction HourlyAt(int minute);
+        IScheduleOptions HourlyAt(int minute);
 
         /// <summary>
         /// Scheduled task runs once a day.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction Daily();
+        IScheduleOptions Daily();
 
         /// <summary>
         /// Scheduled task runs once a day at the hour specified.
@@ -67,7 +67,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </example>
         /// <param name="hour">Task only runs at this hour.</param>
         /// <returns></returns>
-        IScheduleRestriction DailyAtHour(int hour);
+        IScheduleOptions DailyAtHour(int hour);
 
         /// <summary>
         /// Scheduled task runs once a day at the time specified.
@@ -78,12 +78,27 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <param name="hour">Task only runs at this hour.</param>
         /// <param name="minute">Task only runs at time with this minute.</param>
         /// <returns></returns>
-        IScheduleRestriction DailyAt(int hour, int minute);
+        IScheduleOptions DailyAt(int hour, int minute);
 
         /// <summary>
         /// Scheduled task runs once a week.
         /// </summary>
         /// <returns></returns>
-        IScheduleRestriction Weekly();
+        IScheduleOptions Weekly();
+
+        /// <summary>
+        /// Schedule an event from a basic cron expression.
+        /// Supported values for expression parts are:
+        /// - "*"
+        /// - "5"
+        /// - "5,6,7"
+        /// - "5-10"
+        /// - "*/10"
+        /// 
+        /// For example "* * * * 0" would schedule an event to run every minute on Sundays.
+        /// </summary>
+        /// <param name="cronExpression"></param>
+        /// <returns></returns>
+        IScheduleOptions Cron(string cronExpression);
     }
 }

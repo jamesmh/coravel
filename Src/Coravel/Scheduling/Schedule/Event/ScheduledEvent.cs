@@ -8,7 +8,7 @@ using Coravel.Tasks;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
-    public class ScheduledEvent : IScheduleInterval, IScheduleRestriction
+    public class ScheduledEvent : IScheduleInterval, IScheduleOptions
     {
 
         private CronExpression _expression;
@@ -31,116 +31,122 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent() => await this._scheduledAction.Invoke();
 
-        public IScheduleRestriction Daily()
+        public IScheduleOptions Daily()
         {
             this._expression = new CronExpression("00 00 * * *");
             return this;
         }
 
-        public IScheduleRestriction DailyAtHour(int hour)
+        public IScheduleOptions DailyAtHour(int hour)
         {
             this._expression = new CronExpression($"00 {hour} * * *");
             return this;
         }
 
-        public IScheduleRestriction DailyAt(int hour, int minute)
+        public IScheduleOptions DailyAt(int hour, int minute)
         {
             this._expression = new CronExpression($"{minute} {hour} * * *");
             return this;
         }
 
-        public IScheduleRestriction Hourly()
+        public IScheduleOptions Hourly()
         {
             this._expression = new CronExpression($"00 * * * *");
             return this;
         }
 
-        public IScheduleRestriction HourlyAt(int minute)
+        public IScheduleOptions HourlyAt(int minute)
         {
             this._expression = new CronExpression($"{minute} * * * *");
             return this;
         }
 
-        public IScheduleRestriction EveryMinute()
+        public IScheduleOptions EveryMinute()
         {
             this._expression = new CronExpression($"* * * * *");
             return this;
         }
 
-        public IScheduleRestriction EveryFiveMinutes()
+        public IScheduleOptions EveryFiveMinutes()
         {
             this._expression = new CronExpression($"*/5 * * * *");
             return this;
         }
 
-        public IScheduleRestriction EveryTenMinutes()
+        public IScheduleOptions EveryTenMinutes()
         {
             // todo fix "*/10" in cron part
             this._expression = new CronExpression($"*/10 * * * *");
             return this;
         }
 
-        public IScheduleRestriction EveryFifteenMinutes()
+        public IScheduleOptions EveryFifteenMinutes()
         {
             this._expression = new CronExpression($"*/15 * * * *");
             return this;
         }
 
-        public IScheduleRestriction EveryThirtyMinutes()
+        public IScheduleOptions EveryThirtyMinutes()
         {
             this._expression = new CronExpression($"*/30 * * * *");
             return this;
         }
 
-        public IScheduleRestriction Weekly()
+        public IScheduleOptions Weekly()
         {
             this._expression = new CronExpression($"00 00 * * 1");
             return this;
         }
 
-        public IScheduleRestriction Monday()
+        public IScheduleOptions Cron(string cronExpression)
+        {
+            this._expression = new CronExpression(cronExpression);
+            return this;
+        }
+
+        public IScheduleOptions Monday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Monday);
             return this;
         }
 
-        public IScheduleRestriction Tuesday()
+        public IScheduleOptions Tuesday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Tuesday);
             return this;
         }
 
-        public IScheduleRestriction Wednesday()
+        public IScheduleOptions Wednesday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Wednesday);
             return this;
         }
 
-        public IScheduleRestriction Thursday()
+        public IScheduleOptions Thursday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Thursday);
             return this;
         }
 
-        public IScheduleRestriction Friday()
+        public IScheduleOptions Friday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Friday);
             return this;
         }
 
-        public IScheduleRestriction Saturday()
+        public IScheduleOptions Saturday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Saturday);
             return this;
         }
 
-        public IScheduleRestriction Sunday()
+        public IScheduleOptions Sunday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Sunday);
             return this;
         }
 
-        public IScheduleRestriction Weekday()
+        public IScheduleOptions Weekday()
         {
             this.Monday()
                 .Tuesday()
@@ -150,7 +156,7 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduleRestriction Weekend()
+        public IScheduleOptions Weekend()
         {
             this.Saturday()
                 .Sunday();
