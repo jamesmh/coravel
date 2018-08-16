@@ -1,5 +1,3 @@
-**_Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.) which probably means breaking changes. Please use with this in mind ;)_**
-
 # Task Scheduling
 
 Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run. With Coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
@@ -34,7 +32,7 @@ After calling `Schedule()` you can chain method calls further to specify:
 - Specific times when you want your task to run
 - Restricting which days your task is allowed to run on (Monday's only? etc.)
 
-Example: Run a task once an hour only on Mondays.
+### Example: Run a task once an hour only on Mondays.
 
 ```c#
 scheduler.Schedule(
@@ -44,7 +42,7 @@ scheduler.Schedule(
 .Monday();
 ```
 
-Example: Run a task every day at 1pm
+### Example: Run a task every day at 1pm
 
 ```c#
 scheduler.Schedule(
@@ -52,6 +50,8 @@ scheduler.Schedule(
 )
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
+
+> Under the covers, all scheduling is similar to cron. Using `EveryFiveMinutes()`, for example, will trigger only when the minute is 0, 5, 10, 15, etc.
 
 ## Scheduling Tasks
 
@@ -66,7 +66,7 @@ scheduler.Schedule(
 
 ## Scheduling Async Tasks
 
-Coravel will also handle scheduling async methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be async (as it will be invoked by the scheduler at a later time).
+Coravel will also handle scheduling async methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be awaitable (as it will be invoked by the scheduler at a later time).
 
 ```c#
 scheduler.ScheduleAsync(async () =>
@@ -77,7 +77,7 @@ scheduler.ScheduleAsync(async () =>
 .EveryMinute();
 ```
 
-Note, that you are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
+> You are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
 ## Scheduling Tasks Dynamically
 
@@ -91,8 +91,7 @@ First, methods to apply interval constraints are available.
 
 These methods tell your task to execute at basic intervals.
 
-Using any of these methods will cause the task to be executed immediately after your app has started. Then they will only be
-executed again once the specific interval has been reached.
+Using any of these methods will cause the task to be executed immediately after your app has started. Then they will only be executed again once the specific interval has been reached.
 
 If you restart your app these methods will cause all tasks to run again on start. To avoid this, use an interval method with time constraints (see below).
 
@@ -114,6 +113,25 @@ _Please note that the scheduler is using UTC time. So, for example, using `Daily
 - `HourlyAt(int minute)`
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
+
+### Cron Expressions
+
+You can use the `Cron()` method to supply a cron like expression.
+
+```c#
+scheduler.Schedule(
+    () => Console.WriteLine("Scheduled task.")
+)
+.Cron("00 00 1 * *"); // First day of the month at midnight.
+```
+
+Supported expressions are
+
+- "\*" matches every value ("\* \* \* \* \*" - run every minute)
+- "5" supply the actual value ("00 13 \* \* \*" - run at 1:00 pm daily)
+- "5,6,7" matches each value ("00 1,2,3 \* \* \*" - run at 1:00 pm, 2:00 pm and 3:00 pm daily)
+- "5-7" indicates a range of values ("00 1-3 \* \* \*" - same as above)
+- "\*/5" indicates any value divisible by the value ("00 \*/2 \* \* \*" - run every two hours on the hour)
 
 ## Day Constraints
 
