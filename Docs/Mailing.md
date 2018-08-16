@@ -1,8 +1,8 @@
 # Mailing
 
-You love configuring e-mails! Especially building an an e-mail friendly template that you can re-use throughout your app. O yah! 
+You love configuring e-mails! Especially building an an e-mail friendly template that you can re-use throughout your app. O yah!
 
-Sending email through your database is so easy to confiugure and use, right? And don't forget about storing e-mail templates **in your database**! So maintainable and easy to use!
+Sending email through your database is so easy to configure and use, right? And don't forget about storing e-mail templates **in your database**! So maintainable and easy to use!
 
 Satire aside now - e-mails are not as easy as they should be. Luckily for you, Coravel solves this by offering:
 
@@ -26,6 +26,7 @@ Using the cli, installer the mailer feature:
 `coravel mail install`
 
 This will scaffold some basic files for you:
+
 - `~/Views/Mail/_ViewStart.cshtml` - Configures mail views to use Coravel's e-mail templates
 - `~/Views/Mail/_ViewImports.cshtml` - Allows you use Coravel's view components
 - `~/Views/Mail/Example.cshtml` - A sample mail view
@@ -99,7 +100,8 @@ Now you never have to see that ugly mailing code again!
 
 ### Register View Templates
 
-Coravel's mailer comes with some pre-built e-mail friendly razor templates! This means you don't have to worry about building a reusable template and store it in your database. But.... no one ever does that.
+Coravel's mailer comes with some pre-built e-mail friendly razor templates! This means you don't have to worry about
+building a reusable template and store it in your database. But.... no one ever does that.
 
 The Coravel Cli already created the file `~/Views/Mail/_ViewStart.cshtml`. It defaults to use Coravel's colorful template.
 
@@ -113,12 +115,13 @@ If you wish to use a more _plain_ template, replace the file contents with this:
 
 ## Building Mailables
 
-Coravel uses **Mailables** to send mail. Each Mailable is a c# class that represents a specific type of e-mail that you can send, such as
-"New User Sign-up", "Completed Order", etc.
+Coravel uses **Mailables** to send mail. Each Mailable is a c# class that represents a specific type of e-mail
+that you can send, such as "New User Sign-up", "Completed Order", etc.
 
 > Note: The Coravel Cli already generated a sample Mailable in your `~/Mailables` folder!
 
-All of the configuration for a Mailable is done in the `Build()` method. You can then call various methods like `To` and `From` to configure the recipients, sender, etc.
+All of the configuration for a Mailable is done in the `Build()` method. You can then call various methods like `To` and `From`
+to configure the recipients, sender, etc.
 
 Mailables inherit from `Coravel.Mail.Mailable` and accept a generic type which represents a model you want associated with sending your mail.
 
@@ -158,7 +161,7 @@ You may also supply an instance of `Coravel.Mail.MailRecipient` to include the a
 
 #### Global From Address
 
-Specifying the "from" field for every Mailable - if your app will send **all** mail from the same sender - can be a hassle. 
+Specifying the "from" field for every Mailable - if your app will send **all** mail from the same sender - can be a hassle.
 
 Luckily (for you...), you can configure a global from address.
 
@@ -239,11 +242,11 @@ In this case, your Mailable class should use the `string` generic type: `public 
 
 ## Mail Views
 
-Coravel gives you e-mail friendly templates out-of-the-box! 
+Coravel gives you e-mail friendly templates out-of-the-box!
 
 > Note: The cli generated a sample for you at `~/Views/Example.cshtml`.
 
-Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`. 
+Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`.
 
 It might look like this:
 
@@ -342,8 +345,9 @@ To use in your razor template, do this:
 ```
 
 The default color of the button is `#539be2` (blue), but you may set two further optional arguments to change the color of the button:
-- `backgroundColor` 
-- `textColor` 
+
+- `backgroundColor`
+- `textColor`
 
 Both arguments accept either a hex value or rgb/rgba value:
 
@@ -369,7 +373,7 @@ await this._mailer.SendAsync(new NewUserViewMailable(user));
 
 ## Rendering Mail / Visual Testing
 
-Testing the visuals of your e-mails should be easy, right?  With Coravel - it can be!
+Testing the visuals of your e-mails should be easy, right? With Coravel - it can be!
 
 It's just like sending mail, except you call `RenderAsync` instead of `SendAsync`.
 
@@ -386,14 +390,14 @@ public async Task<IActionResult> RenderView()
 
 ## Queuing Mail
 
-Coravel is configured so that you can queue mail! 
+Coravel is configured so that you can queue mail!
 
 Assuming you are using Coravel's queuing feature, you can do this:
 
 ```c#
 this._queue.QueueAsyncTask(async () =>
     await this._mailer.SendAsync(new MyMailable())
-);   
+);
 ```
 
 ## On-The-Fly Mailables
@@ -425,8 +429,8 @@ You may choose to call **some** methods inside you `Build` method and leave the 
 ```c#
 public GenericMailable : Mailable<string>
 {
-    public override void Build() 
-    { 
+    public override void Build()
+    {
         this.Subject("This is a static subject")
             .Html("<html><body>Static content</body></html>");
     }

@@ -7,10 +7,10 @@ Coravel-Cli is a .net core global tool that gives you an _even quicker_ way to g
 Install by running this command in your terminal:
 
 `dotnet tool install --global coravel-cli`
- 
+
 ## Install Coravel
 
-You may use the cli to install coravel into an existing .net core project. 
+You may use the cli to install Coravel into an existing .net core project.
 
 In the root of your project, enter the command:
 

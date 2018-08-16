@@ -11,7 +11,7 @@ _Note: The queue is a separate Hosted Service from the scheduler (i.e. they each
 In your `Startup` file, in the `ConfigureServices()` just do this:
 
 ```c#
-services.AddQueue();  
+services.AddQueue();
 ```
 
 That's it! This will automatically register the queue in your service container.
@@ -93,13 +93,13 @@ The `LogQueuedTaskProgress()` method accepts an instance of `ILogger<IQueue>`, w
 
 ## On App Closing
 
-When your app is stopped, coravel will attempt to gracefully wait until the last moment and:
+When your app is stopped, Coravel will attempt to gracefully wait until the last moment and:
 
 - Run the scheduler once last time
 - Consume any tasks remaining in the queue
 
 You shouldn't have to worry about loosing any queued items.
 
-If your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks. But under normal circumstances, even when forcefully shutting down your app, coravel will (in the background) handle this for you.
+If your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks. But under normal circumstances, even when forcefully shutting down your app, Coravel will (in the background) handle this for you.
 
-_Note: Queue persistance might be added in the future ;)_
+_Note: Queue persistence might be added in the future ;)_
