@@ -17,10 +17,13 @@ namespace Coravel.Scheduling.Schedule
         private ConcurrentBag<ScheduledEvent> _tasks;
         private Action<Exception> _errorHandler;
         private ILogger<IScheduler> _logger;
+        private IMutex _mutex;
+        private readonly int EventLockTimeout_24Hours = 1440;
 
-        public Scheduler()
+        public Scheduler(IMutex mutex)
         {
             this._tasks = new ConcurrentBag<ScheduledEvent>();
+            this._mutex = mutex;
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
@@ -33,6 +36,13 @@ namespace Coravel.Scheduling.Schedule
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
             ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
+            this._tasks.Add(scheduled);
+            return scheduled;
+        }
+
+        public IScheduleInterval Schedule(IInvocable invocable)
+        {
+            ScheduledEvent scheduled = new ScheduledEvent(invocable);
             this._tasks.Add(scheduled);
             return scheduled;
         }
@@ -50,7 +60,7 @@ namespace Coravel.Scheduling.Schedule
             {
                 if (scheduledEvent.IsDue(utcDate))
                 {
-                    activeTasks.Add(InvokeTask(scheduledEvent));
+                    activeTasks.Add(InvokeEvent(scheduledEvent));
                 }
             }
 
@@ -74,13 +84,29 @@ namespace Coravel.Scheduling.Schedule
             this.RunSchedulerAsync().GetAwaiter().GetResult();
         }
 
-        private async Task InvokeTask(ScheduledEvent scheduledEvent)
+        private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {
             try
             {
-                this._logger?.LogInformation("Scheduled task started...");
-                await scheduledEvent.InvokeScheduledEvent();
-                this._logger?.LogInformation("Scheduled task finished...");
+                async Task Invoke()
+                {
+                    this._logger?.LogInformation("Scheduled task started...");
+                    await scheduledEvent.InvokeScheduledEvent();
+                    this._logger?.LogInformation("Scheduled task finished...");
+                };
+
+                if (scheduledEvent.ShouldPreventOverlapping())
+                {
+                    if (this._mutex.TryGetLock(scheduledEvent.OverlappingUniqueIdentifier(), EventLockTimeout_24Hours))
+                    {
+                        await Invoke();
+                    }
+                }
+                else
+                {
+                    await Invoke();
+                }
+
             }
             catch (Exception e)
             {

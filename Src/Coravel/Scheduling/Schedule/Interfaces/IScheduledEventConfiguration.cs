@@ -1,62 +1,71 @@
 namespace Coravel.Scheduling.Schedule.Interfaces
 {
     /// <summary>
-    /// Provides methods to restrict scheduled tasks to only run on certain day(s).
+    /// Provides methods for configuring how a scheduled event behaves.
+    /// This contains all public facing configuration methods - i.e. this defines the 
+    /// fluent api for the scheduled events.
     /// </summary>
-    public interface IScheduleOptions
+    public interface IScheduledEventConfiguration
     {
         /// <summary>
         /// Restrict task to run on Mondays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Monday();
+        IScheduledEventConfiguration Monday();
 
         /// <summary>
         /// Restrict task to run on Tuesdays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Tuesday();
+        IScheduledEventConfiguration Tuesday();
 
         /// <summary>
         /// Restrict task to run on Wednesdays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Wednesday();
+        IScheduledEventConfiguration Wednesday();
 
         /// <summary>
         /// Restrict task to run on Thursdays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Thursday();
+        IScheduledEventConfiguration Thursday();
 
         /// <summary>
         /// Restrict task to run on Fridays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Friday();
+        IScheduledEventConfiguration Friday();
 
         /// <summary>
         /// Restrict task to run on Saturdays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Saturday();
+        IScheduledEventConfiguration Saturday();
 
         /// <summary>
         /// Restrict task to run on Sundays.
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Sunday();
+        IScheduledEventConfiguration Sunday();
 
         /// <summary>
         /// Restrict task to run on weekdays (Monday - Friday).
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Weekday();
+        IScheduledEventConfiguration Weekday();
 
         /// <summary>
         /// Restrict task to run on weekends (Saturday and Sunday).
         /// </summary>
         /// <returns></returns>
-        IScheduleOptions Weekend();
+        IScheduledEventConfiguration Weekend();
+
+        /// <summary>
+        /// If this event has not completed from the last time it was invoked, and is due again,
+        /// it will be prevented from running.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration PeventOverlapping(string uniqueIdentifier);
     }
 }

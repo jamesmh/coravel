@@ -9,21 +9,26 @@ namespace Coravel.Tasks
         private Func<Task> _asyncAction;
         private bool _isAsync;
 
-        public ActionOrAsyncFunc(Action action) {
+        public ActionOrAsyncFunc(Action action)
+        {
             this._isAsync = false;
             this._action = action;
         }
 
-        public ActionOrAsyncFunc(Func<Task> asyncAction) {
+        public ActionOrAsyncFunc(Func<Task> asyncAction)
+        {
             this._isAsync = true;
             this._asyncAction = asyncAction;
         }
 
-        public async Task Invoke(){
-            if(this._isAsync) {
+        public async Task Invoke()
+        {
+            if (this._isAsync)
+            {
                 await this._asyncAction();
             }
-            else {
+            else
+            {
                 this._action();
             }
         }

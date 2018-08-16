@@ -8,11 +8,13 @@ using Coravel.Tasks;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
-    public class ScheduledEvent : IScheduleInterval, IScheduleOptions
+    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration
     {
-
         private CronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;
+        private IInvocable _invocable;
+        private bool _preventOverlapping = false;
+        private string _eventUniqueID;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -24,129 +26,148 @@ namespace Coravel.Scheduling.Schedule.Event
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
         }
 
+        public ScheduledEvent(IInvocable invocable)
+        {
+            this._invocable = invocable;
+        }
+
         public bool IsDue(DateTime utcNow)
         {
             return this._expression.IsDue(utcNow);
         }
 
-        public async Task InvokeScheduledEvent() => await this._scheduledAction.Invoke();
+        public async Task InvokeScheduledEvent()
+        {
+            if (this._invocable is null)
+            {
+                await this._scheduledAction.Invoke();
+            }
+            else
+            {
+                await this._invocable.Invoke();
+            }
+        }
 
-        public IScheduleOptions Daily()
+        public bool ShouldPreventOverlapping() => this._preventOverlapping;
+
+        public string OverlappingUniqueIdentifier() => this._eventUniqueID;
+
+        public IScheduledEventConfiguration Daily()
         {
             this._expression = new CronExpression("00 00 * * *");
             return this;
         }
 
-        public IScheduleOptions DailyAtHour(int hour)
+        public IScheduledEventConfiguration DailyAtHour(int hour)
         {
             this._expression = new CronExpression($"00 {hour} * * *");
             return this;
         }
 
-        public IScheduleOptions DailyAt(int hour, int minute)
+        public IScheduledEventConfiguration DailyAt(int hour, int minute)
         {
             this._expression = new CronExpression($"{minute} {hour} * * *");
             return this;
         }
 
-        public IScheduleOptions Hourly()
+        public IScheduledEventConfiguration Hourly()
         {
             this._expression = new CronExpression($"00 * * * *");
             return this;
         }
 
-        public IScheduleOptions HourlyAt(int minute)
+        public IScheduledEventConfiguration HourlyAt(int minute)
         {
             this._expression = new CronExpression($"{minute} * * * *");
             return this;
         }
 
-        public IScheduleOptions EveryMinute()
+        public IScheduledEventConfiguration EveryMinute()
         {
             this._expression = new CronExpression($"* * * * *");
             return this;
         }
 
-        public IScheduleOptions EveryFiveMinutes()
+        public IScheduledEventConfiguration EveryFiveMinutes()
         {
             this._expression = new CronExpression($"*/5 * * * *");
             return this;
         }
 
-        public IScheduleOptions EveryTenMinutes()
+        public IScheduledEventConfiguration EveryTenMinutes()
         {
             // todo fix "*/10" in cron part
             this._expression = new CronExpression($"*/10 * * * *");
             return this;
         }
 
-        public IScheduleOptions EveryFifteenMinutes()
+        public IScheduledEventConfiguration EveryFifteenMinutes()
         {
             this._expression = new CronExpression($"*/15 * * * *");
             return this;
         }
 
-        public IScheduleOptions EveryThirtyMinutes()
+        public IScheduledEventConfiguration EveryThirtyMinutes()
         {
             this._expression = new CronExpression($"*/30 * * * *");
             return this;
         }
 
-        public IScheduleOptions Weekly()
+        public IScheduledEventConfiguration Weekly()
         {
             this._expression = new CronExpression($"00 00 * * 1");
             return this;
         }
 
-        public IScheduleOptions Cron(string cronExpression)
+        public IScheduledEventConfiguration Cron(string cronExpression)
         {
             this._expression = new CronExpression(cronExpression);
             return this;
         }
 
-        public IScheduleOptions Monday()
+        public IScheduledEventConfiguration Monday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Monday);
             return this;
         }
 
-        public IScheduleOptions Tuesday()
+        public IScheduledEventConfiguration Tuesday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Tuesday);
             return this;
         }
 
-        public IScheduleOptions Wednesday()
+        public IScheduledEventConfiguration Wednesday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Wednesday);
             return this;
         }
 
-        public IScheduleOptions Thursday()
+        public IScheduledEventConfiguration Thursday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Thursday);
             return this;
         }
 
-        public IScheduleOptions Friday()
+        public IScheduledEventConfiguration Friday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Friday);
             return this;
         }
 
-        public IScheduleOptions Saturday()
+        public IScheduledEventConfiguration Saturday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Saturday);
             return this;
         }
 
-        public IScheduleOptions Sunday()
+        public IScheduledEventConfiguration Sunday()
         {
             this._expression.AppendWeekDay(DayOfWeek.Sunday);
             return this;
         }
 
-        public IScheduleOptions Weekday()
+        public IScheduledEventConfiguration Weekday()
         {
             this.Monday()
                 .Tuesday()
@@ -156,10 +177,17 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduleOptions Weekend()
+        public IScheduledEventConfiguration Weekend()
         {
             this.Saturday()
                 .Sunday();
+            return this;
+        }
+
+        public IScheduledEventConfiguration PeventOverlapping(string uniqueIdentifier)
+        {
+            this._preventOverlapping = true;
+            this._eventUniqueID = uniqueIdentifier;
             return this;
         }
     }

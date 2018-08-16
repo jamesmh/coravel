@@ -2,6 +2,7 @@ using System;
 using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Scheduling.Schedule.Mutex;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -19,7 +20,7 @@ namespace Coravel
         /// <returns></returns>
         public static ISchedulerConfiguration AddScheduler(this IServiceCollection services, Action<IScheduler> assignScheduledTasks)
         {
-            Scheduler scheduler = new Scheduler();
+            Scheduler scheduler = new Scheduler(new InMemoryMutex());
             services.AddSingleton<IScheduler>(scheduler);
             services.AddHostedService<SchedulerHost>();
             assignScheduledTasks(scheduler);
