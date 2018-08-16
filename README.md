@@ -2,12 +2,13 @@
 
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 
-__Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
+**Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)**
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel provides tools for .Net Core apps so you can get started building **your app** faster!
+Inspired by all the awesome features that are baked into the Laravel PHP framework - Coravel provides tools for .Net Core apps so you can get started building **your app** faster!
 
 ## Who Is Coravel For?
-Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetative installation and configuration.
+
+Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetitive installation and configuration.
 
 If you have asked yourself one of these questions, then Coravel might be for you:
 
@@ -15,7 +16,7 @@ If you have asked yourself one of these questions, then Coravel might be for you
 - Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
 - Do I need to learn how to use RabbitMQ or Redis when I just want to queue sending my e-mails in the background?
 - I just want to cache my expensive query results and refresh them every 10 minutes - shouldn't there be an easy way to do that?
-- Why does it take so long to actaully get to the point where I'm _finally building my app_?
+- Why does it take so long to actually get to the point where I'm _finally building my app_?
 
 If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
 
@@ -33,7 +34,7 @@ Coravel is a .Net Core library. You must be including Coravel in an existing .Ne
 
 ### Coravel-Cli
 
-Use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started! 
+Use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started!
 
 Coravel Cli is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
 
@@ -47,7 +48,7 @@ dotnet tool install --global coravel-cli
 
 Coravel requires a few dependencies that the cli will manage for you.
 
-To install coravel, run:
+To install Coravel, run:
 
 ```
 coravel install
@@ -61,7 +62,7 @@ Check out the top of this readme for an index of Coravel's features, each linkin
 
 ## Contributing
 
-If you are fixing a typo in one file / place - issue a PR. 
+If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
 
