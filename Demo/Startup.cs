@@ -42,28 +42,12 @@ namespace Demo
             // Coravel Scheduling
             services.AddScheduler(scheduler =>
             {
-                // Run this every five minutes only on Fri and Sat.
-                scheduler.Schedule(() => Console.WriteLine("Every minute"))
+                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow})"))
                 .EveryMinute();
 
-                scheduler.ScheduleAsync(async () =>
-                {
-                    await Task.Delay(5000);
-                    Console.WriteLine("async task");
-                })
-                .EveryMinute();
-
-
-                // Run this task every minute.
-                scheduler.Schedule(() => Console.WriteLine("Saturday at xx:44"))
-                .HourlyAt(44)
-                .Saturday();
-
-                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))
-                .HourlyAt(05)
-                .Weekday();
-            })
-            .LogScheduledTaskProgress(Services.GetService<ILogger<IScheduler>>());
+                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow})"))
+                .EveryFiveMinutes();
+            });
 
             // Coravel Queuing
             services
