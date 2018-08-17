@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Mutex;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
@@ -30,7 +31,7 @@ namespace UnitTests.Scheduling
         [InlineData("2018-8-5 12:59:59 pm", false)]
         public async Task ValidDaily(string dateString, bool shouldRun)
         {
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).Weekly();

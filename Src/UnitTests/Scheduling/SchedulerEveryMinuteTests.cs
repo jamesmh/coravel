@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Mutex;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
@@ -48,7 +49,7 @@ namespace UnitTests.Scheduling
         [InlineData(5, 6, 54, true)]
         public async Task ValidEveryMinute(int day, int hour, int minute, bool shouldRun)
         {
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).EveryMinute();

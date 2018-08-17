@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Mutex;
 using Xunit;
 
 namespace UnitTests.Scheduling
@@ -123,7 +124,7 @@ namespace UnitTests.Scheduling
         [InlineData("00 00 */2 * *", "8/13/2018 12:00 am", false)]
         public async Task ScheduledEventCron(string cronExpression, string dateString, bool shouldRun)
         {
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).Cron(cronExpression);

@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Mutex;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
@@ -11,7 +12,7 @@ namespace UnitTests.Scheduling
         [Fact]
         public async Task TestSchedulerHandlesErrors()
         {
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex());
             int errorHandledCount = 0;
             int successfulTaskCount = 0;
 
@@ -46,7 +47,7 @@ namespace UnitTests.Scheduling
         public async Task TestSchedulerSkipsErrors()
         {
             int successfulTaskCount = 0;
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex());
 
             void DummyTask()
             {
