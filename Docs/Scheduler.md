@@ -1,6 +1,8 @@
+**_Note: I plan on overhauling the scheduling piece of Coravel very soon. It was a proof of concept (the first feature of Coravel) created to see if others were interested in such a project. The response has been very positive - so I will be implementing additional features and fixing issues with the current design (distributed abilities, fixing concurrency issues, etc.) which probably means breaking changes. Please use with this in mind ;)_**
+
 # Task Scheduling
 
-Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occuring tasks to run. With coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
+Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run. With Coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
 
 ## Initial Setup
 
@@ -77,19 +79,19 @@ scheduler.ScheduleAsync(async () =>
 
 Note, that you are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
-## Scheduling Tasks Dynamcially
+## Scheduling Tasks Dynamically
 
 You can add new scheduled tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
 
-### Intervals
+## Intervals
 
 First, methods to apply interval constraints are available.
 
-#### Basic Intervals
+### Basic Intervals
 
 These methods tell your task to execute at basic intervals.
 
-Using any of these methods will cause the task to be executed immedately after your app has started. Then they will only be
+Using any of these methods will cause the task to be executed immediately after your app has started. Then they will only be
 executed again once the specific interval has been reached.
 
 If you restart your app these methods will cause all tasks to run again on start. To avoid this, use an interval method with time constraints (see below).
@@ -103,7 +105,7 @@ If you restart your app these methods will cause all tasks to run again on start
 - `Daily();`
 - `Weekly();`
 
-#### Intervals With Time Contraints
+### Intervals With Time Constraints
 
 These methods allow you specify an interval and a time constraint so that your scheduling is more specific and consistent.
 
@@ -113,7 +115,7 @@ _Please note that the scheduler is using UTC time. So, for example, using `Daily
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
 
-### Day Constraints
+## Day Constraints
 
 After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
 
@@ -131,7 +133,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 ## Global Error Handling
 
-Any tasks that throw errors __will just be skipped__ and the next task in line will be invoked.
+Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
 
 If you want to catch errors and do something specific with them you may use the `OnError()` method.
 
@@ -165,7 +167,7 @@ public IConfiguration Configuration { get; }
 public IServiceProvider Services { get; }
 ```
 
-Next, do ths following:
+Next, do the following:
 
 ```c#
 services.AddScheduler(scheduler =>

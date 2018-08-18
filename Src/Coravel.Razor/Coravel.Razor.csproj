@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Coravel.Razor</PackageId>
+    <Version>0.1.2</Version>
+    <Authors>James Hickey</Authors>
+    <Company>-</Company>
+    <Title>Coravel.Razor</Title>
+    <Description>Razor views etc. required by Coravel</Description>
+    <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+  </ItemGroup>
+</Project>

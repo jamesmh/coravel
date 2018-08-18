@@ -2,146 +2,72 @@
 
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 
-__Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)__
+**Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)**
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - coravel seeks to provide additional features that .Net Core lacks like:
+Inspired by all the awesome features that are baked into the Laravel PHP framework - Coravel provides tools for .Net Core apps so you can get started building **your app** faster!
 
-- Task Scheduling
-- Queuing
-- Caching
-- Mailer [TBA]
-- Command line tools integrated with coraval features [TBA]
-- More???
+## Who Is Coravel For?
 
-## Full Docs
+Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetitive installation and configuration.
+
+If you have asked yourself one of these questions, then Coravel might be for you:
+
+- What mailing library should I use? Where do I put all that repetitive logic?
+- Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
+- Do I need to learn how to use RabbitMQ or Redis when I just want to queue sending my e-mails in the background?
+- I just want to cache my expensive query results and refresh them every 10 minutes - shouldn't there be an easy way to do that?
+- Why does it take so long to actually get to the point where I'm _finally building my app_?
+
+If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
+
+## Features / Docs
 
 - [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
 - [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
 - [Caching](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md)
+- [Mailing](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md)
+- [Coravel-Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md)
 
 ## Requirements
 
 Coravel is a .Net Core library. You must be including Coravel in an existing .Net Core application (version 2.1.0 +).
 
-## Quick-Start
+### Coravel-Cli
 
-Add the nuget package `Coravel` to your .NET Core app. Done!
+Use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started!
 
-### 1. Scheduling Tasks
+Coravel Cli is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
 
-Tired of using cron and Windows Task Scheduler? Want to use something easy that ties into your existing code?
+Install the tool:
 
-In `Startup.cs`, put this in `ConfigureServices()`:
-
-```c#
-services.AddScheduler(scheduler =>
-    {
-        scheduler.Schedule(
-            () => Console.WriteLine("Run at 1pm utc during week days.")
-        )
-        .DailyAt(13, 00)
-        .Weekday();
-    }
-);
+```
+dotnet tool install --global coravel-cli
 ```
 
-For async tasks you may use `ScheduleAsync()`:
+### Installation
 
-```c#
-scheduler.ScheduleAsync(async () =>
-{
-    await Task.Delay(500);
-    Console.WriteLine("async task");
-})
-.EveryMinute();
+Coravel requires a few dependencies that the cli will manage for you.
+
+To install Coravel, run:
+
+```
+coravel install
 ```
 
-Easy enough? Look at the documentation to see what methods are available!
+Done!
 
-### 2. Task Queuing
+### What Do I Do Next?
 
-Tired of having to install and configure other systems to get a queuing system up-and-running? Look no further!
+Check out the top of this readme for an index of Coravel's features, each linking to the appropriate docs!
 
-In `Startup.cs`, put this in `ConfigureServices()`:
+## Contributing
 
-```c#
-services.AddQueue();
-```
+If you are fixing a typo in one file / place - issue a PR.
 
-Voila! Too hard?
+Otherwise, please **always** create an issue first ;)
 
-To append to the queue, inject `IQueue` into your controller (or wherever injection occurs):
+## Support
 
-```c#
-using Coravel.Queuing.Interfaces; // Don't forget this!
+If you wish to encourage and support my efforts:
 
-// Now inside your MVC Controller...
-IQueue _queue;
-
-public HomeController(IQueue queue) {
-    this._queue = queue;
-}
-```
-
-And then call:
-
-```c#
-this._queue.QueueTask(() =>
-    Console.WriteLine("This was queued!")
-);
-```
-
-Or, for async tasks:
-
-```c#
-this._queue.QueueAsyncTask(async () =>
-{
-    await Task.Delay(100);
-    Console.WriteLine("This was queued!")
-});
-```
-
-Now you have a fully functional queue!
-
-### 3. Caching
-
-Wish there was a simple syntax for enabling caching in your .net core app? Coravel gives you a super simple API to enable caching!
-
-In `Startup.cs`, put this in `ConfigureServices()`:
-
-```c#
-services.AddCache();
-```
-
-Phew! That was hard!
-
-Next, you need to inject `ICache` (from `Coravel.Cache.Interfaces`) via dependency injection. 
-
-```c#
-private ICache _cache;
-
-public CacheController(ICache cache)
-{
-    this._cache = cache;
-}
-```
-
-To cache an object that is refreshed every 10 minutes, for example, Coravel provides the `Remember()` method: 
-
-```c#
-string BigDataLocalFunction() 
-{
-    return "Some Big Data";
-};
-
-this._cache.Remember("BigDataCacheKey", BigDataLocalFunction, TimeSpan.FromMinutes(10));
-```
-
-To cache an item forever:
-
-```c#
-this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
-```
-
-There are more methods for clearing your cache, async methods, etc. See the [full docs](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md) for more info.
-
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)
