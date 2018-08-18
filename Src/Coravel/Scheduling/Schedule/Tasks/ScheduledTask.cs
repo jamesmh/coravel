@@ -1,32 +1,36 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Restrictions;
 
 namespace Coravel.Tasks
 {
-    public class ScheduledTask : IScheduleInterval
+    public class ScheduledTask : IScheduleFilterInterval, IScheduleInterval
     {
         private TimeSpan _scheduledInterval;
         private DateTime _utcLastRun;
         private ActionOrAsyncFunc _scheduledAction;
         private DayRestrictions _dayRestrictions;
         private TimeRestrictions _timeRestrictions;
-
+        private CustomRestrictions _customRestrictions;
 
         public ScheduledTask(Action scheduledAction)
         {
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAction);
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
+            this._customRestrictions = new CustomRestrictions();
         }
 
         public ScheduledTask(Func<Task> scheduledAsyncTask) {
-             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
+            this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
             this._dayRestrictions = new DayRestrictions();
             this._timeRestrictions = new TimeRestrictions();
+            this._customRestrictions = new CustomRestrictions();
+        }
+
+        public ScheduledTask()
+        {
         }
 
         public bool ShouldInvokeNow(DateTime utcNow)
@@ -121,6 +125,13 @@ namespace Coravel.Tasks
 
         private bool PassesRestrictions(DateTime utcNow) =>
             this._dayRestrictions.PassesRestrictions(utcNow)
-            && this._timeRestrictions.PassesRestrictions(utcNow);
+            && this._timeRestrictions.PassesRestrictions(utcNow)
+                && this._customRestrictions.PassesRestrictions(utcNow);
+
+        public IScheduleInterval When(Func<bool> func)
+        {
+            this._customRestrictions.SetRestriction(func);
+            return this;
+        }
     }
 }

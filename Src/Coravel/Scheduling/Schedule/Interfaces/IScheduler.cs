@@ -13,13 +13,13 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <param name="actionToSchedule">Task to schedule.</param>
         /// <returns></returns>
-        IScheduleInterval Schedule(Action actionToSchedule);
+        IScheduleFilterInterval Schedule(Action actionToSchedule);
 
         /// <summary>
         /// Schedule an asynchronous task.
         /// </summary>
         /// <param name="asyncTaskToSchedule">Async task to schedule.</param>
         /// <returns></returns>
-        IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule);
+        IScheduleFilterInterval ScheduleAsync(Func<Task> asyncTaskToSchedule);
     }
 }

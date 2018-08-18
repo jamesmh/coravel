@@ -21,14 +21,14 @@ namespace Coravel.Scheduling.Schedule
             this._tasks = new List<ScheduledTask>();
         }
 
-        public IScheduleInterval Schedule(Action actionToSchedule)
+        public IScheduleFilterInterval Schedule(Action actionToSchedule)
         {
             ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
         }
 
-        public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
+        public IScheduleFilterInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
             ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
             this._tasks.Add(scheduled);
