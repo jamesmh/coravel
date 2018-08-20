@@ -66,6 +66,6 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// it will be prevented from running.
         /// </summary>
         /// <returns></returns>
-        IScheduledEventConfiguration PeventOverlapping(string uniqueIdentifier);
+        IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier);
     }
 }

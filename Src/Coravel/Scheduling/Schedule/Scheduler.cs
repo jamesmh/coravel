@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using Coravel.Scheduling.Schedule.Helpers;
 using Coravel.Scheduling.Schedule.Event;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -19,11 +20,13 @@ namespace Coravel.Scheduling.Schedule
         private ILogger<IScheduler> _logger;
         private IMutex _mutex;
         private readonly int EventLockTimeout_24Hours = 1440;
+        private IServiceScopeFactory _scopeFactory;
 
-        public Scheduler(IMutex mutex)
+        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory)
         {
             this._tasks = new ConcurrentBag<ScheduledEvent>();
             this._mutex = mutex;
+            this._scopeFactory = scopeFactory;
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
@@ -40,9 +43,9 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
-        public IScheduleInterval Schedule(IInvocable invocable)
+        public IScheduleInterval Schedule<T>() where T : IInvocable
         {
-            ScheduledEvent scheduled = new ScheduledEvent(invocable);
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
             this._tasks.Add(scheduled);
             return scheduled;
         }

@@ -40,14 +40,7 @@ namespace Demo
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Coravel Scheduling
-            services.AddScheduler(scheduler =>
-            {
-                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow})"))
-                .EveryMinute();
-
-                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow})"))
-                .EveryFiveMinutes();
-            });
+            services.AddScheduler();
 
             // Coravel Queuing
             services
@@ -83,6 +76,15 @@ namespace Demo
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseScheduler(scheduler =>
+            {
+                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow})"))
+                .EveryMinute();
+
+                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow})"))
+                .EveryFiveMinutes();
             });
         }
     }

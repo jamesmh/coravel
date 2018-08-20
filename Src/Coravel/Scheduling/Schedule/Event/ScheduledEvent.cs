@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Cron;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
@@ -12,9 +13,10 @@ namespace Coravel.Scheduling.Schedule.Event
     {
         private CronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;
-        private IInvocable _invocable;
+        private Type _invocableType = null;
         private bool _preventOverlapping = false;
-        private string _eventUniqueID;
+        private string _eventUniqueID = null;
+        private IServiceScopeFactory _scopeFactory;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -26,9 +28,14 @@ namespace Coravel.Scheduling.Schedule.Event
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
         }
 
-        public ScheduledEvent(IInvocable invocable)
+        private ScheduledEvent(){}
+
+        public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
-            this._invocable = invocable;
+            var scheduledEvent = new ScheduledEvent();
+            scheduledEvent._invocableType = typeof(T);
+            scheduledEvent._scopeFactory = scopeFactory;
+            return scheduledEvent;
         }
 
         public bool IsDue(DateTime utcNow)
@@ -38,13 +45,20 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent()
         {
-            if (this._invocable is null)
+            if (this._invocableType is null)
             {
                 await this._scheduledAction.Invoke();
             }
             else
             {
-                await this._invocable.Invoke();
+                /// This allows us to scope the scheduled IInvocable object
+                /// and allow DI to inject it's dependencies.
+                using(var scope = this._scopeFactory.CreateScope())
+                {
+                   if(scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable) {
+                       await invocable.Invoke();
+                   }                   
+                }
             }
         }
 
@@ -184,7 +198,7 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration PeventOverlapping(string uniqueIdentifier)
+        public IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier)
         {
             this._preventOverlapping = true;
             this._eventUniqueID = uniqueIdentifier;

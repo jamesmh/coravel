@@ -2,17 +2,18 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace UnitTests.Scheduling
+namespace UnitTests.Scheduling.IntervalTests
 {
     public class SchedulerOnErrorTests
     {
         [Fact]
         public async Task TestSchedulerHandlesErrors()
         {
-            var scheduler = new Scheduler(new InMemoryMutex());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
             int errorHandledCount = 0;
             int successfulTaskCount = 0;
 
@@ -47,7 +48,7 @@ namespace UnitTests.Scheduling
         public async Task TestSchedulerSkipsErrors()
         {
             int successfulTaskCount = 0;
-            var scheduler = new Scheduler(new InMemoryMutex());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
 
             void DummyTask()
             {

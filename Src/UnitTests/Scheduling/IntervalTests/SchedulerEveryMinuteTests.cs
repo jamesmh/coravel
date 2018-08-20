@@ -2,10 +2,11 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace UnitTests.Scheduling
+namespace UnitTests.Scheduling.IntervalTests
 {
     public class SchedulerEveryMinuteTests
     {
@@ -49,7 +50,7 @@ namespace UnitTests.Scheduling
         [InlineData(5, 6, 54, true)]
         public async Task ValidEveryMinute(int day, int hour, int minute, bool shouldRun)
         {
-            var scheduler = new Scheduler(new InMemoryMutex());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).EveryMinute();
