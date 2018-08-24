@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
+using Coravel.Scheduling.Schedule.UtcTime;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;

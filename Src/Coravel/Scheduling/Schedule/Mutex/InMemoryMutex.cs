@@ -1,25 +1,36 @@
 using System;
 using System.Collections.Generic;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Scheduling.Schedule.UtcTime;
 
 namespace Coravel.Scheduling.Schedule.Mutex
 {
     public class InMemoryMutex : IMutex
     {
+        private IUtcTime _utcTime;
         private object _lock = new object();
         private Dictionary<string, MutexItem> _mutexCollection = new Dictionary<string, MutexItem>();
+
+        public InMemoryMutex() {
+            this._utcTime = new SystemUtcTime();
+        }
+
+        /// <summary>
+        /// Used to override the default usage of DateTime.UtcNow.
+        /// </summary>
+        /// <param name="time"></param>
+        public void Using(IUtcTime time) {
+            this._utcTime = time;
+        }
 
         public void Release(string key)
         {
             lock (this._lock)
             {
-                if (!this._mutexCollection.ContainsKey(key))
+                if (this._mutexCollection.TryGetValue(key, out var mutex))
                 {
-                    this._mutexCollection[key] = new MutexItem
-                    {
-                        Locked = false,
-                        ExpiresAt = null
-                    };
+                    mutex.Locked = false;
+                    mutex.ExpiresAt = null;
                 }
             }
         }
@@ -28,17 +39,11 @@ namespace Coravel.Scheduling.Schedule.Mutex
         {
             lock (this._lock)
             {
-                if (!this._mutexCollection.ContainsKey(key))
+                if (this._mutexCollection.TryGetValue(key, out var mutex))
                 {
-                    return this.CreateLockedMutex(key, timeoutMinutes);
-                }
-                else
-                {
-                    var mutex = this._mutexCollection[key];
-
                     if (mutex.Locked)
                     {
-                        if (DateTime.UtcNow >= mutex.ExpiresAt)
+                        if (this._utcTime.Now >= mutex.ExpiresAt)
                         {
                             return this.CreateLockedMutex(key, timeoutMinutes);
                         }
@@ -51,27 +56,33 @@ namespace Coravel.Scheduling.Schedule.Mutex
                     {
                         return this.CreateLockedMutex(key, timeoutMinutes);
                     }
+
+                }
+                else
+                {
+                    return this.CreateLockedMutex(key, timeoutMinutes);
                 }
             }
         }
 
         private bool CreateLockedMutex(string key, int timeoutMinutes)
         {
-            DateTime? expiresAt = DateTime.UtcNow.AddMinutes(timeoutMinutes);
-            var mutex = new MutexItem
-            {
-                Locked = true,
-                ExpiresAt = expiresAt
-            };
+            DateTime? expiresAt = this._utcTime.Now.AddMinutes(timeoutMinutes);
 
-            if (this._mutexCollection.ContainsKey(key))
+            if (this._mutexCollection.TryGetValue(key, out var mutex))
             {
-                this._mutexCollection.Add(key, mutex);
+                mutex.Locked = true;
+                mutex.ExpiresAt = expiresAt;
             }
             else
             {
-                this._mutexCollection[key] = mutex;
+                this._mutexCollection.Add(key, new MutexItem
+                {
+                    Locked = true,
+                    ExpiresAt = expiresAt
+                });
             }
+
             return true;
         }
 
