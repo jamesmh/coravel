@@ -10,6 +10,7 @@ using System.Collections.Concurrent;
 using Coravel.Scheduling.Schedule.Helpers;
 using Coravel.Scheduling.Schedule.Event;
 using Microsoft.Extensions.DependencyInjection;
+using Coravel.Invocable;
 
 namespace Coravel.Scheduling.Schedule
 {

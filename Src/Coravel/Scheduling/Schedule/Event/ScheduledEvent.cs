@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Coravel.Invocable;
 using Coravel.Scheduling.Schedule.Cron;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Tasks;

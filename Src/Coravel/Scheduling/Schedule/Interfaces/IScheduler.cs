@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Coravel.Invocable;
 
 namespace Coravel.Scheduling.Schedule.Interfaces
 {
@@ -21,5 +22,12 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <param name="asyncTaskToSchedule">Async task to schedule.</param>
         /// <returns></returns>
         IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule);
+
+        /// <summary>
+        /// Schedule an Invocable job.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        IScheduleInterval Schedule<T>() where T : IInvocable;
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TestMvcApp.Models;
 
 namespace TestMvcApp
 {
@@ -37,6 +38,12 @@ namespace TestMvcApp
             services.AddCache();
 
             services.AddFileLogMailer(this.Configuration);
+
+            // Used for testing IInvocable
+            services.AddTransient<TestInvocableStaticRunCounter>(p => new TestInvocableStaticRunCounter());
+            services.AddTransient<TestInvocable>();
+
+            services.AddScheduler();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +68,10 @@ namespace TestMvcApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseScheduler(scheduler => {
+                scheduler.Schedule<TestInvocable>().Weekly();
             });
         }
     }

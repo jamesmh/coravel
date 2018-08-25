@@ -42,7 +42,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             Assert.Equal(0, taskCount);
 
             semaphore.Release();
-            await Task.Delay(1); // Let the scheduled task complete asyncronously.
+            await Task.Delay(10); // Let the scheduled task complete asyncronously.
 
             // We should have only ever executed the scheduled task once.
             Assert.Equal(1, taskCount);

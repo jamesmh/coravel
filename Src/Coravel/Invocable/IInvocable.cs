@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Coravel.Scheduling.Schedule.Interfaces
+namespace Coravel.Invocable
 {
     public interface IInvocable
     {
