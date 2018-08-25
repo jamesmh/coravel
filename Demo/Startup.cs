@@ -13,6 +13,8 @@ using Coravel;
 using Microsoft.Extensions.Logging;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Queuing.Interfaces;
+using Demo.Invocables;
+using System.Threading;
 
 namespace Demo
 {
@@ -52,6 +54,8 @@ namespace Demo
 
             // Coravel Mail
             services.AddMailer(this.Configuration);
+
+            services.AddScoped<SendNightlyReportsEmailJob>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,11 +84,24 @@ namespace Demo
 
             app.UseScheduler(scheduler =>
             {
-                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow})"))
-                .EveryMinute();
+                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryMinute();
 
-                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow})"))
-                .EveryFiveMinutes();
+                scheduler.Schedule(() => Console.WriteLine($"Every minute#2 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryMinute();
+
+                scheduler.Schedule(() => Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryMinute();
+
+                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryFiveMinutes();
+
+                scheduler.Schedule<SendNightlyReportsEmailJob>()
+                    .Cron("* * * * *")
+                    .PreventOverlapping("SendNightlyReportsEmailJob")
+                    .AsLongRunning();
+
+
             });
         }
     }

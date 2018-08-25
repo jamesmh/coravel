@@ -99,16 +99,32 @@ namespace Coravel.Scheduling.Schedule
                     this._logger?.LogInformation("Scheduled task finished...");
                 };
 
+                Func<Task> invokeDelegate = Invoke;
+
+                if (scheduledEvent.IsLongRunning())
+                {
+                    // Cpu heavy tasks / long running tasks will be run on a different thread.
+                    // Any cpu heavy tasks will not prevent other tasks from being executed.
+                    invokeDelegate = () => Task.Run(Invoke);
+                }
+
                 if (scheduledEvent.ShouldPreventOverlapping())
                 {
                     if (this._mutex.TryGetLock(scheduledEvent.OverlappingUniqueIdentifier(), EventLockTimeout_24Hours))
                     {
-                        await Invoke();
+                        try
+                        {
+                            await invokeDelegate();
+                        }
+                        finally
+                        {
+                            this._mutex.Release(scheduledEvent.OverlappingUniqueIdentifier());
+                        }
                     }
                 }
                 else
                 {
-                    await Invoke();
+                    await invokeDelegate();
                 }
 
             }
