@@ -2,9 +2,7 @@
 
 Coravel allows zero-configuration queues (at run time).
 
-Every 30 seconds, if there are any available items in the queue, they will begin invocation.
-
-_Note: The queue is a separate Hosted Service from the scheduler (i.e. they each run in isolation)_
+Every 30 seconds, if there are any available items in the queue, they will be dequeued.
 
 ## Setup
 
@@ -49,13 +47,36 @@ Use the `QueueAsyncTask` to queue up an async Task (which will run async wheneve
  });
 ```
 
-## Global Error Handling
+## Queue Invocables
 
-The `OnError()` extension method can be called after `AddQueue` to register a global error handler.
+Coravel has a shared interface `Coravel.Invocable.IInvocable` that allows you to define specific actions or jobs within your system. Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+
+### Create an Invocable
+
+To create an invocable, implement the interface above in your class.
+
+In your invocable's constructor, inject any types that are available from your application's service container.
+
+Make sure that your invocable _itself_ is available in the service container.
+
+### Queue It
+
+To queue it, use `QueueInvocable`:
 
 ```c#
-services
-    .AddQueue()
+this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
+```
+
+_Note: Coravel's scheduler can schedule invocables too._
+
+
+## Global Error Handling
+
+In the `Startup.Configure` method, first call `app.ConfigureQueue()` and further chain the `OnError()` method to register a global error handler.
+
+```c#
+app
+    .ConfigureQueue()
     .OnError(e =>
     {
         //.... handle the error
@@ -81,11 +102,11 @@ public IConfiguration Configuration { get; }
 public IServiceProvider Services { get; }
 ```
 
-Then enable logging:
+Then enable logging by further chaining off the `ConfigureQueue` method:
 
 ```c#
-services
-    .AddQueue()
+app
+    .ConfigureQueue()
     .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
 ```
 
@@ -93,10 +114,7 @@ The `LogQueuedTaskProgress()` method accepts an instance of `ILogger<IQueue>`, w
 
 ## On App Closing
 
-When your app is stopped, Coravel will attempt to gracefully wait until the last moment and:
-
-- Run the scheduler once last time
-- Consume any tasks remaining in the queue
+When your app is stopped, Coravel will attempt to gracefully wait until the last moment and consume any tasks remaining in the queue.
 
 You shouldn't have to worry about loosing any queued items.
 

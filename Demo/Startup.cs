@@ -45,9 +45,7 @@ namespace Demo
             services.AddScheduler();
 
             // Coravel Queuing
-            services
-                .AddQueue()
-                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+            services.AddQueue();               
 
             // Coravel Caching
             services.AddCache();
@@ -98,11 +96,12 @@ namespace Demo
 
                 scheduler.Schedule<SendNightlyReportsEmailJob>()
                     .Cron("* * * * *")
-                    .PreventOverlapping("SendNightlyReportsEmailJob")
-                    .AsLongRunning();
-
-
+                    .PreventOverlapping("SendNightlyReportsEmailJob");
             });
+
+            app
+                .ConfigureQueue()
+                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
         }
     }
 }

@@ -15,7 +15,7 @@ namespace UnitTests.Queuing
             int errorsHandled = 0;
             int successfulTasks = 0;
 
-            Queue queue = new Queue();
+            Queue queue = new Queue(null);
 
             queue.OnError(ex => errorsHandled++);
 

@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Coravel.Invocable;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace UnitTests.Queuing
@@ -15,7 +17,7 @@ namespace UnitTests.Queuing
             int errorsHandled = 0;
             int successfulTasks = 0;
 
-            Queue queue = new Queue();
+            Queue queue = new Queue(null);
 
             queue.OnError(ex => errorsHandled++);
 
@@ -44,7 +46,7 @@ namespace UnitTests.Queuing
         {
             int successfulTasks = 0;
 
-            Queue queue = new Queue();
+            Queue queue = new Queue(null);
 
             queue.QueueTask(() => successfulTasks++);
             queue.QueueTask(() => throw new Exception());
@@ -53,6 +55,35 @@ namespace UnitTests.Queuing
             await queue.ConsumeQueueAsync();
 
             Assert.Equal(2, successfulTasks);
+        }
+
+        [Fact]
+        public async Task TestQueueInvocable()
+        {
+            int successfulTasks = 0;
+            var services = new ServiceCollection();
+            services.AddScoped<Action>(p => () => successfulTasks++);
+            services.AddScoped<TestInvocable>();
+            var provider = services.BuildServiceProvider();
+
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>());
+            queue.QueueInvocable<TestInvocable>();
+            await queue.ConsumeQueueAsync();
+            await queue.ConsumeQueueAsync();
+
+            Assert.Equal(1, successfulTasks);                    
+        }
+
+        private class TestInvocable : IInvocable
+        {
+            private Action _func;
+
+            public TestInvocable(Action func) => this._func = func;
+            public Task Invoke()
+            {
+                this._func();
+                return Task.CompletedTask;
+            }
         }
     }
 }

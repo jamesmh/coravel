@@ -16,7 +16,11 @@ namespace Coravel.Queuing.Interfaces
         /// <returns></returns>
          IQueueConfiguration OnError(Action<Exception> errorHandler);
 
-         
+        /// <summary>
+        /// Log the progress of queued tasks.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <returns></returns>
         IQueueConfiguration LogQueuedTaskProgress(ILogger<IQueue> logger);   
     }
 }

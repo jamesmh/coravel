@@ -30,7 +30,7 @@ namespace Coravel.Scheduling.Schedule.Event
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
         }
 
-        private ScheduledEvent(){}
+        private ScheduledEvent() { }
 
         public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
@@ -55,11 +55,12 @@ namespace Coravel.Scheduling.Schedule.Event
             {
                 /// This allows us to scope the scheduled IInvocable object
                 /// and allow DI to inject it's dependencies.
-                using(var scope = this._scopeFactory.CreateScope())
-                {if(scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable)
+                using (var scope = this._scopeFactory.CreateScope())
+                {
+                    if (scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable)
                     {
-                       await invocable.Invoke();
-                   }                   
+                        await invocable.Invoke();
+                    }
                 }
             }
         }
@@ -209,10 +210,12 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration AsLongRunning()
-        {
-            this._isLongRunning = true;
-            return this;
-        }
+        // See IScheduledEventConfiguration.AsLongRunning for TODO
+        //
+        // public IScheduledEventConfiguration AsLongRunning()
+        // {
+        //     this._isLongRunning = true;
+        //     return this;
+        // }
     }
 }

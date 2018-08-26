@@ -2,8 +2,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Coravel.Invocable;
 using Coravel.Queuing.Interfaces;
 using Coravel.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Coravel.Queuing
@@ -13,10 +15,34 @@ namespace Coravel.Queuing
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
         private Action<Exception> _errorHandler;
         private ILogger<IQueue> _logger;
+        private IServiceScopeFactory _scopeFactory;
+
+        public Queue(IServiceScopeFactory scopeFactory)
+        {
+            this._scopeFactory = scopeFactory;
+        }
 
         public void QueueTask(Action task)
         {
             this._tasks.Enqueue(new ActionOrAsyncFunc(task));
+        }
+
+        public void QueueInvocable<T>() where T : IInvocable
+        {
+            this._tasks.Enqueue(
+                new ActionOrAsyncFunc(async () =>
+                {
+                    // This allows us to scope the scheduled IInvocable object
+                    /// and allow DI to inject it's dependencies.
+                    using (var scope = this._scopeFactory.CreateScope())
+                    {
+                        if (scope.ServiceProvider.GetRequiredService(typeof(T)) is IInvocable invocable)
+                        {
+                            await invocable.Invoke();
+                        }
+                    }
+                })
+            );
         }
 
         public void QueueAsyncTask(Func<Task> asyncTask)

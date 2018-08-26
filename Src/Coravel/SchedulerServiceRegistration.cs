@@ -27,11 +27,11 @@ namespace Coravel
             services.AddHostedService<SchedulerHost>();
         }
 
-        public static IScheduler UseScheduler(this IApplicationBuilder app, Action<IScheduler> assignScheduledTasks)
+        public static ISchedulerConfiguration UseScheduler(this IApplicationBuilder app, Action<IScheduler> assignScheduledTasks)
         {
             var scheduler = app.ApplicationServices.GetRequiredService<IScheduler>();
             assignScheduledTasks(scheduler);
-            return scheduler;
+            return scheduler as Scheduler;
         }
     }
 }

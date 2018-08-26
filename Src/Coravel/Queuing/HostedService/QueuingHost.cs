@@ -47,7 +47,7 @@ namespace Coravel.Queuing.HostedService
         {
             this._timer?.Dispose();
 
-            // Run the scheduler one last time.
+            // Consume the queue one last time.
             // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
             this._queue.ConsumeQueueAsync().GetAwaiter().GetResult();
         }
