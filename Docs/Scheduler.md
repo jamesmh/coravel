@@ -1,36 +1,44 @@
 # Task Scheduling
 
-Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run. With Coravel you can setup all your scheduled tasks in one place! And it's super easy to use!
+Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run. With Coravel you can setup all your scheduled tasks in one place using a simple, elegant, fluent syntax.
+
+Scheduling is now a breeze!
 
 ## Initial Setup
 
 In your .NET Core app's `Startup.cs` file, inside the `ConfigureServices()` method, add the following:
 
 ```c#
-services.AddScheduler(scheduler =>
-    {
-        scheduler.Schedule(
-            () => Console.WriteLine("Every minute during the week.")
-        )
-        .EveryMinute();
-        .Weekday();
-    }
-);
+services.AddScheduler()
 ```
 
-This will run the task (which prints to the console) every minute and only on weekdays (not Sat or Sun). Simple enough?
+Then in the `Configure()` method, you can use the scheduler:
 
-## How Does It Work?
+```c#
+app.UseScheduler(scheduler =>
+{
+    scheduler.Schedule(
+        () => Console.WriteLine("Every minute during the week.")
+    )
+    .EveryMinute();
+    .Weekday();
+});
+```
 
-The `AddScheduler()` method will configure a new Hosted Service that will run in the background while your app is running.
+Simple enough?
 
-A `Scheduler` is provided to you for configuring what tasks you want to schedule. You may use the `Schedule()` and `ScheduleAsync()` methods to schedule a task.
-
+## Overview / "Nice To Knows"
 After calling `Schedule()` you can chain method calls further to specify:
 
 - The interval of when your task should be run (once a minute? every hour? etc.)
 - Specific times when you want your task to run
 - Restricting which days your task is allowed to run on (Monday's only? etc.)
+- Other restrictions such as preventing a long running task from running again while
+  the previous one is still active.
+
+> Under the covers, all scheduling is similar to cron. Using `EveryFiveMinutes()`, for example, will trigger only when the minute is 0, 5, 10, 15, etc.
+
+## A Few Samples
 
 ### Example: Run a task once an hour only on Mondays.
 
@@ -51,11 +59,20 @@ scheduler.Schedule(
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
 
-> Under the covers, all scheduling is similar to cron. Using `EveryFiveMinutes()`, for example, will trigger only when the minute is 0, 5, 10, 15, etc.
+### Example: Run a task on the first day of the month.
 
-## Scheduling Tasks
+```c#
+scheduler.Schedule(
+    () => Console.WriteLine("Daily at 1 pm.")
+)
+.Cron("0 0 1 * *") // At midnight on the 1st day of each month.
+```
 
-After you have called the `Schedule()` method on the `Scheduler`, you can begin to configure the schedule constraints of your task.
+## Scheduler / Scheduling Tasks
+
+After you have called the `Schedule()` method from the `Scheduler`, you can begin to configure the various constraints of your task.
+
+For example:
 
 ```c#
 scheduler.Schedule(
@@ -66,7 +83,7 @@ scheduler.Schedule(
 
 ## Scheduling Async Tasks
 
-Coravel will also handle scheduling async methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be awaitable (as it will be invoked by the scheduler at a later time).
+Coravel will also handle scheduling `async` methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be awaitable (as it will be invoked by the scheduler at a later time).
 
 ```c#
 scheduler.ScheduleAsync(async () =>
@@ -79,21 +96,96 @@ scheduler.ScheduleAsync(async () =>
 
 > You are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
+## Scheduling Invocables
+
+Coravel has a shared interface `Coravel.Invocable.IInvocable` that allows you to define specific actions or jobs within your system. Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+
+> Ex. You might want to send an e-mail to your users every night. 
+  Using an invocable and Coravel's Mailer, you can easily create a self-contained class that will grab data from your DB and send mail to your users.
+
+### Create An Invocable
+
+To create an invocable:
+
+1. Implement the interface above in your class.
+
+2. In your invocable's constructor, inject any types that are available from your application's service container.
+
+3. Make sure that your invocable _itself_ is available in the service container.
+
+### Schedule It
+
+To schedule invocables, use the `Schedule` method:
+
+```c#
+scheduler.Schedule<GrabDataFromApiAndPutInDBInvocable>();
+```
+
+What a simple, terse and expressive syntax! Easy Peasy!
+
+_Note: Coravel also supports queuing invocables too!_
+
+### Sample: Scheduling An Invocable That Sends A Daily Report
+
+Imaging you have a "daily report" that you send out to users at the end of each day. What would be a simple, elegant way to do this?
+
+Using Coravel's Invocables, Scheduler and Mailer altogether can make it happen!
+
+Take this sample class as an example:
+
+```c#
+public class SendDailyReportsEmailJob : IInvocable
+{
+    private IMailer _mailer;
+    private IUserRepository _repo;
+
+    // Each param injected from the service container ;)
+    public SendDailyReportsEmailJob(IMailer mailer, IUserRepository repo)
+    {
+        this._mailer = mailer;
+        this._repo = repo;
+    }
+
+    public async Task Invoke()
+    {
+        var users = await this._repo.GetUsersAsync();
+
+        foreach(var user in users)
+        {
+            var mailable = new NightlyReportMailable(user);
+            await this._mailer.SendAsync(mailable);
+        }        
+    }
+}
+```
+
+Now to schedule it:
+
+```c#
+scheduler
+    .Schedule<SendDailyReportsEmailJob>()
+    .Daily();
+```
+
+**Woah!** How readable and maintainable could **your** system be by using Coravel?
+
 ## Scheduling Tasks Dynamically
 
-You can add new scheduled tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
+While this is not necessarily recommended, it is possible.
+
+You may schedule tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
+
+Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
 
 ## Intervals
 
 First, methods to apply interval constraints are available.
 
-### Basic Intervals
+These methods tell your task to execute at certain intervals. They are basically all wrappers of the `Cron` method (keep reading...). 
 
-These methods tell your task to execute at basic intervals.
+For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
 
-Using any of these methods will cause the task to be executed immediately after your app has started. Then they will only be executed again once the specific interval has been reached.
-
-If you restart your app these methods will cause all tasks to run again on start. To avoid this, use an interval method with time constraints (see below).
+`Daily` will run at midnight each day (`0 0 * * *`).
 
 - `EveryMinute();`
 - `EveryFiveMinutes();`
@@ -103,16 +195,11 @@ If you restart your app these methods will cause all tasks to run again on start
 - `Hourly();`
 - `Daily();`
 - `Weekly();`
-
-### Intervals With Time Constraints
-
-These methods allow you specify an interval and a time constraint so that your scheduling is more specific and consistent.
-
-_Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
-
 - `HourlyAt(int minute)`
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
+
+_Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
 
 ### Cron Expressions
 
@@ -125,13 +212,13 @@ scheduler.Schedule(
 .Cron("00 00 1 * *"); // First day of the month at midnight.
 ```
 
-Supported expressions are
+Supported expressions are:
 
-- "\*" matches every value ("\* \* \* \* \*" - run every minute)
-- "5" supply the actual value ("00 13 \* \* \*" - run at 1:00 pm daily)
-- "5,6,7" matches each value ("00 1,2,3 \* \* \*" - run at 1:00 pm, 2:00 pm and 3:00 pm daily)
-- "5-7" indicates a range of values ("00 1-3 \* \* \*" - same as above)
-- "\*/5" indicates any value divisible by the value ("00 \*/2 \* \* \*" - run every two hours on the hour)
+- "\*" matches every value (`* * * * *` - run every minute)
+- "5" supply the literal value (`00 13 * * *` - run at 1:00 pm daily)
+- "5,6,7" matches each value (`00 1,2,3 * * *` - run at 1:00 pm, 2:00 pm and 3:00 pm daily)
+- "5-7" indicates a range of values (`00 1-3 * * *` - same as above)
+- "\*/5" indicates any value divisible by the value (`00 */2 * * *` - run every two hours on the hour)
 
 ## Day Constraints
 
@@ -149,6 +236,22 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 - `Weekday()`
 - `Weekend()`
 
+## Prevent Overlapping Tasks
+
+Sometimes you may have longer running tasks (longer than 1 minute). The normal behavior of the scheduler is to simply fire off a task if it is due.
+
+What if the previous task is **still** running?
+
+In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task.
+
+```c#
+scheduler
+    .Schedule<SomeInvocable>()
+    .EveryMinute()
+    .PreventOverlapping("SomeInvocable");
+```
+This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release ;)
+
 ## Global Error Handling
 
 Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
@@ -156,7 +259,7 @@ Any tasks that throw errors **will just be skipped** and the next task in line w
 If you want to catch errors and do something specific with them you may use the `OnError()` method.
 
 ```c#
-services.AddScheduler(scheduler =>
+app.UseScheduler(scheduler =>
     // Assign your schedules
 )
 .OnError((exception) =>
@@ -188,7 +291,7 @@ public IServiceProvider Services { get; }
 Next, do the following:
 
 ```c#
-services.AddScheduler(scheduler =>
+app.UseScheduler(scheduler =>
 {
     // Assign scheduled tasks...
 })

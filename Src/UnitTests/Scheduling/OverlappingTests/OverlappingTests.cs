@@ -17,7 +17,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             var semaphore = new SemaphoreSlim(0);
             int taskCount = 0;
 
-            scheduler.Schedule(async () =>
+            scheduler.ScheduleAsync(async () =>
             {
                 await semaphore.WaitAsync(); // Simulate that this event takes a really long time.
                 taskCount++;
@@ -42,7 +42,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             Assert.Equal(0, taskCount);
 
             semaphore.Release();
-            await Task.Delay(10); // Let the scheduled task complete asyncronously.
+            await Task.Delay(1); // Let the scheduled task complete asyncronously.
 
             // We should have only ever executed the scheduled task once.
             Assert.Equal(1, taskCount);
