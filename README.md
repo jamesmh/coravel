@@ -2,9 +2,9 @@
 
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 
-Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**. Allow
+Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**.
 
-Coravel tackle the configuration and infrastructural details for you - and **build your app**!
+Allow Coravel to tackle the configuration and infrastructural details for you - and **build your app**!
 
 > In other words, Coravel simply makes your code say what it does. 
 
