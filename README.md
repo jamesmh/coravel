@@ -4,7 +4,7 @@
 
 Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**.
 
-Let Coravel to tackle the configuration and infrastructural details for you - and **build your app**!
+Let Coravel tackle the configuration and infrastructural details for you - and **build your app**!
 
 > In other words, Coravel simply makes your code say what it does. 
 
