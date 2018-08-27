@@ -6,6 +6,10 @@
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - Coravel provides tools for .Net Core apps so you can get started building **your app** faster!
 
+|         |     |
+| ------- |:----:|
+| ![Coravel Scheduler](./Docs/img/scheduledailyreport.png) | ![Coravel Mailer](./Docs/img/coravelmail.png)
+
 ## Who Is Coravel For?
 
 Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetitive installation and configuration.
