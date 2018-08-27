@@ -6,12 +6,7 @@
 
 Inspired by all the awesome features that are baked into the Laravel PHP framework - Coravel provides tools for .Net Core apps so you can get started building **your app** faster!
 
-<div style="width:49%; float:left; display:inline-block;">
-    <img style="border-radius:10px; height:150px" src="./Docs/img/scheduledailyreport.png" />
-</div>
-<div style="width:49%; float:left; display:inline-block;">
-    <img style="border-radius:10px; height:150px" src="./Docs/img/coravelmail.png" />
-</div>
+![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
 ## Who Is Coravel For?
 
