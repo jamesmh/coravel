@@ -16,8 +16,8 @@ Let Coravel tackle the configuration and infrastructural details for you - and *
 - [Queuing](./Docs/Queuing.md)
 - [Caching](./Docs/Caching.md)
 - [Mailing](./Docs/Mailing.md)
-- [Coravel-Cli](./Docs/Cli.md)
 - [Invocables](./Docs/Invocables.md)
+- [Coravel-Cli](./Docs/Cli.md)
 
 ## Requirements
 
