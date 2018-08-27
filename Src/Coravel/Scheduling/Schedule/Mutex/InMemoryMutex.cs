@@ -8,7 +8,7 @@ namespace Coravel.Scheduling.Schedule.Mutex
     public class InMemoryMutex : IMutex
     {
         private IUtcTime _utcTime;
-        private object _lock = new object();
+        private readonly object _lock = new object();
         private Dictionary<string, MutexItem> _mutexCollection = new Dictionary<string, MutexItem>();
 
         public InMemoryMutex() {

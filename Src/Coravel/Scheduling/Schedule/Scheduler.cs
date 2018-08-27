@@ -54,10 +54,11 @@ namespace Coravel.Scheduling.Schedule
 
         public async Task RunSchedulerAsync()
         {
-            this._isRunning = true;
-            DateTime utcNow = DateTime.UtcNow;
-            await this.RunAtAsync(utcNow);
-            this._isRunning = false;
+            await this.MarkSchedulerAsRunning(async () =>
+            {
+                DateTime utcNow = DateTime.UtcNow;
+                await this.RunAtAsync(utcNow);
+            });
         }
 
         public async Task RunAtAsync(DateTime utcDate)
@@ -99,22 +100,13 @@ namespace Coravel.Scheduling.Schedule
                     this._logger?.LogInformation("Scheduled task finished...");
                 };
 
-                Func<Task> invokeDelegate = Invoke;
-
-                if (scheduledEvent.IsLongRunning())
-                {
-                    // Cpu heavy tasks / long running tasks will be run on a different thread.
-                    // Any cpu heavy tasks will not prevent other tasks from being executed.
-                    invokeDelegate = () => Task.Run(Invoke);
-                }
-
                 if (scheduledEvent.ShouldPreventOverlapping())
                 {
                     if (this._mutex.TryGetLock(scheduledEvent.OverlappingUniqueIdentifier(), EventLockTimeout_24Hours))
                     {
                         try
                         {
-                            await invokeDelegate();
+                            await Invoke();
                         }
                         finally
                         {
@@ -124,7 +116,7 @@ namespace Coravel.Scheduling.Schedule
                 }
                 else
                 {
-                    await invokeDelegate();
+                    await Invoke();
                 }
 
             }
@@ -136,6 +128,13 @@ namespace Coravel.Scheduling.Schedule
                     this._errorHandler(e);
                 }
             }
+        }
+
+        private async Task MarkSchedulerAsRunning(Func<Task> func)
+        {
+            this._isRunning = true;
+            await func();
+            this._isRunning = false;
         }
     }
 }

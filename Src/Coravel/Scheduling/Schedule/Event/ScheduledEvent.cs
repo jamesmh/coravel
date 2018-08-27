@@ -17,7 +17,6 @@ namespace Coravel.Scheduling.Schedule.Event
         private Type _invocableType = null;
         private bool _preventOverlapping = false;
         private string _eventUniqueID = null;
-        private bool _isLongRunning = false;
         private IServiceScopeFactory _scopeFactory;
 
         public ScheduledEvent(Action scheduledAction)
@@ -68,8 +67,6 @@ namespace Coravel.Scheduling.Schedule.Event
         public bool ShouldPreventOverlapping() => this._preventOverlapping;
 
         public string OverlappingUniqueIdentifier() => this._eventUniqueID;
-
-        public bool IsLongRunning() => this._isLongRunning;
 
         public IScheduledEventConfiguration Daily()
         {
@@ -208,14 +205,6 @@ namespace Coravel.Scheduling.Schedule.Event
             this._preventOverlapping = true;
             this._eventUniqueID = uniqueIdentifier;
             return this;
-        }
-
-        // See IScheduledEventConfiguration.AsLongRunning for TODO
-        //
-        // public IScheduledEventConfiguration AsLongRunning()
-        // {
-        //     this._isLongRunning = true;
-        //     return this;
-        // }
+        }        
     }
 }
