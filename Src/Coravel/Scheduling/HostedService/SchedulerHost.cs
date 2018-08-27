@@ -14,6 +14,7 @@ namespace Coravel.Scheduling.HostedService
     {
         private Scheduler _scheduler;
         private Timer _timer;
+        private bool _schedulerEnabled = true;
 
         public SchedulerHost(IScheduler scheduler)
         {
@@ -28,22 +29,30 @@ namespace Coravel.Scheduling.HostedService
 
         private async void RunSchedulerAsync(object state)
         {
-            await this._scheduler.RunSchedulerAsync();
+            if(this._schedulerEnabled) {
+                await this._scheduler.RunSchedulerAsync();
+            }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
+            this._schedulerEnabled = false; // Prevents changing the timer from firing scheduled tasks.
             this._timer?.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
+
+            await WaitUntilSchedulerCompletedRunning();
         }
 
         public void Dispose()
         {
             this._timer?.Dispose();
+        }
 
-            // Run the scheduler one last time.
-            // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
-            this._scheduler?.Dispose();
+        private async Task WaitUntilSchedulerCompletedRunning()
+        {
+            while (this._scheduler.IsStillRunning())
+            {
+                await Task.Delay(100);
+            }
         }
     }
 }

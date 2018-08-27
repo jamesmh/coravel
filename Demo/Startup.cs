@@ -88,8 +88,12 @@ namespace Demo
                 scheduler.Schedule(() => Console.WriteLine($"Every minute#2 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
                     .EveryMinute();
 
-                scheduler.Schedule(() => Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
-                    .EveryMinute();
+                scheduler.ScheduleAsync(async () => 
+                {
+                    await Task.Delay(10000);
+                    Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}");
+                })
+                .EveryMinute();
 
                 scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
                     .EveryFiveMinutes();

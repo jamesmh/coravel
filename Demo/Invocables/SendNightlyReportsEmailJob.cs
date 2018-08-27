@@ -18,14 +18,16 @@ namespace Demo.Invocables
 
         public async Task Invoke()
         {
+            await Task.Delay(10000);
+
             // You could grab multiple users from a DB query ;)
             var mailable = new NightlyReportMailable(new UserModel
             {
                 Name = "Coravel is awesome!",
                 Email = "test@test.com"
             });
-
             await this._mailer.SendAsync(mailable);
+            Console.WriteLine($"NightlyReportMailable was sent at {DateTime.UtcNow}.");
         }
     }
 }

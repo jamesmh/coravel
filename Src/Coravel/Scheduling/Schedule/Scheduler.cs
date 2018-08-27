@@ -14,7 +14,7 @@ using Coravel.Invocable;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class Scheduler : IScheduler, ISchedulerConfiguration, IDisposable
+    public class Scheduler : IScheduler, ISchedulerConfiguration
     {
         private ConcurrentBag<ScheduledEvent> _tasks;
         private Action<Exception> _errorHandler;
@@ -22,6 +22,7 @@ namespace Coravel.Scheduling.Schedule
         private IMutex _mutex;
         private readonly int EventLockTimeout_24Hours = 1440;
         private IServiceScopeFactory _scopeFactory;
+        private bool _isRunning = false;
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory)
         {
@@ -53,8 +54,10 @@ namespace Coravel.Scheduling.Schedule
 
         public async Task RunSchedulerAsync()
         {
+            this._isRunning = true;
             DateTime utcNow = DateTime.UtcNow;
             await this.RunAtAsync(utcNow);
+            this._isRunning = false;
         }
 
         public async Task RunAtAsync(DateTime utcDate)
@@ -83,10 +86,7 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public void Dispose()
-        {
-            this.RunSchedulerAsync().GetAwaiter().GetResult();
-        }
+        public bool IsStillRunning() => this._isRunning; // Will be read from another thread. There will only be one writer.
 
         private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {
