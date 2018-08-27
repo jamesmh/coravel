@@ -2,8 +2,6 @@
 
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 
-**Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)**
-
 Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that allows you to focus on **your app**. Let Coravel tackle the configuration and infrastructural details for you - and **build your app**!
 
 > In other words, Coravel simply makes your code say what it does. 
