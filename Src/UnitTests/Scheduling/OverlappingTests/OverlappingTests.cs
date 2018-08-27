@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
@@ -16,6 +17,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
             var semaphore = new SemaphoreSlim(0);
             int taskCount = 0;
+            List<Task> executedTasks = new List<Task>();
 
             scheduler.ScheduleAsync(async () =>
             {
@@ -25,24 +27,30 @@ namespace UnitTests.Scheduling.OverlappingTests
             .EveryMinute()
             .PreventOverlapping("PreventOverlappingTest");
 
+            // Note: Task.Run is used to prevent the long running task from blocking.
+            // On test failure, the other scheduled tasks might block tooif this test fails...
+
             // Start the event (which will never complete until we manually release it)
-            await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:00 am"));
-            Assert.Equal(0, taskCount);
+            executedTasks.Add(
+                Task.Run(async () => await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:00 am")))
+            );
 
             // Attempt to run the event again when it is still running.
             // This should prevent overlapping events.
-            await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:01 am"));
-            Assert.Equal(0, taskCount);
+            executedTasks.Add(
+                Task.Run(async () => await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:01 am")))
+            );
 
+            executedTasks.Add(
+                Task.Run(async () => await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:02 am")))
+            );
 
-            await scheduler.RunAtAsync(DateTime.Parse("2018/01/01 00:02 am"));
-            Assert.Equal(0, taskCount);
+            executedTasks.Add(
+                Task.Run(async () => await scheduler.RunAtAsync(DateTime.Parse("2018/01/02 00:02 am")))
+            );
 
-            await scheduler.RunAtAsync(DateTime.Parse("2018/01/02 00:02 am"));
-            Assert.Equal(0, taskCount);
-
-            semaphore.Release();
-            await Task.Delay(1); // Let the scheduled task complete asyncronously.
+            semaphore.Release(4); // Release 4 times in case this test fails - this will prevent from blocking forever
+            await Task.WhenAll(executedTasks); // Let the scheduled task complete asyncronously.
 
             // We should have only ever executed the scheduled task once.
             Assert.Equal(1, taskCount);

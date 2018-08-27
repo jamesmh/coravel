@@ -118,7 +118,9 @@ To create an invocable:
 To schedule invocables, use the `Schedule` method:
 
 ```c#
-scheduler.Schedule<GrabDataFromApiAndPutInDBInvocable>();
+scheduler
+    .Schedule<GrabDataFromApiAndPutInDBInvocable>()
+    .EveryTenMinutes();
 ```
 
 What a simple, terse and expressive syntax! Easy Peasy!
