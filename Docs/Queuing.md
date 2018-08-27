@@ -49,28 +49,13 @@ Use the `QueueAsyncTask` to queue up an async Task (which will run async wheneve
 
 ## Queue Invocables
 
-Coravel has a shared interface `Coravel.Invocable.IInvocable` that allows you to define specific actions or jobs within your system. Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+To learn about creating and using invocables [see the docs.](./Invocables.md)
 
-### Create An Invocable
-
-To create an invocable:
-
-1. Implement the interface above in your class.
-
-2. In your invocable's constructor, inject any types that are available from your application's service container.
-
-3. Make sure that your invocable _itself_ is available in the service container.
-
-### Queue It
-
-To queue it, use `QueueInvocable`:
+To queue an invocable, use `QueueInvocable`:
 
 ```c#
 this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
 ```
-
-_Note: Coravel's scheduler can schedule invocables too._
-
 
 ## Global Error Handling
 

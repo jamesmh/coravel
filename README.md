@@ -4,31 +4,20 @@
 
 **Note: Coravel is unstable as it's in the "early" stages of development. Once version 2 is released Coravel will be considered stable. Please use with this in mind :)**
 
-Inspired by all the awesome features that are baked into the Laravel PHP framework - Coravel provides tools for .Net Core apps so you can get started building **your app** faster!
+Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that allows you to focus on **your app**. Let Coravel tackle the configuration and infrastructural details for you - and **build your app**!
+
+> In other words, Coravel simply makes your code say what it does. 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
-## Who Is Coravel For?
-
-Coravel's philosophy is basically that you should be focusing on building your app and bringing value to your business - not repetitive installation and configuration.
-
-If you have asked yourself one of these questions, then Coravel might be for you:
-
-- What mailing library should I use? Where do I put all that repetitive logic?
-- Why is it so hard to just _simply use the code I already have_ and run it once a day at 1 a.m.?
-- Do I need to learn how to use RabbitMQ or Redis when I just want to queue sending my e-mails in the background?
-- I just want to cache my expensive query results and refresh them every 10 minutes - shouldn't there be an easy way to do that?
-- Why does it take so long to actually get to the point where I'm _finally building my app_?
-
-If you are in need of a way to get up-and-running quickly and start building **your app**, instead of all the infrastructure that goes along with a typical web app - and the overly verbose code that comes along for the ride - then Coravel might be for you!
-
 ## Features / Docs
 
-- [Task Scheduling](https://github.com/jamesmh/coravel/blob/master/Docs/Scheduler.md)
-- [Queuing](https://github.com/jamesmh/coravel/blob/master/Docs/Queuing.md)
-- [Caching](https://github.com/jamesmh/coravel/blob/master/Docs/Caching.md)
-- [Mailing](https://github.com/jamesmh/coravel/blob/master/Docs/Mailing.md)
-- [Coravel-Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md)
+- [Task Scheduling](./Docs/Scheduler.md)
+- [Queuing](./Docs/Queuing.md)
+- [Caching](./Docs/Caching.md)
+- [Mailing](./Docs/Mailing.md)
+- [Coravel-Cli](./Docs/Cli.md)
+- [Invocables](./Docs/Invocables.md)
 
 ## Requirements
 
@@ -36,7 +25,7 @@ Coravel is a .Net Core library. You must be including Coravel in an existing .Ne
 
 ### Coravel-Cli
 
-Use the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md) to get started!
+Use the [Coravel Cli](./Docs/Cli.md) to get started!
 
 Coravel Cli is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
 

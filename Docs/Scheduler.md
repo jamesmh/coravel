@@ -98,24 +98,9 @@ scheduler.ScheduleAsync(async () =>
 
 ## Scheduling Invocables
 
-Coravel has a shared interface `Coravel.Invocable.IInvocable` that allows you to define specific actions or jobs within your system. Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+To learn about creating and using invocables [see the docs.](./Invocables.md)
 
-> Ex. You might want to send an e-mail to your users every night. 
-  Using an invocable and Coravel's Mailer, you can easily create a self-contained class that will grab data from your DB and send mail to your users.
-
-### Create An Invocable
-
-To create an invocable:
-
-1. Implement the interface above in your class.
-
-2. In your invocable's constructor, inject any types that are available from your application's service container.
-
-3. Make sure that your invocable _itself_ is available in the service container.
-
-### Schedule It
-
-To schedule invocables, use the `Schedule` method:
+To schedule a invocable, use the `Schedule` method:
 
 ```c#
 scheduler

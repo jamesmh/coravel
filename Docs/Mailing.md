@@ -13,11 +13,13 @@ Satire aside now - e-mails are not as easy as they should be. Luckily for you, C
 - Quick and simple configuration via `appsettings.json`
 - And more!
 
+![Coravel's Mailer](./img/coravelmail.png)
+
 ## Installation
 
 ### Cli
 
-Install the [Coravel Cli](https://github.com/jamesmh/coravel/blob/master/Docs/Cli.md):
+Install the [Coravel Cli](./Cli.md):
 
 `dotnet tool install --global coravel-cli`
 
