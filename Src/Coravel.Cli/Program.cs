@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coravel.Cli.Commands;
+using Coravel.Cli.Commands.Invocable;
 using Coravel.Cli.Commands.Mail.Install;
 using Coravel.Cli.Commands.Mail.Mailable;
 using Coravel.Cli.Commands.Mail.View;
@@ -56,6 +57,26 @@ namespace Coravel.Cli
                         string mailable = mailableName.Value ?? "Mailable";
                         new CreateMailableCommand().Execute(mailable);
                         new CreateMailViewCommand().Execute(mailable);
+                    });
+                });
+            });
+
+             app.Command("invocable", config =>
+            {
+                config.OnExecute(() =>
+                {
+                    config.ShowHelp();
+                    return 1;
+                });
+
+                config.Command("new", newConfig =>
+                {
+                    newConfig.Description = "Create a new coravel Invocable class.";
+                    var invocableName = newConfig.Argument<string>("name", "Name of the Invocable to generate.");
+                    newConfig.OnExecute(() =>
+                    {
+                        string invocable = invocableName.Value ?? "Invocable";
+                        new CreateInvocableCommand().Execute(invocable);
                     });
                 });
             });

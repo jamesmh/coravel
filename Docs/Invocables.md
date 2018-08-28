@@ -11,7 +11,9 @@ Creating an invocable uses the shared interface `Coravel.Invocable.IInvocable`.
 
 Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
 
-To create an invocable:
+You may [use the Coravel Cli to generate a new invocable](./Cli.md).
+
+Alternatively, to create an invocable by hand:
 
 1. Implement the interface above in your class.
 
