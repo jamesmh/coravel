@@ -68,7 +68,7 @@ async SomeType BigDataLocalFunctionAsync()
     return await SomeCostlyDbCall();
 };
 
-await this._cache.Remember("BigDataCacheKey", BigDataLocalFunctionAsync, TimeSpan.FromMinutes(10));
+await this._cache.RememberAsync("BigDataCacheKey", BigDataLocalFunctionAsync, TimeSpan.FromMinutes(10));
 ```
 
 ### Forever
@@ -84,7 +84,7 @@ this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
 It's `Forever`, but async:
 
 ```c#
-await this._cache.Forever("BigDataCacheKey", BigDataLocalFunctionAsync);
+await this._cache.ForeverAsync("BigDataCacheKey", BigDataLocalFunctionAsync);
 ```
 
 ### Flush
