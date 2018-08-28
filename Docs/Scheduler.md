@@ -114,9 +114,9 @@ _Note: Coravel also supports queuing invocables too!_
 
 ### Sample: Scheduling An Invocable That Sends A Daily Report
 
-Imaging you have a "daily report" that you send out to users at the end of each day. What would be a simple, elegant way to do this?
+Imagine you have a "daily report" that you send out to users at the end of each day. What would be a simple, elegant way to do this?
 
-Using Coravel's Invocables, Scheduler and Mailer altogether can make it happen!
+Using Coravel's Invocables, Scheduler and Mailer all together can make it happen!
 
 Take this sample class as an example:
 
