@@ -10,6 +10,7 @@
     <Description>Razor views etc. required by Coravel</Description>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
