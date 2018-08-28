@@ -63,7 +63,7 @@ scheduler.Schedule(
 
 ```c#
 scheduler.Schedule(
-    () => Console.WriteLine("Daily at 1 pm.")
+    () => Console.WriteLine("First day of the month.")
 )
 .Cron("0 0 1 * *") // At midnight on the 1st day of each month.
 ```
