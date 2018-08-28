@@ -33,3 +33,11 @@ You can generate a new mailable class with the cli:
 `coravel mail new [nameOfYourMailable]`
 
 This will create a new mailable class and view!
+
+## Invocables
+
+You may generate a new invocable by issuing the command:
+
+`coravel invocable new [nameOfYourInvocable]`
+
+The new class will be under `./Invocables`.

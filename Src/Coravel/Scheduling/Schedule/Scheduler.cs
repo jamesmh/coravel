@@ -5,47 +5,74 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
-using Coravel.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
+using Coravel.Scheduling.Schedule.Helpers;
+using Coravel.Scheduling.Schedule.Event;
+using Microsoft.Extensions.DependencyInjection;
+using Coravel.Invocable;
 
 namespace Coravel.Scheduling.Schedule
 {
-    public class Scheduler : IScheduler, ISchedulerConfiguration, IDisposable
+    public class Scheduler : IScheduler, ISchedulerConfiguration
     {
-        private List<ScheduledTask> _tasks;
+        private ConcurrentBag<ScheduledEvent> _tasks;
         private Action<Exception> _errorHandler;
         private ILogger<IScheduler> _logger;
+        private IMutex _mutex;
+        private readonly int EventLockTimeout_24Hours = 1440;
+        private IServiceScopeFactory _scopeFactory;
+        private bool _isRunning = false;
 
-        public Scheduler()
+        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory)
         {
-            this._tasks = new List<ScheduledTask>();
+            this._tasks = new ConcurrentBag<ScheduledEvent>();
+            this._mutex = mutex;
+            this._scopeFactory = scopeFactory;
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            ScheduledTask scheduled = new ScheduledTask(actionToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
             this._tasks.Add(scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            ScheduledTask scheduled = new ScheduledTask(asyncTaskToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
+            this._tasks.Add(scheduled);
+            return scheduled;
+        }
+
+        public IScheduleInterval Schedule<T>() where T : IInvocable
+        {
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
             this._tasks.Add(scheduled);
             return scheduled;
         }
 
         public async Task RunSchedulerAsync()
         {
-            DateTime utcNow = DateTime.UtcNow;
-            await this.RunAtAsync(utcNow);
+            await this.MarkSchedulerAsRunning(async () =>
+            {
+                DateTime utcNow = DateTime.UtcNow;
+                await this.RunAtAsync(utcNow);
+            });
         }
 
         public async Task RunAtAsync(DateTime utcDate)
         {
-            // Minutes is lowest value used in scheduling calculations
-            utcDate = new DateTime(utcDate.Year, utcDate.Month, utcDate.Day, utcDate.Hour, utcDate.Minute, 0);
-            await InvokeScheduledTasksAsync(utcDate);
+            var activeTasks = new List<Task>();
+            foreach (var scheduledEvent in this._tasks)
+            {
+                if (scheduledEvent.IsDue(utcDate))
+                {
+                    activeTasks.Add(InvokeEvent(scheduledEvent));
+                }
+            }
+
+            await Task.WhenAll(activeTasks);
         }
 
         public ISchedulerConfiguration OnError(Action<Exception> onError)
@@ -60,33 +87,54 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public void Dispose()
-        {
-            this.RunSchedulerAsync().GetAwaiter().GetResult();
-        }
+        public bool IsStillRunning() => this._isRunning; // Will be read from another thread. There will only be one writer.
 
-        private async Task InvokeScheduledTasksAsync(DateTime utcNow)
-        {            
-            foreach (var scheduledEvent in this._tasks)
+        private async Task InvokeEvent(ScheduledEvent scheduledEvent)
+        {
+            try
             {
-                if (scheduledEvent.ShouldInvokeNow(utcNow))
+                async Task Invoke()
                 {
-                    try
+                    this._logger?.LogInformation("Scheduled task started...");
+                    await scheduledEvent.InvokeScheduledEvent();
+                    this._logger?.LogInformation("Scheduled task finished...");
+                };
+
+                if (scheduledEvent.ShouldPreventOverlapping())
+                {
+                    if (this._mutex.TryGetLock(scheduledEvent.OverlappingUniqueIdentifier(), EventLockTimeout_24Hours))
                     {
-                        this._logger?.LogInformation("Scheduled task started...");
-                        await scheduledEvent.InvokeScheduledAction();
-                        this._logger?.LogInformation("Scheduled task finished...");
-                    }
-                    catch (Exception e)
-                    {
-                        this._logger?.LogWarning("A scheduled task threw an Exception: " + e.Message);
-                        if (this._errorHandler != null)
+                        try
                         {
-                            this._errorHandler(e);
+                            await Invoke();
+                        }
+                        finally
+                        {
+                            this._mutex.Release(scheduledEvent.OverlappingUniqueIdentifier());
                         }
                     }
                 }
+                else
+                {
+                    await Invoke();
+                }
+
             }
+            catch (Exception e)
+            {
+                this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
+                if (this._errorHandler != null)
+                {
+                    this._errorHandler(e);
+                }
+            }
+        }
+
+        private async Task MarkSchedulerAsRunning(Func<Task> func)
+        {
+            this._isRunning = true;
+            await func();
+            this._isRunning = false;
         }
     }
 }

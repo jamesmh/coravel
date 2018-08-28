@@ -10,6 +10,9 @@
     <PackageId>coravel-cli</PackageId>
     <PackageVersion>0.1.7</PackageVersion>
     <AssemblyName>Coravel.Cli</AssemblyName>
+    <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
 
     <Version>0.1.6</Version>
     <Authors>James Hickey</Authors>

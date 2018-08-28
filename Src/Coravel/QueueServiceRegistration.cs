@@ -1,6 +1,7 @@
 using Coravel.Queuing;
 using Coravel.Queuing.HostedService;
 using Coravel.Queuing.Interfaces;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -15,13 +16,19 @@ namespace Coravel
         /// </summary>
         /// <param name="services">Service collection</param>
         /// <returns></returns>
-        public static IQueueConfiguration AddQueue(this IServiceCollection services)
+        public static IServiceCollection AddQueue(this IServiceCollection services)
         {
-            Queue queue = new Queue();
-            services.AddSingleton<IQueue>(queue);
+            services.AddSingleton<IQueue>(p =>
+                new Queue(p.GetRequiredService<IServiceScopeFactory>())
+            );
             services.AddHostedService<QueuingHost>();
+            return services;
+        }
 
-            return queue;
+        public static IQueueConfiguration ConfigureQueue(this IApplicationBuilder app)
+        {
+            var queue = app.ApplicationServices.GetRequiredService<IQueue>();
+            return (Queue) queue;
         }
     }
 }

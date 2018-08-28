@@ -2,6 +2,8 @@ using System;
 using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
+using Coravel.Scheduling.Schedule.Mutex;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -17,14 +19,19 @@ namespace Coravel
         /// <param name="services">Service collection</param>
         /// <param name="assignScheduledTasks">Action that assigns all your scheduled tasks</param>
         /// <returns></returns>
-        public static ISchedulerConfiguration AddScheduler(this IServiceCollection services, Action<IScheduler> assignScheduledTasks)
+        public static void AddScheduler(this IServiceCollection services)
         {
-            Scheduler scheduler = new Scheduler();
-            services.AddSingleton<IScheduler>(scheduler);
+            services.AddSingleton<IMutex>(new InMemoryMutex());
+            services.AddSingleton<IScheduler>(p =>
+                new Scheduler(p.GetRequiredService<IMutex>(), p.GetRequiredService<IServiceScopeFactory>()));
             services.AddHostedService<SchedulerHost>();
-            assignScheduledTasks(scheduler);
+        }
 
-            return scheduler;
+        public static ISchedulerConfiguration UseScheduler(this IApplicationBuilder app, Action<IScheduler> assignScheduledTasks)
+        {
+            var scheduler = app.ApplicationServices.GetRequiredService<IScheduler>();
+            assignScheduledTasks(scheduler);
+            return scheduler as Scheduler;
         }
     }
 }

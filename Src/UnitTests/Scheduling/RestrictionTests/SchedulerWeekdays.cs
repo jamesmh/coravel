@@ -1,6 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Mutex;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
@@ -11,7 +13,7 @@ namespace UnitTests.Scheduling.RestrictionTests
         [Fact]
         public async Task DailyOnWeekdaysOnly()
         {
-            var scheduler = new Scheduler();
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++)

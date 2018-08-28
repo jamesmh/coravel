@@ -13,6 +13,8 @@ using Coravel;
 using Microsoft.Extensions.Logging;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Queuing.Interfaces;
+using Demo.Invocables;
+using System.Threading;
 
 namespace Demo
 {
@@ -40,41 +42,18 @@ namespace Demo
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Coravel Scheduling
-            services.AddScheduler(scheduler =>
-            {
-                // Run this every five minutes only on Fri and Sat.
-                scheduler.Schedule(() => Console.WriteLine("Every minute"))
-                .EveryMinute();
-
-                scheduler.ScheduleAsync(async () =>
-                {
-                    await Task.Delay(5000);
-                    Console.WriteLine("async task");
-                })
-                .EveryMinute();
-
-
-                // Run this task every minute.
-                scheduler.Schedule(() => Console.WriteLine("Saturday at xx:44"))
-                .HourlyAt(44)
-                .Saturday();
-
-                scheduler.Schedule(() => Console.WriteLine("During the week at xx:05"))
-                .HourlyAt(05)
-                .Weekday();
-            })
-            .LogScheduledTaskProgress(Services.GetService<ILogger<IScheduler>>());
+            services.AddScheduler();
 
             // Coravel Queuing
-            services
-                .AddQueue()
-                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+            services.AddQueue();               
 
             // Coravel Caching
             services.AddCache();
 
             // Coravel Mail
             services.AddMailer(this.Configuration);
+
+            services.AddScoped<SendNightlyReportsEmailJob>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,6 +79,33 @@ namespace Demo
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseScheduler(scheduler =>
+            {
+                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryMinute();
+
+                scheduler.Schedule(() => Console.WriteLine($"Every minute#2 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryMinute();
+
+                scheduler.ScheduleAsync(async () => 
+                {
+                    await Task.Delay(10000);
+                    Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}");
+                })
+                .EveryMinute();
+
+                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                    .EveryFiveMinutes();
+
+                scheduler.Schedule<SendNightlyReportsEmailJob>()
+                    .Cron("* * * * *")
+                    .PreventOverlapping("SendNightlyReportsEmailJob");
+            });
+
+            app
+                .ConfigureQueue()
+                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
         }
     }
 }
