@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
 using UnitTests.Scheduling.Stubs;
@@ -64,15 +61,5 @@ namespace UnitTests.Scheduling.RestrictionTests
 
             Assert.Equal(3, taskRunCount);
         }
-
-        void HandleFunc1()
-        {
-        }
-
-
-        void HandleFunc()
-        {
-        }
-
     }
 }

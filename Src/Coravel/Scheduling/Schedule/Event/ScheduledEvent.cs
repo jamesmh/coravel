@@ -18,7 +18,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private bool _preventOverlapping = false;
         private string _eventUniqueID = null;
         private IServiceScopeFactory _scopeFactory;
-        private Func<Task<bool>> predicate;
+        private Func<Task<bool>> _whenPredicate;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -47,7 +47,7 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent()
         {
-            if(this.predicate != null && (!await predicate.Invoke())) 
+            if (!await WhenPredicatePasses())
             {
                 return;
             }
@@ -216,14 +216,19 @@ namespace Coravel.Scheduling.Schedule.Event
         public IScheduledEventConfiguration When(Task<bool> task)
         {
             Func<Task<bool>> predicate = new Func<Task<bool>>(() => task);
-            this.predicate = predicate;
+            this._whenPredicate = predicate;
             return this;
         }
 
         public IScheduledEventConfiguration When(Func<bool> predicate)
         {
-            this.predicate = async () => predicate.Invoke();
+            this._whenPredicate = async () => predicate.Invoke();
             return this;
+        }
+
+        private async Task<bool> WhenPredicatePasses()
+        {
+            return this._whenPredicate != null && (await _whenPredicate.Invoke());
         }
     }
 }
