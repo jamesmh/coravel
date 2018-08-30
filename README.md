@@ -1,7 +1,10 @@
 # Coravel
 
-[![BuitlWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
+[![BuitlWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
+![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
+![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
+
 
 Coravel allows you to build .Net Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**.
 
@@ -10,6 +13,15 @@ Let Coravel tackle the configuration and infrastructural details for you - and *
 > In other words, Coravel simply makes your code say what it does. 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
+
+## Coravel Is Used By
+
+<p align="center">
+  <a href="https://www.builtwithdot.net">
+    <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" />
+  </a>
+</p>
+<p align="center"><b>BuiltWithDot.Net</b></p>
 
 ## Features / Docs
 
