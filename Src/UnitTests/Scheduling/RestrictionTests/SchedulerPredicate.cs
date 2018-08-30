@@ -17,49 +17,34 @@ namespace UnitTests.Scheduling.RestrictionTests
 
             async Task<bool> filterAsyncFail()
             {
-                await Task.Delay(5000);
+                await Task.Delay(0);
                 return false;
             }
 
             async Task<bool> filterAsyncPass()
             {
-                await Task.Delay(5000);
+                await Task.Delay(0);
                 return true;
             }
 
-            bool filter()
+            scheduler.Schedule(() =>
             {
-                return taskRunCount < 2;
-            }
+                taskRunCount++;
+            }).EveryMinute().When(() => filterAsyncPass());
 
             scheduler.Schedule(() =>
             {
                 taskRunCount++;
-            }).EveryMinute().When(filter);
+            }).EveryMinute().When(() => filterAsyncFail());
 
             scheduler.Schedule(() =>
             {
                 taskRunCount++;
-            }).EveryMinute().When(filter);
-
-            scheduler.Schedule(() =>
-            {
-                taskRunCount++;
-            }).EveryMinute().When(filter);
-
-            scheduler.Schedule(() =>
-            {
-                taskRunCount++;
-            }).EveryMinute().When(filterAsyncPass());
-
-            scheduler.Schedule(() =>
-            {
-                taskRunCount++;
-            }).EveryMinute().When(filterAsyncFail());
+            }).EveryMinute().When(() => filterAsyncPass());
 
             await RunScheduledTasksFromMinutes(scheduler, 0);
 
-            Assert.Equal(3, taskRunCount);
+            Assert.Equal(2, taskRunCount);
         }
     }
 }

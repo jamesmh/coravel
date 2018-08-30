@@ -75,13 +75,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// Restrict task to run only if result of <paramref name="predicate"/> is true.
         /// </summary>
         /// <returns></returns>
-        IScheduledEventConfiguration When(Task<bool> predicate);
-
-        /// <summary>
-        /// Restrict task to run only if <paramref name="predicate"/> is true.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration When(Func<bool> predicate);
+        IScheduledEventConfiguration When(Func<Task<bool>> predicate);
 
         // TODO: Figure out how to launch long running tasks NOT using Task.Run() - since this causes the task to get killed
         //       on app stopping. Try to launch it as a new IHostedService that runs this task once?

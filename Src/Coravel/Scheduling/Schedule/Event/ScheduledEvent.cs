@@ -213,16 +213,9 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration When(Task<bool> task)
+        public IScheduledEventConfiguration When(Func<Task<bool>> predicate)
         {
-            Func<Task<bool>> predicate = new Func<Task<bool>>(() => task);
             this._whenPredicate = predicate;
-            return this;
-        }
-
-        public IScheduledEventConfiguration When(Func<bool> predicate)
-        {
-            this._whenPredicate = async () => predicate.Invoke();
             return this;
         }
 
