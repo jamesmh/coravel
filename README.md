@@ -14,6 +14,15 @@ Let Coravel tackle the configuration and infrastructural details for you - and *
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
+## Coravel Is Used By
+
+<a href="https://www.builtwithdot.net">
+    <p align="center">
+        <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" />
+    </p>
+    <p align="center"><b>BuiltWithDot.Net</b></p>
+</a>
+
 ## Features / Docs
 
 - [Task Scheduling](./Docs/Scheduler.md)
