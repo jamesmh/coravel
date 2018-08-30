@@ -16,12 +16,12 @@ Let Coravel tackle the configuration and infrastructural details for you - and *
 
 ## Coravel Is Used By
 
-<a href="https://www.builtwithdot.net">
-    <p align="center">
-        <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" />
-    </p>
-    <p align="center"><b>BuiltWithDot.Net</b></p>
-</a>
+<p align="center">
+  <a href="https://www.builtwithdot.net">
+    <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" />
+  </a>
+</p>
+<p align="center"><b>BuiltWithDot.Net</b></p>
 
 ## Features / Docs
 
