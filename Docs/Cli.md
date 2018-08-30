@@ -1,6 +1,6 @@
-# Coravel-Cli
+# Coravel CLI
 
-Coravel-Cli is a .net core global tool that gives you an _even quicker_ way to get started with Coravel!
+Coravel CLI is a .net core global tool that gives you an _even quicker_ way to get started with Coravel!
 
 ## Installation
 
@@ -10,7 +10,7 @@ Install by running this command in your terminal:
 
 ## Install Coravel
 
-You may use the cli to install Coravel into an existing .net core project.
+You may use the CLI to install Coravel into an existing .net core project.
 
 In the root of your project, enter the command:
 
@@ -22,13 +22,13 @@ This will install the required nuget package(s) for you!
 
 ### Scaffold Mail Views
 
-You can scaffold most of the mailer service by using the cli:
+You can scaffold most of the mailer service by using the CLI:
 
 `coravel mail install`
 
 ### Create A New Mailable
 
-You can generate a new mailable class with the cli:
+You can generate a new mailable class with the CLI:
 
 `coravel mail new [nameOfYourMailable]`
 
