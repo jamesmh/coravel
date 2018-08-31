@@ -47,7 +47,7 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent()
         {
-            if (!await WhenPredicatePasses())
+            if (await WhenPredicateFails())
             {
                 return;
             }
@@ -219,9 +219,9 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        private async Task<bool> WhenPredicatePasses()
+        private async Task<bool> WhenPredicateFails()
         {
-            return this._whenPredicate != null && (await _whenPredicate.Invoke());
+            return this._whenPredicate != null && (!await _whenPredicate.Invoke());
         }
     }
 }
