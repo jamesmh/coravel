@@ -50,12 +50,7 @@ namespace Coravel.Events
                     {
                         if (scope.ServiceProvider.GetService(listenerType) is IListener<TEvent> listener)
                         {
-                            var keepBroacasting = await listener.HandleAsync(toBroadcast);
-
-                            if (!keepBroacasting)
-                            {
-                                break;
-                            }
+                            await listener.HandleAsync(toBroadcast);
                         }
                     }
                 }

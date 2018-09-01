@@ -30,6 +30,7 @@ Let Coravel tackle the configuration and infrastructural details for you - and *
 - [Caching](./Docs/Caching.md)
 - [Mailing](./Docs/Mailing.md)
 - [Invocables](./Docs/Invocables.md)
+- [Events](./Docs/Events.md)
 - [Coravel-Cli](./Docs/Cli.md)
 
 ## Requirements
@@ -69,9 +70,3 @@ Check out the top of this readme for an index of Coravel's features, each linkin
 If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
-
-## Support
-
-If you wish to encourage and support my efforts:
-
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/gIPOyBD5N)

@@ -11,10 +11,10 @@ namespace UnitTests.Events.EventsAndListeners
             this._a = a;
         }
 
-        public Task<bool> HandleAsync(TestEvent2 dipatchedEvent)
+        public Task HandleAsync(TestEvent2 dipatchedEvent)
         {
             this._a();
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
     }
 }

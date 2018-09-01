@@ -15,6 +15,9 @@ using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Queuing.Interfaces;
 using Demo.Invocables;
 using System.Threading;
+using Coravel.Events.Interfaces;
+using Demo.Listeners;
+using Demo.Events;
 
 namespace Demo
 {
@@ -54,6 +57,11 @@ namespace Demo
             services.AddMailer(this.Configuration);
 
             services.AddScoped<SendNightlyReportsEmailJob>();
+
+            services.AddEvents();
+
+            services.AddTransient<WriteMessageToConsoleListener>()
+                    .AddTransient<WriteStaticMessageToConsoleListener>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +88,12 @@ namespace Demo
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+             IEventRegistration registration = app.ConfigureEvents();
+
+            registration.Register<DemoEvent>()
+                .Subscribe<WriteMessageToConsoleListener>()
+                .Subscribe<WriteStaticMessageToConsoleListener>(); 
+
             app.UseScheduler(scheduler =>
             {
                 scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
@@ -101,11 +115,18 @@ namespace Demo
                 scheduler.Schedule<SendNightlyReportsEmailJob>()
                     .Cron("* * * * *")
                     .PreventOverlapping("SendNightlyReportsEmailJob");
+
+                    scheduler.ScheduleAsync(async () => {
+                        var dispatcher = app.ApplicationServices.GetRequiredService<IDispatcher>();
+                        await dispatcher.Broadcast(new DemoEvent("This event happens every minute!"));
+                    }).EveryMinute();
             });
 
             app
                 .ConfigureQueue()
                 .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+
+           
         }
     }
 }
