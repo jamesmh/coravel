@@ -90,9 +90,9 @@ Finally, **you must register your listener with the service container** by using
 
 To broadcast events, Coravel supplies the `Coravel.Events.Interfaces.IDispatcher` interface.
 
-You can inject into your MVC controllers or other DI ready classes.
+You can inject an instance into your MVC controllers or other DI ready classes.
 
-Using the `Broadcast` method you may broadcast a new event.
+By using the `Broadcast` method, you may broadcast a new event.
 
 ```c#
 public BlogController : Controller
@@ -106,7 +106,7 @@ public BlogController : Controller
 
     public async Task<IActionResult> NewPost(BlogPost newPost)
     {
-        IEvent postCreated = new BlogPostCreated(newPost);
+        var postCreated = new BlogPostCreated(newPost);
         await _dispatcher.Broadcast(postCreated); // All listeners will fire.
     }
 }
