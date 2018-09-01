@@ -4,6 +4,7 @@ using Coravel.Invocable;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
 using Microsoft.Extensions.DependencyInjection;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 
 namespace UnitTests.Scheduling.Invocable
@@ -19,7 +20,7 @@ namespace UnitTests.Scheduling.Invocable
             services.AddScoped<TestInvocable>();
             var provider = services.BuildServiceProvider();
 
-            var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>());
+            var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
             scheduler.Schedule<TestInvocable>().EveryMinute();
 
             await scheduler.RunSchedulerAsync();

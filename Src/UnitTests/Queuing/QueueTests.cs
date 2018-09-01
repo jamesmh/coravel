@@ -5,6 +5,7 @@ using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule;
 using Microsoft.Extensions.DependencyInjection;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 
 namespace UnitTests.Queuing
@@ -17,7 +18,7 @@ namespace UnitTests.Queuing
             int errorsHandled = 0;
             int successfulTasks = 0;
 
-            Queue queue = new Queue(null);
+            Queue queue = new Queue(null, new DispatcherStub());
 
             queue.OnError(ex => errorsHandled++);
 
@@ -46,7 +47,7 @@ namespace UnitTests.Queuing
         {
             int successfulTasks = 0;
 
-            Queue queue = new Queue(null);
+            Queue queue = new Queue(null, new DispatcherStub());
 
             queue.QueueTask(() => successfulTasks++);
             queue.QueueTask(() => throw new Exception());
@@ -66,7 +67,7 @@ namespace UnitTests.Queuing
             services.AddScoped<TestInvocable>();
             var provider = services.BuildServiceProvider();
 
-            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>());
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
             queue.QueueInvocable<TestInvocable>();
             await queue.ConsumeQueueAsync();
             await queue.ConsumeQueueAsync();

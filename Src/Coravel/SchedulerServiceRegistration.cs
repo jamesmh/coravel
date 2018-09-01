@@ -1,4 +1,5 @@
 using System;
+using Coravel.Events.Interfaces;
 using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
@@ -23,7 +24,12 @@ namespace Coravel
         {
             services.AddSingleton<IMutex>(new InMemoryMutex());
             services.AddSingleton<IScheduler>(p =>
-                new Scheduler(p.GetRequiredService<IMutex>(), p.GetRequiredService<IServiceScopeFactory>()));
+                new Scheduler(
+                    p.GetRequiredService<IMutex>(), 
+                    p.GetRequiredService<IServiceScopeFactory>(),
+                    p.GetRequiredService<IDispatcher>()
+                )
+            );
             services.AddHostedService<SchedulerHost>();
             return services;
         }

@@ -58,7 +58,7 @@ namespace UnitTests.Scheduling.IntervalTests
         [InlineData(5, 6, 54, false)]
         public async Task ValidEveryTenMinutes(int day, int hour, int minute, bool shouldRun)
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).EveryTenMinutes();

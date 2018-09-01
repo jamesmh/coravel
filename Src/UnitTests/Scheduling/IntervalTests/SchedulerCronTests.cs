@@ -126,7 +126,7 @@ namespace UnitTests.Scheduling.IntervalTests
         [InlineData("00 00 */2 * *", "8/13/2018 12:00 am", false)]
         public async Task ScheduledEventCron(string cronExpression, string dateString, bool shouldRun)
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).Cron(cronExpression);

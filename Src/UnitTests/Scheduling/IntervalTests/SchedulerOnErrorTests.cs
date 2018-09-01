@@ -13,7 +13,7 @@ namespace UnitTests.Scheduling.IntervalTests
         [Fact]
         public async Task TestSchedulerHandlesErrors()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             int errorHandledCount = 0;
             int successfulTaskCount = 0;
 
@@ -48,7 +48,7 @@ namespace UnitTests.Scheduling.IntervalTests
         public async Task TestSchedulerSkipsErrors()
         {
             int successfulTaskCount = 0;
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
 
             void DummyTask()
             {

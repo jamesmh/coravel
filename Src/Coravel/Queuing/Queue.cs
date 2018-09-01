@@ -2,7 +2,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Coravel.Events.Interfaces;
 using Coravel.Invocable;
+using Coravel.Queuing.Broadcast;
 using Coravel.Queuing.Interfaces;
 using Coravel.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,10 +18,12 @@ namespace Coravel.Queuing
         private Action<Exception> _errorHandler;
         private ILogger<IQueue> _logger;
         private IServiceScopeFactory _scopeFactory;
+        private IDispatcher _dispatcher;
 
-        public Queue(IServiceScopeFactory scopeFactory)
+        public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
             this._scopeFactory = scopeFactory;
+            this._dispatcher = dispatcher;
         }
 
         public void QueueTask(Action task)
@@ -64,9 +68,9 @@ namespace Coravel.Queuing
 
         public async Task ConsumeQueueAsync()
         {
-            IEnumerable<ActionOrAsyncFunc> queuedTasks = this.DequeueAllTasks();
+            await this._dispatcher.Broadcast(new QueueConsumationStarted());
 
-            foreach (ActionOrAsyncFunc task in queuedTasks)
+            foreach (ActionOrAsyncFunc task in this.DequeueAllTasks())
             {
                 try
                 {
@@ -76,12 +80,15 @@ namespace Coravel.Queuing
                 }
                 catch (Exception e)
                 {
+                    await this._dispatcher.Broadcast(new DequeuedTaskFailed(task));
                     if (this._errorHandler != null)
                     {
                         this._errorHandler(e);
                     }
                 }
             }
+
+            await this._dispatcher.Broadcast(new QueueConsumationEnded());
         }
 
         private IEnumerable<ActionOrAsyncFunc> DequeueAllTasks()
