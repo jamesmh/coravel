@@ -30,17 +30,27 @@ namespace UnitTests.Scheduling.RestrictionTests
             scheduler.Schedule(() =>
             {
                 taskRunCount++;
-            }).EveryMinute().When(() => filterAsyncPass());
+            }).EveryMinute().When(filterAsyncFail);
 
             scheduler.Schedule(() =>
             {
                 taskRunCount++;
-            }).EveryMinute().When(() => filterAsyncFail());
+            }).EveryMinute().When(filterAsyncPass);
+          
+            scheduler.Schedule(() =>
+            {
+                taskRunCount++;
+            }).EveryMinute().When(filterAsyncFail);
 
             scheduler.Schedule(() =>
             {
                 taskRunCount++;
-            }).EveryMinute().When(() => filterAsyncPass());
+            }).EveryMinute().When(filterAsyncPass);
+
+            scheduler.Schedule(() =>
+            {
+                taskRunCount++;
+            }).EveryMinute().When(filterAsyncFail);
 
             await RunScheduledTasksFromMinutes(scheduler, 0);
 

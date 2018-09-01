@@ -72,7 +72,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier);
 
         /// <summary>
-        /// Restrict task to run only if result of <paramref name="predicate"/> is true.
+        /// Restrict scheduled task to run only when result of <paramref name="predicate"/> is true.
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration When(Func<Task<bool>> predicate);
