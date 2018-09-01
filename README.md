@@ -51,7 +51,7 @@ dotnet tool install --global coravel-cli
 
 ### Installation
 
-Coravel requires a few dependencies that the cli will manage for you.
+Coravel requires a few dependencies that the CLI will manage for you.
 
 To install Coravel, run:
 
