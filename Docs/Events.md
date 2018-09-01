@@ -94,7 +94,7 @@ You can inject into your MVC controllers or other DI ready classes.
 
 Using the `Broadcast` method you may broadcast a new event.
 
-```
+```c#
 public BlogController : Controller
 {
     private IDispatcher _dispatcher;
