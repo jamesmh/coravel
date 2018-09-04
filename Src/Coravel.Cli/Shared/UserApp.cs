@@ -6,6 +6,6 @@ namespace Coravel.Cli.Shared
     public class UserApp
     {
         public static string GetAppName() =>
-            Directory.GetCurrentDirectory().Split('\\').Last();
+            Directory.GetCurrentDirectory().Replace("/", "\\").Split('\\').Last();
     }
 }
