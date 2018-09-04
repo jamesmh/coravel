@@ -14,7 +14,7 @@ namespace UnitTests.Scheduling.OverlappingTests
         [Fact]
         public async Task LongRunningEventPreventOverlap()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             var semaphore = new SemaphoreSlim(0);
             bool keepRunning = true;
             int taskCount = 0;
@@ -58,7 +58,7 @@ namespace UnitTests.Scheduling.OverlappingTests
         [Fact]
         public async Task OverlapNotPrevented()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             int taskCount = 0;
 
             scheduler.Schedule(() =>

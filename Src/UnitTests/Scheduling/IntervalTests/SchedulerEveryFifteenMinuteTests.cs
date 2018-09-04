@@ -70,7 +70,7 @@ namespace UnitTests.Scheduling.IntervalTests
         [InlineData(2, 2, 1, false)]
         public async Task ValidEveryFifteenMinutes(int day, int hour, int minute, bool shouldRun)
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).EveryFifteenMinutes();

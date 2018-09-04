@@ -13,7 +13,7 @@ namespace UnitTests.Scheduling.AsyncTests
         [Fact]
         public async Task AsyncSchedulesTest()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             int taskRunCount = 0;
 
             scheduler.ScheduleAsync(async () =>

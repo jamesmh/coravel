@@ -11,6 +11,8 @@ using Coravel.Scheduling.Schedule.Helpers;
 using Coravel.Scheduling.Schedule.Event;
 using Microsoft.Extensions.DependencyInjection;
 using Coravel.Invocable;
+using Coravel.Events.Interfaces;
+using Coravel.Scheduling.Schedule.Broadcast;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -23,12 +25,14 @@ namespace Coravel.Scheduling.Schedule
         private readonly int EventLockTimeout_24Hours = 1440;
         private IServiceScopeFactory _scopeFactory;
         private bool _isRunning = false;
+        private IDispatcher _dispatcher;
 
-        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory)
+        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
             this._tasks = new ConcurrentBag<ScheduledEvent>();
             this._mutex = mutex;
             this._scopeFactory = scopeFactory;
+            this._dispatcher = dispatcher;
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
@@ -93,6 +97,7 @@ namespace Coravel.Scheduling.Schedule
         {
             try
             {
+                await this._dispatcher.Broadcast(new ScheduledEventStarted(scheduledEvent));
                 async Task Invoke()
                 {
                     this._logger?.LogInformation("Scheduled task started...");
@@ -122,11 +127,15 @@ namespace Coravel.Scheduling.Schedule
             }
             catch (Exception e)
             {
+                await this._dispatcher.Broadcast(new ScheduledEventFailed(scheduledEvent, e));
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
                 if (this._errorHandler != null)
                 {
                     this._errorHandler(e);
                 }
+            }
+            finally {
+                await this._dispatcher.Broadcast(new ScheduledEventEnded(scheduledEvent));
             }
         }
 

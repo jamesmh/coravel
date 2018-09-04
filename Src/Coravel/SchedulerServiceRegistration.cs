@@ -1,4 +1,5 @@
 using System;
+using Coravel.Events.Interfaces;
 using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
@@ -19,12 +20,18 @@ namespace Coravel
         /// <param name="services">Service collection</param>
         /// <param name="assignScheduledTasks">Action that assigns all your scheduled tasks</param>
         /// <returns></returns>
-        public static void AddScheduler(this IServiceCollection services)
+        public static IServiceCollection AddScheduler(this IServiceCollection services)
         {
             services.AddSingleton<IMutex>(new InMemoryMutex());
             services.AddSingleton<IScheduler>(p =>
-                new Scheduler(p.GetRequiredService<IMutex>(), p.GetRequiredService<IServiceScopeFactory>()));
+                new Scheduler(
+                    p.GetRequiredService<IMutex>(), 
+                    p.GetRequiredService<IServiceScopeFactory>(),
+                    p.GetRequiredService<IDispatcher>()
+                )
+            );
             services.AddHostedService<SchedulerHost>();
+            return services;
         }
 
         public static ISchedulerConfiguration UseScheduler(this IApplicationBuilder app, Action<IScheduler> assignScheduledTasks)

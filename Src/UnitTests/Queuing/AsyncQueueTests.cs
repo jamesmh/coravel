@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule;
+using UnitTests.Scheduling.Stubs;
 using Xunit;
 
 namespace UnitTests.Queuing
@@ -15,7 +16,7 @@ namespace UnitTests.Queuing
             int errorsHandled = 0;
             int successfulTasks = 0;
 
-            Queue queue = new Queue(null);
+            Queue queue = new Queue(null, new DispatcherStub());
 
             queue.OnError(ex => errorsHandled++);
 

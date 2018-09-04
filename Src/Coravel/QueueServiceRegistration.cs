@@ -1,3 +1,4 @@
+using Coravel.Events.Interfaces;
 using Coravel.Queuing;
 using Coravel.Queuing.HostedService;
 using Coravel.Queuing.Interfaces;
@@ -19,7 +20,10 @@ namespace Coravel
         public static IServiceCollection AddQueue(this IServiceCollection services)
         {
             services.AddSingleton<IQueue>(p =>
-                new Queue(p.GetRequiredService<IServiceScopeFactory>())
+                new Queue(
+                    p.GetRequiredService<IServiceScopeFactory>(),
+                    p.GetRequiredService<IDispatcher>()
+                )
             );
             services.AddHostedService<QueuingHost>();
             return services;

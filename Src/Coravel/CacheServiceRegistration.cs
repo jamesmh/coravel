@@ -15,12 +15,13 @@ namespace Coravel
         /// Register Coravel's in memory caching.
         /// </summary>
         /// <param name="services"></param>
-        public static void AddCache(this IServiceCollection services)
+        public static IServiceCollection AddCache(this IServiceCollection services)
         {
             services.AddMemoryCache();
             services.AddCache(provider =>
                 new InMemoryCache(provider.GetService<IMemoryCache>())
             );
+            return services;
         }
 
         /// <summary>
@@ -28,9 +29,10 @@ namespace Coravel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="driver"></param>
-        public static void AddCache(this IServiceCollection services, ICache driver)
+        public static IServiceCollection AddCache(this IServiceCollection services, ICache driver)
         {
             services.AddSingleton<ICache>(driver);
+            return services;
         }
 
         /// <summary>
@@ -38,9 +40,10 @@ namespace Coravel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="driverFunc"></param>
-        public static void AddCache(this IServiceCollection services, Func<IServiceProvider, ICache> driverFunc)
+        public static IServiceCollection AddCache(this IServiceCollection services, Func<IServiceProvider, ICache> driverFunc)
         {
             services.AddSingleton<ICache>(driverFunc);
+            return services;
         }
     }
 }

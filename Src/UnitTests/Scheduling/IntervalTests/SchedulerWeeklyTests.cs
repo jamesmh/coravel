@@ -32,7 +32,7 @@ namespace UnitTests.Scheduling.IntervalTests
         [InlineData("2018-8-5 12:59:59 pm", false)]
         public async Task ValidDaily(string dateString, bool shouldRun)
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             bool taskRan = false;
 
             scheduler.Schedule(() => taskRan = true).Weekly();

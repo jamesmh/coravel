@@ -12,7 +12,7 @@ namespace UnitTests.Scheduling.RestrictionTests
         [Fact]
         public async Task PredicateTest()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub());
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
             int taskRunCount = 0;
 
             async Task<bool> filterAsyncFail()
