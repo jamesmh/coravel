@@ -239,6 +239,19 @@ scheduler
 ```
 This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release ;)
 
+## Further Restrict When Tasks Run
+
+Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
+
+```c#
+scheduler
+    .Schedule(() => doSometStuff())
+    .EveryMinute()
+    .When(someMethodThatChecksStuff);
+```
+
+If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
+
 ## Global Error Handling
 
 Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
