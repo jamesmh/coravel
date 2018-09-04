@@ -18,6 +18,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private bool _preventOverlapping = false;
         private string _eventUniqueID = null;
         private IServiceScopeFactory _scopeFactory;
+        private Func<Task<bool>> _whenPredicate;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -46,6 +47,11 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent()
         {
+            if (await WhenPredicateFails())
+            {
+                return;
+            }
+
             if (this._invocableType is null)
             {
                 await this._scheduledAction.Invoke();
@@ -205,6 +211,17 @@ namespace Coravel.Scheduling.Schedule.Event
             this._preventOverlapping = true;
             this._eventUniqueID = uniqueIdentifier;
             return this;
-        }        
+        }
+
+        public IScheduledEventConfiguration When(Func<Task<bool>> predicate)
+        {
+            this._whenPredicate = predicate;
+            return this;
+        }
+
+        private async Task<bool> WhenPredicateFails()
+        {
+            return this._whenPredicate != null && (!await _whenPredicate.Invoke());
+        }
     }
 }
