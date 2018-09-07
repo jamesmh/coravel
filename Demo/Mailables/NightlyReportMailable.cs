@@ -1,4 +1,4 @@
-using Coravel.Mail;
+using Coravel.Mailer.Mail;
 using Demo.Models;
 
 namespace Demo.Mailables

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Mail;
-using Coravel.Mail.Interfaces;
-using Coravel.Mail.Mailers;
-using Coravel.Mail.Renderers;
+using Coravel.Mailer.Mail;
+using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail.Mailers;
+using Coravel.Mailer.Mail.Renderers;
 using Microsoft.Extensions.Configuration;
 using UnitTests.Mail.Shared.Mailables;
 using Xunit;
@@ -16,12 +16,12 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailerSucessful()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc) 
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
             {
                 Assert.Equal("test", subject);
                 Assert.Equal("from@test.com", from.Email);
                 Assert.Equal("to@test.com", to.First().Email);
-                await Task.CompletedTask;  
+                await Task.CompletedTask;
             };
 
             var mailer = new CustomMailer(
@@ -42,11 +42,11 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailer_GlobalFrom()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc) 
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
             {
                 Assert.Equal("global@test.com", from.Email);
                 Assert.Equal("Global", from.Name);
-                await Task.CompletedTask;  
+                await Task.CompletedTask;
             };
 
             var mailer = new CustomMailer(
@@ -65,10 +65,11 @@ namespace UnitTests.Mail
         }
 
         [Fact]
-        public async Task CustomMailer_Render(){
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc) 
+        public async Task CustomMailer_Render()
+        {
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
             {
-                await Task.CompletedTask;  
+                await Task.CompletedTask;
             };
 
             var renderer = RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build());
@@ -85,7 +86,7 @@ namespace UnitTests.Mail
                     .To("to@test.com")
                     .Html("<html></html>")
             );
-                        
+
             Assert.Equal("<html></html>", htmlMessage);
         }
     }

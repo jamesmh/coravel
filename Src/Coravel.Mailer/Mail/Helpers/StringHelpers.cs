@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Coravel.Mail.Helpers
+namespace Coravel.Mailer.Mail.Helpers
 {
     public static class StringHelpers
     {

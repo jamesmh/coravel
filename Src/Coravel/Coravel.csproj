@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>1.7.0</Version>
+    <Version>1.8.0</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
@@ -10,20 +10,18 @@
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>netcore;scheduling;coravel;queuing;scheduler;tasks;jobs</PackageTags>
+    <PackageTags>netcore;scheduling;coravel;queuing;scheduler;framework</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0"/>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0"/>
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0"/>
-    <PackageReference Include="MailKit" Version="2.0.5"/>
   </ItemGroup>
   <ItemGroup>
-  <!-- This will not be included when packaged as nuget. That's why Coravel.Razor
+    <!-- This will not be included when packaged as nuget. That's why Coravel.Mailer
       is also a nuget package - so the consuming client can use both projects.
       The cli will include both by running "coravel install" -->
-    <ProjectReference Include="..\Coravel.Razor\Coravel.Razor.csproj"/>
+    <ProjectReference Include="..\Coravel.Mailer\Coravel.Mailer.csproj"/>
   </ItemGroup>
 </Project>

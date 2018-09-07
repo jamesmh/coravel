@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
-using Coravel.Mail;
-using Coravel.Mail.Interfaces;
-using Coravel.Mail.Mailers;
-using Coravel.Mail.Renderers;
+using Coravel.Mailer.Mail;
+using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail.Mailers;
+using Coravel.Mailer.Mail.Renderers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

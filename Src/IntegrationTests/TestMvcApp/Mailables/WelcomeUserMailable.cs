@@ -1,4 +1,4 @@
-using Coravel.Mail;
+using Coravel.Mailer.Mail;
 using TestMvcApp.Models;
 
 namespace TestMvcApp.Mailables

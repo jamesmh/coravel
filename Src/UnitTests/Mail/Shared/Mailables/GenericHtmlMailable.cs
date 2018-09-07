@@ -1,4 +1,4 @@
-using Coravel.Mail;
+using Coravel.Mailer.Mail;
 using UnitTests.Mail.Shared.Models;
 
 namespace UnitTests.Mail.Shared.Mailables

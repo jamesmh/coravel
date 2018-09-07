@@ -1,4 +1,4 @@
-using Coravel.Mail;
+using Coravel.Mailer.Mail;
 using UnitTests.Mail.Shared.Models;
 
 namespace UnitTests.Mail.Shared.Mailables
@@ -7,7 +7,8 @@ namespace UnitTests.Mail.Shared.Mailables
     {
         private TestUserWithFields _user;
 
-        public MailableWithModelFields(TestUserWithFields user) {
+        public MailableWithModelFields(TestUserWithFields user)
+        {
             this._user = user;
         }
 

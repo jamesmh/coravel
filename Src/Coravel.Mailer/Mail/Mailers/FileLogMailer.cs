@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
-using Coravel.Mail.Renderers;
-using Coravel.Mail.Helpers;
+using Coravel.Mailer.Mail.Helpers;
+using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail.Renderers;
 using Microsoft.Extensions.Configuration;
 
-namespace Coravel.Mail.Mailers
+namespace Coravel.Mailer.Mail.Mailers
 {
     public class FileLogMailer : IMailer
     {
@@ -32,7 +32,7 @@ namespace Coravel.Mail.Mailers
 
         public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
         {
-            
+
             from = this._globalFrom ?? from;
 
             using (var writer = File.CreateText(FilePath))
@@ -61,9 +61,10 @@ Bcc: {CommaSeparated(bcc)}
             (recipients ?? Enumerable.Empty<MailRecipient>())
                 .Select(r => DisplayAddress(r))
                 .CommaSeparated();
-        
-        private static string DisplayAddress(MailRecipient recipient) {
-            if(recipient == null)
+
+        private static string DisplayAddress(MailRecipient recipient)
+        {
+            if (recipient == null)
                 return string.Empty;
             else
                 return $"{recipient.Name} <{recipient.Email}>";

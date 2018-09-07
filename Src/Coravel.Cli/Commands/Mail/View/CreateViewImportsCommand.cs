@@ -14,7 +14,7 @@ namespace Coravel.Cli.Commands.Mail.View
             string content = new StringBuilder()
                 .AppendLine($"@using {appName}")
                 .AppendLine("@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers")
-                .AppendLine("@addTagHelper *, Coravel.Razor.ViewComponents")
+                .AppendLine("@addTagHelper *, Coravel.Mailer.ViewComponents")
                 .ToString();
 
             Files.WriteFileIfNotCreatedYet(MailDirectory, "_ViewImports.cshtml", content);

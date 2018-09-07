@@ -4,12 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Coravel.Mail.Exceptions;
-using Coravel.Mail.Helpers;
-using Coravel.Mail.Interfaces;
-using Coravel.Mail.Renderers;
+using Coravel.Mailer.Mail.Exceptions;
+using Coravel.Mailer.Mail.Helpers;
+using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail.Renderers;
 
-namespace Coravel.Mail
+namespace Coravel.Mailer.Mail
 {
     public class Mailable<T>
     {
@@ -131,7 +131,8 @@ namespace Coravel.Mail
             return this;
         }
 
-        public Mailable<T> Html(string html) {
+        public Mailable<T> Html(string html)
+        {
             this._html = html;
             return this;
         }
@@ -143,7 +144,8 @@ namespace Coravel.Mail
             return this;
         }
 
-        public Mailable<T> View(string viewPath) {
+        public Mailable<T> View(string viewPath)
+        {
             this.View(viewPath, default(T));
             return this;
         }
@@ -199,15 +201,15 @@ namespace Coravel.Mail
                 this.BindEmailField();
             }
 
-            if(this.HasNoSubject())
+            if (this.HasNoSubject())
             {
                 this.BindSubjectField();
             }
         }
 
-        private bool HasNoSubject() => this._subject == null;    
+        private bool HasNoSubject() => this._subject == null;
 
-        private bool HasMailToModel() =>  this._mailToModel != null;        
+        private bool HasMailToModel() => this._mailToModel != null;
 
         private void BindEmailField()
         {

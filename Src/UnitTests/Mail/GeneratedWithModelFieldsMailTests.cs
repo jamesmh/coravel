@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Mail.Mailers;
+using Coravel.Mailer.Mail.Mailers;
 using UnitTests.Mail.Shared.Mailables;
 using UnitTests.Mail.Shared.Models;
 using Xunit;
