@@ -9,11 +9,11 @@ namespace Coravel.Cli.Commands.Mail.Mailable
     {
         private readonly static string MailablePath = $"./Mailables";
         public void Execute(string mailableName)
-        {            
+        {
             string appName = UserApp.GetAppName();
 
             string content = new StringBuilder()
-                .AppendLine("using Coravel.Mail;")
+                .AppendLine("using Coravel.Mailer.Mail;")
                 .AppendLine()
                 .AppendLine($"namespace {appName}.Mailables")
                 .AppendLine("{")

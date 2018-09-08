@@ -8,7 +8,6 @@ namespace Coravel.Cli.Commands
         public void Execute()
         {
             Process.Start("dotnet", "add package coravel").WaitForExit();
-            Process.Start("dotnet", "add package Coravel.Mailer").WaitForExit();
             Console.WriteLine("");
             Console.WriteLine("--------------------------------------------------------------------------------------------");
             Console.WriteLine("Coravel was installed! Please visit https://github.com/jamesmh/coravel to get started!");

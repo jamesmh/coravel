@@ -27,7 +27,7 @@ Using the cli, installer the mailer feature:
 
 `coravel mail install`
 
-This will scaffold some basic files for you:
+This will install the nuget package `Coravel.Mailer`, along with scaffolding some basic files for you:
 
 - `~/Views/Mail/_ViewStart.cshtml` - Configures mail views to use Coravel's e-mail templates
 - `~/Views/Mail/_ViewImports.cshtml` - Allows you use Coravel's view components
@@ -125,12 +125,12 @@ that you can send, such as "New User Sign-up", "Completed Order", etc.
 All of the configuration for a Mailable is done in the `Build()` method. You can then call various methods like `To` and `From`
 to configure the recipients, sender, etc.
 
-Mailables inherit from `Coravel.Mail.Mailable` and accept a generic type which represents a model you want associated with sending your mail.
+Mailables inherit from `Coravel.Mailer.Mail.Mailable` and accept a generic type which represents a model you want associated with sending your mail.
 
 Here's a sample Mailable class:
 
 ```c#
-using Coravel.Mail;
+using Coravel.Mailer.Mail;
 using App.Models;
 
 namespace App.Mailables
@@ -157,7 +157,7 @@ To specify who the sender of the email is, use the `From()` method:
 
 `From("test@test.com")`
 
-You may also supply an instance of `Coravel.Mail.MailRecipient` to include the address and sender name:
+You may also supply an instance of `Coravel.Mailer.Mail.MailRecipient` to include the address and sender name:
 
 `From(new MailRecipient(email, name))`
 
@@ -359,7 +359,7 @@ Both arguments accept either a hex value or rgb/rgba value:
 
 ## Sending Mail
 
-Inject an instance of `Coravel.Mail.IMailer` and use the `SendAsync` method to send mail:
+Inject an instance of `Coravel.Mailer.Mail.IMailer` and use the `SendAsync` method to send mail:
 
 ```c#
 private readonly IMailer _mailer;

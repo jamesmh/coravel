@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Coravel.Cli.Commands.Mail.Mailable;
@@ -11,6 +12,7 @@ namespace Coravel.Cli.Commands.Mail.Install
     {
         public void Execute()
         {
+            Process.Start("dotnet", "add package Coravel.Mailer").WaitForExit();
             new CreateViewStartCommand().Execute();
             new CreateMailableCommand().Execute("Example");
             new CreateMailViewCommand().Execute("Example");
