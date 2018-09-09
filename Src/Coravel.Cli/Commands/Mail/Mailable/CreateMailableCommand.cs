@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,18 @@ namespace Coravel.Cli.Commands.Mail.Mailable
                 .AppendLine("}")
                 .ToString();
 
-            Files.WriteFileIfNotCreatedYet(MailablePath, mailableName + ".cs", content);
+            bool wasGenerated = Files.WriteFileIfNotCreatedYet(MailablePath, mailableName + ".cs", content);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (wasGenerated)
+            {
+                Console.WriteLine($"{MailablePath}/{mailableName}.cs generated!");
+            }
+            else
+            {
+                Console.WriteLine($"{MailablePath}/{mailableName}.cs already exists. Nothing done.");
+            }
+            Console.ResetColor();
         }
     }
 }

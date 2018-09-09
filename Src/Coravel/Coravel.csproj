@@ -19,9 +19,5 @@
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0"/>
   </ItemGroup>
   <ItemGroup>
-    <!-- This will not be included when packaged as nuget. That's why Coravel.Mailer
-      is also a nuget package - so the consuming client can use both projects.
-      The cli will include both by running "coravel install" -->
-    <ProjectReference Include="..\Coravel.Mailer\Coravel.Mailer.csproj"/>
   </ItemGroup>
 </Project>

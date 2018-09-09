@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Coravel.Cli.Shared;
 
@@ -7,7 +8,7 @@ namespace Coravel.Cli.Commands.Invocable
     {
         private readonly static string InvocablesPath = $"./Invocables";
         public void Execute(string invocableName)
-        {            
+        {
             string appName = UserApp.GetAppName();
 
             string content = new StringBuilder()
@@ -30,7 +31,21 @@ namespace Coravel.Cli.Commands.Invocable
                 .AppendLine("}")
                 .ToString();
 
-            Files.WriteFileIfNotCreatedYet(InvocablesPath, invocableName + ".cs", content);
+            bool wasGenerated = Files.WriteFileIfNotCreatedYet(InvocablesPath, invocableName + ".cs", content);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            if (wasGenerated)
+            {
+                Console.WriteLine($"{InvocablesPath}/{invocableName}.cs generated!");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("Note: Don't forget to register your invocable into the service container.");
+            }
+            else
+            {
+                Console.WriteLine($"{InvocablesPath}/{invocableName}.cs already exists. Nothing done.");
+            }
+            Console.ResetColor();
         }
     }
 }

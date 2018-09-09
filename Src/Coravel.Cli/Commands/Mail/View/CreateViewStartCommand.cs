@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Coravel.Cli.Shared;
 
@@ -14,7 +15,18 @@ namespace Coravel.Cli.Commands.Mail.View
                 .AppendLine("}")
                 .ToString();
 
-            Files.WriteFileIfNotCreatedYet(MailViewPath, "_ViewStart.cshtml", viewStartContent);
+            bool wasGenerated = Files.WriteFileIfNotCreatedYet(MailViewPath, "_ViewStart.cshtml", viewStartContent);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (wasGenerated)
+            {
+                Console.WriteLine($"{MailViewPath}/_ViewStart.cshtml generated!");
+            }
+            else
+            {
+                Console.WriteLine($"{MailViewPath}/_ViewStart.cshtml already exists. Nothing done.");
+            }
+            Console.ResetColor();
         }
     }
 }

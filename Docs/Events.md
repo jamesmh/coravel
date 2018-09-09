@@ -39,7 +39,7 @@ Creating an event is simple:
 
 Create a class that implements the interface `Coravel.Events.Interfaces.IEvent`. That's it!
 
-An event is merely a data object that will be supplied to each listener. It should expose data that is associated with this specific event.  
+An event is merely a data object that will be supplied to each listener. It should expose data that is associated with this specific event.
 
 For example, a `BlogPostCreated` event should accept the `Blog` that was created and then expose it via a public property.
 
@@ -55,9 +55,9 @@ public class BlogPostCreated : IEvent
 }
 ```
 
-##  Creating A Listener
+## Creating A Listener
 
-Create a new class that implements the interface `Coravel.Events.Interfaces.IListener<TEvent>` - where `TEvent` is the event that you will be listening to. 
+Create a new class that implements the interface `Coravel.Events.Interfaces.IListener<TEvent>` - where `TEvent` is the event that you will be listening to.
 
 > _Note: Each listener can only be associated with one event - since the event will be passed in the `HandleAsync` method._
 
@@ -67,7 +67,7 @@ Using the example of the new blog post event, we might create a listener named `
 
 ```c#
 // The IListener generic parameter is the event
-// that you will be listening to. 
+// that you will be listening to.
 public class TweetNewPost : IListener<BlogPostCreated>
 {
     private TweetingService _tweeter;
@@ -85,6 +85,12 @@ public class TweetNewPost : IListener<BlogPostCreated>
 ```
 
 Finally, **you must register your listener with the service container** by using `AddTransient` or `AddScoped`.
+
+## Generate Events And Listeners Using Coravel's CLI
+
+You can let Coravel generate events and listeners for you!
+
+See the [CLI docs](./Cli.md) for more information.
 
 ## Broadcasting Events
 

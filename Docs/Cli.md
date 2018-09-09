@@ -41,3 +41,21 @@ You may generate a new invocable by issuing the command:
 `coravel invocable new [nameOfYourInvocable]`
 
 The new class will be under `./Invocables`.
+
+## Events And Listeners
+
+To generate Coravel events and corresponding listeners, use the command:
+
+`coravel event new [eventName] [listenerName]`
+
+If the event specified already exists, then the existing event will not be overwritten.
+
+Therefore, you can issue the `coravel event new` command multiple times to generate multiple
+listeners for the same event:
+
+`coravel event new UserCreatedEvent SendUserCreatedEmailListener`
+`coravel event new UserCreatedEvent StartBillingUserListener`
+
+Given the event `UserCreatedEvent` already existed before issuing the commands above, only the new listeners will be created for you.
+
+_Note: Remember to register your listeners into the service container and register/subscribe your events and listeners._

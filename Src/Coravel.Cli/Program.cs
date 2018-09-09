@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coravel.Cli.Commands;
+using Coravel.Cli.Commands.Events;
 using Coravel.Cli.Commands.Invocable;
 using Coravel.Cli.Commands.Mail.Install;
 using Coravel.Cli.Commands.Mail.Mailable;
@@ -14,7 +15,8 @@ namespace Coravel.Cli
     {
         public static void Main(string[] args)
         {
-            var app = new CommandLineApplication{
+            var app = new CommandLineApplication
+            {
                 Name = "coravel"
             };
 
@@ -61,31 +63,53 @@ namespace Coravel.Cli
                 });
             });
 
-             app.Command("invocable", config =>
+            app.Command("invocable", config =>
+           {
+               config.OnExecute(() =>
+               {
+                   config.ShowHelp();
+                   return 1;
+               });
+
+               config.Command("new", newConfig =>
+               {
+                   newConfig.Description = "Create a new coravel Invocable class.";
+                   var invocableName = newConfig.Argument<string>("name", "Name of the Invocable to generate.");
+                   newConfig.OnExecute(() =>
+                   {
+                       string invocable = invocableName.Value ?? "Invocable";
+                       new CreateInvocableCommand().Execute(invocable);
+                   });
+               });
+           });
+
+            app.Command("event", config =>
+         {
+             config.OnExecute(() =>
+             {
+                 config.ShowHelp();
+                 return 1;
+             });
+
+             config.Command("new", newConfig =>
+             {
+                 newConfig.Description = "Create a new coravel Event and Listeners.";
+                 var eventName = newConfig.Argument<string>("eventName", "Name of the Event to generate.").IsRequired();
+                 var listenerName = newConfig.Argument<string>("listenerName", "Name of the Listener to generate.").IsRequired();
+                 newConfig.OnExecute(() =>
+                 {
+                     new GenerateEventCommand().Execute(eventName.Value, listenerName.Value);
+                 });
+             });
+         });
+
+            try
             {
-                config.OnExecute(() =>
-                {
-                    config.ShowHelp();
-                    return 1;
-                });
-
-                config.Command("new", newConfig =>
-                {
-                    newConfig.Description = "Create a new coravel Invocable class.";
-                    var invocableName = newConfig.Argument<string>("name", "Name of the Invocable to generate.");
-                    newConfig.OnExecute(() =>
-                    {
-                        string invocable = invocableName.Value ?? "Invocable";
-                        new CreateInvocableCommand().Execute(invocable);
-                    });
-                });
-            });
-
-            try {
                 int code = app.Execute(args);
                 Environment.Exit(code);
             }
-            catch(Exception e) {
+            catch (Exception e)
+            {
                 Console.WriteLine("Coravel had some trouble... try again.");
                 Console.WriteLine(e.Message);
             }
