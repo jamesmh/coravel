@@ -54,6 +54,7 @@ Therefore, you can issue the `coravel event new` command multiple times to gener
 listeners for the same event:
 
 `coravel event new UserCreatedEvent SendUserCreatedEmailListener`
+
 `coravel event new UserCreatedEvent StartBillingUserListener`
 
 Given the event `UserCreatedEvent` already existed before issuing the commands above, only the new listeners will be created for you.
