@@ -1,4 +1,4 @@
-namespace Coravel.Mail
+namespace Coravel.Mailer.Mail
 {
     public class MailRecipient
     {

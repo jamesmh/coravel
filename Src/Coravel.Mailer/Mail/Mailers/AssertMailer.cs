@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
 using System;
-using Coravel.Mail;
+using Coravel.Mailer.Mail.Interfaces;
 
-namespace  Coravel.Mail.Mailers
+namespace Coravel.Mailer.Mail.Mailers
 {
     public class AssertMailer : IMailer
     {
@@ -13,7 +12,7 @@ namespace  Coravel.Mail.Mailers
             public string message { get; set; }
             public string subject { get; set; }
             public IEnumerable<MailRecipient> to { get; set; }
-            public MailRecipient from {get;set;}
+            public MailRecipient from { get; set; }
             public MailRecipient replyTo { get; set; }
             public IEnumerable<MailRecipient> cc { get; set; }
             public IEnumerable<MailRecipient> bcc { get; set; }
@@ -43,9 +42,9 @@ namespace  Coravel.Mail.Mailers
 
         public async Task SendAsync<T>(Mailable<T> mailable) =>
             await mailable.SendAsync(null, this);
-        
 
-        public async Task<string> RenderAsync<T>(Mailable<T> mailable) => 
+
+        public async Task<string> RenderAsync<T>(Mailable<T> mailable) =>
             await mailable.RenderAsync(null, this);
     }
 }

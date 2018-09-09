@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Coravel.Cli.Shared;
 
@@ -27,7 +28,18 @@ namespace Coravel.Cli.Commands.Mail.View
                 .AppendLine("}")
                 .ToString();
 
-            Files.WriteFileIfNotCreatedYet(MailDirectory, fileName + ".cshtml", content);
+            bool wasGenerated = Files.WriteFileIfNotCreatedYet(MailDirectory, fileName + ".cshtml", content);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            if (wasGenerated)
+            {
+                Console.WriteLine($"{MailDirectory}/{fileName}.cshtml generated!");
+            }
+            else
+            {
+                Console.WriteLine($"{MailDirectory}/{fileName}.cshtml already exists. Nothing done.");
+            }
+            Console.ResetColor();
         }
     }
 }

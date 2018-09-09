@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
+using Coravel.Mailer.Mail.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Demo.Mailables;
 using Demo.Models;
@@ -75,8 +75,10 @@ namespace Demo.Controllers
             return Content(message, "text/html");
         }
 
-        public IActionResult QueueMail() {
-            UserModel user = new UserModel(){
+        public IActionResult QueueMail()
+        {
+            UserModel user = new UserModel()
+            {
                 Email = "FromUserModel@test.com",
                 Name = "Coravel Test Person"
             };
@@ -84,7 +86,7 @@ namespace Demo.Controllers
             async Task Send() =>
                 await this._mailer.SendAsync(new NewUserViewMail(user));
 
-            this._queue.QueueAsyncTask(Send);           
+            this._queue.QueueAsyncTask(Send);
 
             return Content("Mail was queued!");
         }

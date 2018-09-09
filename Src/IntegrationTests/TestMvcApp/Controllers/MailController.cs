@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
+using Coravel.Mailer.Mail.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using TestMvcApp.Mailables;
 using TestMvcApp.Models;

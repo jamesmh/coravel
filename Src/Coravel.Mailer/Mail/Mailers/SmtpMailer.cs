@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
 using MimeKit;
 using MimeKit.Text;
 using MailKit.Net.Smtp;
 using System;
 using System.Net.Security;
 using System.Linq;
-using Coravel.Mail.Renderers;
+using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail.Renderers;
 
-namespace Coravel.Mail.Mailers
+namespace Coravel.Mailer.Mail.Mailers
 {
     public class SmtpMailer : IMailer
     {
@@ -44,7 +44,7 @@ namespace Coravel.Mail.Mailers
             }
         }
 
-        public Task<string> RenderAsync<T>(Mailable<T> mailable) => 
+        public Task<string> RenderAsync<T>(Mailable<T> mailable) =>
             mailable.RenderAsync(this._renderer, this);
 
         public async Task SendAsync<T>(Mailable<T> mailable)

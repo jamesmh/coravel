@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Src\Coravel\Coravel.csproj" />
+    <ProjectReference Include="..\Src\Coravel.Mailer\Coravel.Mailer.csproj" />
+
   </ItemGroup>
 
 </Project>

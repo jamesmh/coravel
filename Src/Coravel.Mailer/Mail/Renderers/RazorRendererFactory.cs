@@ -10,7 +10,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.PlatformAbstractions;
 
-namespace Coravel.Mail.Renderers
+namespace Coravel.Mailer.Mail.Renderers
 {
     /// <summary>
     /// Provides methods to generate an instance of the RazorRenderer.

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Mail;
-using Coravel.Mail.Mailers;
-using Coravel.Mail.Renderers;
+using Coravel.Mailer.Mail;
+using Coravel.Mailer.Mail.Mailers;
+using Coravel.Mailer.Mail.Renderers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
 using UnitTests.Mail.Shared.Mailables;

@@ -4,7 +4,7 @@ namespace Coravel.Cli.Shared
 {
     public class Files
     {
-        public static void WriteFileIfNotCreatedYet(string path, string filename, string content)
+        public static bool WriteFileIfNotCreatedYet(string path, string filename, string content)
         {
             string fullFilePath = path + "/" + filename;
 
@@ -16,6 +16,11 @@ namespace Coravel.Cli.Shared
                 {
                     file.Write(content);
                 }
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
     }

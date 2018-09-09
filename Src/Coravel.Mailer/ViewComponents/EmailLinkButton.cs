@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Coravel.Razor.ViewComponents
+namespace Coravel.Mailer.ViewComponents
 {
     public class EmailLinkButton : ViewComponent
     {

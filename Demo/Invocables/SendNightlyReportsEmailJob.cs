@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Invocable;
-using Coravel.Mail.Interfaces;
+using Coravel.Mailer.Mail.Interfaces;
 using Demo.Mailables;
 using Demo.Models;
 

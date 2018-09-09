@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Coravel.Mail.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -15,15 +14,15 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 
-namespace Coravel.Mail.Renderers
+namespace Coravel.Mailer.Mail.Renderers
 {
-    public class RazorRenderer    
+    public class RazorRenderer
     {
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
         private string _logoSrc;
-        private string _companyName; 
+        private string _companyName;
         private string _companyAddress;
         private string _primaryColor;
 
@@ -36,7 +35,7 @@ namespace Coravel.Mail.Renderers
             this._viewEngine = viewEngine;
             this._tempDataProvider = tempDataProvider;
             this._serviceProvider = serviceProvider;
-            
+
             this._logoSrc = config?.GetValue<string>("Coravel:Mail:LogoSrc");
             this._companyName = config?.GetValue<string>("Coravel:Mail:CompanyName");
             this._companyAddress = config?.GetValue<string>("Coravel:Mail:CompanyAddress");
@@ -65,7 +64,7 @@ namespace Coravel.Mail.Renderers
                     output,
                     new HtmlHelperOptions());
 
-                    this.BindConfigurationToViewBag(viewContext.ViewBag);
+                this.BindConfigurationToViewBag(viewContext.ViewBag);
 
                 await view.RenderAsync(viewContext);
 
@@ -109,5 +108,5 @@ namespace Coravel.Mail.Renderers
             httpContext.RequestServices = this._serviceProvider;
             return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
         }
-    }    
+    }
 }
