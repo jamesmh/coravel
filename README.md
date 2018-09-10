@@ -7,7 +7,7 @@
 
 Coravel is a near-zero config .NET Core framework for Indie developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
 
-Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**.
+Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**. It's like your app has **"batteries included!"** 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
