@@ -1,6 +1,6 @@
 # Mailing
 
-You love configuring e-mails! Especially building an an e-mail friendly template that you can re-use throughout your app. O yah!
+You love configuring e-mails! Especially building an an e-mail friendly template that you can re-use throughout your app. Oh yah!
 
 Sending email through your database is so easy to configure and use, right? And don't forget about storing e-mail templates **in your database**! So maintainable and easy to use!
 
