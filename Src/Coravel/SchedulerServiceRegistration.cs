@@ -4,7 +4,6 @@ using Coravel.Scheduling.HostedService;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Mutex;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -34,9 +33,9 @@ namespace Coravel
             return services;
         }
 
-        public static ISchedulerConfiguration UseScheduler(this IApplicationBuilder app, Action<IScheduler> assignScheduledTasks)
+        public static ISchedulerConfiguration UseScheduler(this IServiceProvider provider, Action<IScheduler> assignScheduledTasks)
         {
-            var scheduler = app.ApplicationServices.GetRequiredService<IScheduler>();
+            var scheduler = provider.GetRequiredService<IScheduler>();
             assignScheduledTasks(scheduler);
             return scheduler as Scheduler;
         }

@@ -14,10 +14,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0"/>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.0"/>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup>&#xD;
   </ItemGroup>
 </Project>

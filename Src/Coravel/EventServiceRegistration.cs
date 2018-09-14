@@ -3,7 +3,6 @@ using System.Linq;
 using System.Reflection;
 using Coravel.Events;
 using Coravel.Events.Interfaces;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -17,9 +16,9 @@ namespace Coravel
             return services;
         }
 
-        public static IEventRegistration ConfigureEvents(this IApplicationBuilder app)
+        public static IEventRegistration ConfigureEvents(this IServiceProvider provider)
         {
-            var dispatcher = app.ApplicationServices.GetRequiredService<IDispatcher>();
+            var dispatcher = provider.GetRequiredService<IDispatcher>();
             if(dispatcher is Dispatcher unboxed) {
                 return unboxed;
             }

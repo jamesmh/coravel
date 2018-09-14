@@ -1,8 +1,8 @@
+using System;
 using Coravel.Events.Interfaces;
 using Coravel.Queuing;
 using Coravel.Queuing.HostedService;
 using Coravel.Queuing.Interfaces;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel
@@ -29,9 +29,9 @@ namespace Coravel
             return services;
         }
 
-        public static IQueueConfiguration ConfigureQueue(this IApplicationBuilder app)
+        public static IQueueConfiguration ConfigureQueue(this IServiceProvider provider)
         {
-            var queue = app.ApplicationServices.GetRequiredService<IQueue>();
+            var queue = provider.GetRequiredService<IQueue>();
             return (Queue) queue;
         }
     }
