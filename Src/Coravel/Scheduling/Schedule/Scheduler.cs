@@ -96,8 +96,9 @@ namespace Coravel.Scheduling.Schedule
         private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {
             try
-            {
-                await this._dispatcher.Broadcast(new ScheduledEventStarted(scheduledEvent));
+            {                
+                await this.TryDispatchEvent(new ScheduledEventStarted(scheduledEvent));                
+
                 async Task Invoke()
                 {
                     this._logger?.LogInformation("Scheduled task started...");
@@ -126,16 +127,19 @@ namespace Coravel.Scheduling.Schedule
 
             }
             catch (Exception e)
-            {
-                await this._dispatcher.Broadcast(new ScheduledEventFailed(scheduledEvent, e));
+            {                
+                await this.TryDispatchEvent(new ScheduledEventFailed(scheduledEvent, e));                
+
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
+
                 if (this._errorHandler != null)
                 {
                     this._errorHandler(e);
                 }
             }
-            finally {
-                await this._dispatcher.Broadcast(new ScheduledEventEnded(scheduledEvent));
+            finally
+            {                
+                await this.TryDispatchEvent(new ScheduledEventEnded(scheduledEvent));                
             }
         }
 
@@ -144,6 +148,14 @@ namespace Coravel.Scheduling.Schedule
             this._isRunning = true;
             await func();
             this._isRunning = false;
+        }
+
+        private async Task TryDispatchEvent(IEvent toBroadcast)
+        {
+            if (this._dispatcher != null)
+            {
+                await this._dispatcher.Broadcast(toBroadcast);
+            }
         }
     }
 }

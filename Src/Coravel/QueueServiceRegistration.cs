@@ -22,7 +22,7 @@ namespace Coravel
             services.AddSingleton<IQueue>(p =>
                 new Queue(
                     p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetRequiredService<IDispatcher>()
+                    p.GetService<IDispatcher>()
                 )
             );
             services.AddHostedService<QueuingHost>();

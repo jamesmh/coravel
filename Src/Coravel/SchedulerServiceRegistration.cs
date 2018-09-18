@@ -26,7 +26,7 @@ namespace Coravel
                 new Scheduler(
                     p.GetRequiredService<IMutex>(), 
                     p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetRequiredService<IDispatcher>()
+                    p.GetService<IDispatcher>()
                 )
             );
             services.AddHostedService<SchedulerHost>();
