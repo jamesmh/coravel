@@ -14,6 +14,18 @@ services.AddQueue();
 
 That's it! This will automatically register the queue in your service container.
 
+## Configuration
+
+For debugging, or other purposes, you can set the consummation delay in the `appsettings.json`. The queue will now use this value in seconds as consummation delay.
+
+```json
+"Coravel": {
+  "Queue": {
+    "ConsummationDelay": 1
+  }
+}
+```
+
 ## How To Queue Tasks
 
 In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue`.
