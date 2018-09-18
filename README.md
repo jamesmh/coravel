@@ -5,12 +5,9 @@
 ![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
 ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
 
+Coravel is a near-zero config .NET Core framework for Indie developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
 
-Coravel allows you to build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app**.
-
-Let Coravel tackle the configuration and infrastructural details for you - and **build your app**!
-
-> In other words, Coravel simply makes your code say what it does. 
+Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
@@ -51,9 +48,9 @@ dotnet tool install --global coravel-cli
 
 ### Installation
 
-Coravel requires a few dependencies that the CLI will manage for you.
+Coravel requires the nuget package `Coravel` to get started.
 
-To install Coravel, run:
+Alternatively, you may install Coravel using the CLI (which will install the package for you):
 
 ```
 coravel install
