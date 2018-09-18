@@ -68,7 +68,7 @@ namespace Coravel.Queuing
 
         public async Task ConsumeQueueAsync()
         {
-            await this._dispatcher.Broadcast(new QueueConsumationStarted());
+            await this.TryDispatchEvent(new QueueConsumationStarted());
 
             foreach (ActionOrAsyncFunc task in this.DequeueAllTasks())
             {
@@ -80,15 +80,15 @@ namespace Coravel.Queuing
                 }
                 catch (Exception e)
                 {
-                    await this._dispatcher.Broadcast(new DequeuedTaskFailed(task));
+                    await this.TryDispatchEvent(new DequeuedTaskFailed(task));
+
                     if (this._errorHandler != null)
                     {
                         this._errorHandler(e);
                     }
                 }
             }
-
-            await this._dispatcher.Broadcast(new QueueConsumationEnded());
+            await this.TryDispatchEvent(new QueueConsumationEnded());
         }
 
         private IEnumerable<ActionOrAsyncFunc> DequeueAllTasks()
@@ -97,6 +97,14 @@ namespace Coravel.Queuing
             {
                 this._tasks.TryDequeue(out var queuedTask);
                 yield return queuedTask;
+            }
+        }
+
+        private async Task TryDispatchEvent(IEvent toBroadcast)
+        {
+            if (this._dispatcher != null)
+            {
+                await this._dispatcher.Broadcast(toBroadcast);
             }
         }
     }

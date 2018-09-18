@@ -48,9 +48,18 @@ namespace Coravel.Events
                 {
                     using (var scope = this._scopeFactory.CreateScope())
                     {
-                        if (scope.ServiceProvider.GetService(listenerType) is IListener<TEvent> listener)
+                        var obj = scope.ServiceProvider.GetService(listenerType);
+                        if (obj is IListener<TEvent> listener)
                         {
                             await listener.HandleAsync(toBroadcast);
+                        }
+                        else {
+                            // Depending on what assemblies the events, listeners and calling assmebly are - the cast
+                            // above doesn't work (even though the type really does implement the interface).
+                            // Not sure why this happens. Might be a side effect of running inside a unit test proj. Dunno.
+                            // This condition will catch those cases and default to reflection.                        
+                            var result = listenerType.GetMethod("HandleAsync").Invoke(obj, new object[] { toBroadcast });
+                            await (result as Task);
                         }
                     }
                 }

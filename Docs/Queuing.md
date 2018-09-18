@@ -59,10 +59,14 @@ this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
 
 ## Global Error Handling
 
-In the `Startup.Configure` method, first call `app.ConfigureQueue()` and further chain the `OnError()` method to register a global error handler.
+> In version 1.9 `ConfigureQueue` was moved as an extension method of `IServiceProvider`.
+> This allows Coravel's dependencies to be significantly slimmed down 👌
+
+In the `Configure` method of your `Startup` file, first call `app.ApplicationServices.ConfigureQueue()` and further chain the `OnError()` method to register a global error handler.
 
 ```c#
-app
+var provider = app.ApplicationServices;
+provider
     .ConfigureQueue()
     .OnError(e =>
     {
@@ -72,32 +76,16 @@ app
 
 ## Logging Executed Task Progress
 
-Coravel uses the `ILogger` .Net Core interface to allow logging task progress.
+Coravel uses the `ILogger` .NET Core interface to allow logging task progress.
 
-In your `Startup.cs` file, you need to inject an instance of `IServiceProvider` to the constructor and assign it to a member field / property:
-
-```c#
-public Startup(IConfiguration configuration, /* Add this */ IServiceProvider services)
-{
-    Configuration = configuration;
-    Services = services;
-}
-
-public IConfiguration Configuration { get; }
-
-/* Add this property */
-public IServiceProvider Services { get; }
-```
-
-Then enable logging by further chaining off the `ConfigureQueue` method:
+Enable logging by further chaining off the `ConfigureQueue` method, grabbing a logger from the service provider and passing it into `LogQueuedTaskProgress`:
 
 ```c#
-app
+var provider = app.ApplicationServices;
+provider
     .ConfigureQueue()
-    .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+    .LogQueuedTaskProgress(provider.GetService<ILogger<IQueue>>());
 ```
-
-The `LogQueuedTaskProgress()` method accepts an instance of `ILogger<IQueue>`, which is available through the service provider.
 
 ## On App Closing
 

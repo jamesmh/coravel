@@ -26,11 +26,9 @@ namespace Demo
         public Startup(IConfiguration configuration, IServiceProvider services)
         {
             Configuration = configuration;
-            Services = services;
         }
 
         public IConfiguration Configuration { get; }
-        public IServiceProvider Services { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -88,13 +86,13 @@ namespace Demo
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-             IEventRegistration registration = app.ConfigureEvents();
+            IEventRegistration registration = app.ApplicationServices.ConfigureEvents();
 
             registration.Register<DemoEvent>()
                 .Subscribe<WriteMessageToConsoleListener>()
                 .Subscribe<WriteStaticMessageToConsoleListener>(); 
 
-            app.UseScheduler(scheduler =>
+            app.ApplicationServices.UseScheduler(scheduler =>
             {
                 scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
                     .EveryMinute();
@@ -122,9 +120,12 @@ namespace Demo
                     }).EveryMinute();
             });
 
-            app
+            app.ApplicationServices
                 .ConfigureQueue()
-                .LogQueuedTaskProgress(Services.GetService<ILogger<IQueue>>());
+                .LogQueuedTaskProgress(app.ApplicationServices.GetService<ILogger<IQueue>>());
+
+            app.ApplicationServices.ConfigureQueue()
+                .LogQueuedTaskProgress(app.ApplicationServices.GetService<ILogger<IQueue>>());
 
            
         }
