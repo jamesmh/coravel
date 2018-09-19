@@ -74,6 +74,19 @@ provider
     });
 ```
 
+## Adjusting The Consummation Delay
+
+Normally, the queue will consume all of it's queued tasks every 30 seconds.
+You can adjust this delay in the `appsettings.json` file.
+
+```json
+"Coravel": {
+  "Queue": {
+    "ConsummationDelay": 1
+  }
+}
+```
+
 ## Logging Executed Task Progress
 
 Coravel uses the `ILogger` .NET Core interface to allow logging task progress.
