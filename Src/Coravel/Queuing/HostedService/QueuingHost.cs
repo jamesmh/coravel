@@ -26,11 +26,18 @@ namespace Coravel.Queuing.HostedService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            int consummationDelay = this._configuration.GetValue<int>("Coravel:Queue:ConsummationDelay", 30);
+            int consummationDelay = GetConsummationDelay();
 
             this._timer = new Timer((state) => this._signal.Release(), null, TimeSpan.Zero, TimeSpan.FromSeconds(consummationDelay));
             Task.Run(ConsumeQueueAsync);
             return Task.CompletedTask;
+        }
+
+        private int GetConsummationDelay()
+        {
+            var configurationSection = this._configuration.GetSection("Coravel:Queue:ConsummationDelay");
+            bool couldParseDelay = int.TryParse(configurationSection.Value, out var parsedDelay);
+            return couldParseDelay ? parsedDelay : 30;
         }
 
         private async Task ConsumeQueueAsync()
