@@ -18,10 +18,14 @@ In your startup file, in the `ConfigureServices` method:
 services.AddEvents();
 ```
 
-Next, in the `Configure` method:
+> In version 1.9 `ConfigureEvents` was moved as an extension method of `IServiceProvider`.
+> This allows Coravel's dependencies to be significantly slimmed down 👌
+
+Next, in the `Configure` method call `ConfigureEvents` off of the service provider:
 
 ```c#
-IEventRegistration registration = app.ConfigureEvents();
+var provider = app.ApplicationServices;
+IEventRegistration registration = provider.ConfigureEvents();
 ```
 
 Now you can start registering events and their listeners:

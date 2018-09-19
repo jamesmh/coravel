@@ -1,10 +1,13 @@
 using System;
 using System.Threading.Tasks;
+using Coravel;
+using Coravel.Events.Interfaces;
 using Coravel.Invocable;
 using Coravel.Queuing;
+using Coravel.Queuing.Broadcast;
 using Coravel.Queuing.Interfaces;
-using Coravel.Scheduling.Schedule;
 using Microsoft.Extensions.DependencyInjection;
+using UnitTests.Events.EventsAndListeners;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
 
@@ -72,7 +75,55 @@ namespace UnitTests.Queuing
             await queue.ConsumeQueueAsync();
             await queue.ConsumeQueueAsync();
 
-            Assert.Equal(1, successfulTasks);                    
+            Assert.Equal(1, successfulTasks);
+        }
+
+        [Fact]
+        public async Task<int> DoesNotThrowOnNullDispatcher()
+        {
+            int successfulTasks = 0;
+
+            Queue queue = new Queue(null, null);
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+
+            await queue.ConsumeQueueAsync();
+            // Should not throw due to null Dispatcher
+
+            return successfulTasks;
+        }
+
+        [Fact]
+        public async Task<int> QueueDispatchesInternalEvents()
+        {
+
+            var services = new ServiceCollection();
+            services.AddEvents();
+            services.AddTransient<QueueConsumationStartedListener>();
+            var provider = services.BuildServiceProvider();
+
+            IEventRegistration registration = provider.ConfigureEvents();
+
+            registration
+                .Register<QueueConsumationStarted>()
+                .Subscribe<QueueConsumationStartedListener>();
+
+
+            int successfulTasks = 0;
+
+            Queue queue = new Queue(provider.GetService<IServiceScopeFactory>(), provider.GetService<IDispatcher>());
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+
+            await queue.ConsumeQueueAsync();
+            // Should not throw due to null Dispatcher
+
+
+            Assert.True(QueueConsumationStartedListener.Ran);
+
+            return successfulTasks; // Avoids "unused variable" warning ;)     
         }
 
         private class TestInvocable : IInvocable

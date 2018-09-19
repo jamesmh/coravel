@@ -12,10 +12,14 @@ In your .NET Core app's `Startup.cs` file, inside the `ConfigureServices()` meth
 services.AddScheduler()
 ```
 
+> In version 1.9 `UseScheduler` was moved as an extension method of `IServiceProvider`.
+> This allows Coravel's dependencies to be significantly slimmed down 👌
+
 Then in the `Configure()` method, you can use the scheduler:
 
 ```c#
-app.UseScheduler(scheduler =>
+var provider = app.ApplicationServices;
+provider.UseScheduler(scheduler =>
 {
     scheduler.Schedule(
         () => Console.WriteLine("Every minute during the week.")
@@ -259,7 +263,7 @@ Any tasks that throw errors **will just be skipped** and the next task in line w
 If you want to catch errors and do something specific with them you may use the `OnError()` method.
 
 ```c#
-app.UseScheduler(scheduler =>
+provider.UseScheduler(scheduler =>
     // Assign your schedules
 )
 .OnError((exception) =>
@@ -291,7 +295,7 @@ public IServiceProvider Services { get; }
 Next, do the following:
 
 ```c#
-app.UseScheduler(scheduler =>
+provider.UseScheduler(scheduler =>
 {
     // Assign scheduled tasks...
 })

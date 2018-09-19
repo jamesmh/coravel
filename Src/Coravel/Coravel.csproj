@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>1.8.0</Version>
+    <Version>1.9.0</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
@@ -14,10 +14,9 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0"/>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="2.1.0"/>
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0"/>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.0"/>
   </ItemGroup>
-  <ItemGroup>
-  </ItemGroup>
+
 </Project>
