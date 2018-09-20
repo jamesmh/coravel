@@ -24,8 +24,8 @@ namespace HostBuilderWithQueue
                 {
                     services.AddQueue();
                     services.AddScheduler();
-                })        
-                .UseConsoleLifetime()        
+                })
+                .UseConsoleLifetime()
                 .Build();
 
             host.Services.GetRequiredService<IQueue>().QueueAsyncTask(async () =>
@@ -38,12 +38,16 @@ namespace HostBuilderWithQueue
                 s.Schedule(() => Console.WriteLine("This was scheduled.")).EveryMinute()
             );
 
-            await host.StartAsync();
+            using (var disposableHost = host)
+            {
 
-            Console.WriteLine("This runs for five minutes then shuts down.");
-            await Task.Delay(60000 * 5);
+                await disposableHost.StartAsync();
 
-            await host.StopAsync();
+                Console.WriteLine("This runs for five minutes then shuts down.");
+                await Task.Delay(60000 * 5);
+
+                await disposableHost.StopAsync();
+            }
         }
     }
 }
