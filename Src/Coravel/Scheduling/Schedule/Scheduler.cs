@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Coravel.Invocable;
 using Coravel.Events.Interfaces;
 using Coravel.Scheduling.Schedule.Broadcast;
+using System.Threading;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -24,7 +25,7 @@ namespace Coravel.Scheduling.Schedule
         private IMutex _mutex;
         private readonly int EventLockTimeout_24Hours = 1440;
         private IServiceScopeFactory _scopeFactory;
-        private bool _isRunning = false;
+        private int _runningTasksCount = 0;
         private IDispatcher _dispatcher;
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
@@ -58,15 +59,14 @@ namespace Coravel.Scheduling.Schedule
 
         public async Task RunSchedulerAsync()
         {
-            await this.MarkSchedulerAsRunning(async () =>
-            {
-                DateTime utcNow = DateTime.UtcNow;
-                await this.RunAtAsync(utcNow);
-            });
+            DateTime utcNow = DateTime.UtcNow;
+            await this.RunAtAsync(utcNow);
         }
 
         public async Task RunAtAsync(DateTime utcDate)
         {
+            Interlocked.Increment(ref this._runningTasksCount);
+
             var activeTasks = new List<Task>();
             foreach (var scheduledEvent in this._tasks)
             {
@@ -77,6 +77,8 @@ namespace Coravel.Scheduling.Schedule
             }
 
             await Task.WhenAll(activeTasks);
+
+            Interlocked.Decrement(ref this._runningTasksCount);
         }
 
         public ISchedulerConfiguration OnError(Action<Exception> onError)
@@ -91,13 +93,13 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public bool IsStillRunning() => this._isRunning; // Will be read from another thread. There will only be one writer.
+        public bool IsRunning => this._runningTasksCount > 0;
 
         private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {
             try
-            {                
-                await this.TryDispatchEvent(new ScheduledEventStarted(scheduledEvent));                
+            {
+                await this.TryDispatchEvent(new ScheduledEventStarted(scheduledEvent));
 
                 async Task Invoke()
                 {
@@ -127,8 +129,8 @@ namespace Coravel.Scheduling.Schedule
 
             }
             catch (Exception e)
-            {                
-                await this.TryDispatchEvent(new ScheduledEventFailed(scheduledEvent, e));                
+            {
+                await this.TryDispatchEvent(new ScheduledEventFailed(scheduledEvent, e));
 
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
 
@@ -138,16 +140,9 @@ namespace Coravel.Scheduling.Schedule
                 }
             }
             finally
-            {                
-                await this.TryDispatchEvent(new ScheduledEventEnded(scheduledEvent));                
+            {
+                await this.TryDispatchEvent(new ScheduledEventEnded(scheduledEvent));
             }
-        }
-
-        private async Task MarkSchedulerAsRunning(Func<Task> func)
-        {
-            this._isRunning = true;
-            await func();
-            this._isRunning = false;
         }
 
         private async Task TryDispatchEvent(IEvent toBroadcast)

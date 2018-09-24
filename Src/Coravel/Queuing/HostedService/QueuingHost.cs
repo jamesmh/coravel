@@ -56,18 +56,19 @@ namespace Coravel.Queuing.HostedService
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             this._shutdown.Cancel();
-            this._timer?.Change(Timeout.Infinite, 0);            
+            this._timer?.Change(Timeout.Infinite, 0);
 
             // Consume the queue one last time.
             await this._queue.ConsumeQueueAsync();
 
             // If a previous queue consummation is still running (due to some long-running queued task)
             // we don't want to shutdown while it is still running.
-            if(this._queue.IsRunning){
+            if (this._queue.IsRunning)
+            {
                 this._logger.LogWarning(QueueRunningMessage);
             }
 
-            while(this._queue.IsRunning)
+            while (this._queue.IsRunning)
             {
                 await Task.Delay(50);
             }
@@ -76,6 +77,7 @@ namespace Coravel.Queuing.HostedService
         public void Dispose()
         {
             this._timer?.Dispose();
+            this._logger.LogInformation("Coravel's Queuing service is now stopped.");
         }
     }
 }
