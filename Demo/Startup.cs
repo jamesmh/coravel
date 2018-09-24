@@ -55,6 +55,7 @@ namespace Demo
             services.AddMailer(this.Configuration);
 
             services.AddScoped<SendNightlyReportsEmailJob>();
+            services.AddScoped<DoExpensiveCalculationAndStore>();
 
             services.AddEvents();
 

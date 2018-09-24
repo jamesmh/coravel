@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 
@@ -5,9 +6,11 @@ namespace Demo.Invocables
 {
     public class DoExpensiveCalculationAndStore : IInvocable
     {
-        public Task Invoke()
+        public async Task Invoke()
         {
-            throw new System.NotImplementedException();
+            Console.Write("Doing expensive calculation for 15 sec...");
+            await Task.Delay(15000);
+            Console.Write("Expensive calculation done.");
         }
     }
 }
