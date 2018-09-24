@@ -53,13 +53,26 @@ namespace Coravel.Queuing.HostedService
             }
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
             this._shutdown.Cancel();
-            this._timer?.Change(Timeout.Infinite, 0);            
+            this._timer?.Change(Timeout.Infinite, 0);        
+            return Task.CompletedTask;    
+        }
+
+        public void Dispose()
+        {
+            this._timer?.Dispose();
+            
+            //----------------
+            // This is NOT done in StopAsync for a few reasons. One is:
+            // (1) It's possible for StopAsync to actually NOT be called in certain situations (and we want this to happen all the time).
+            //
+            // Yes, we have to run async stuff synchronously.... Sorry async police :(
+            // ---------------
 
             // Consume the queue one last time.
-            await this._queue.ConsumeQueueAsync();
+            this._queue.ConsumeQueueAsync().GetAwaiter().GetResult();
 
             // If a previous queue consummation is still running (due to some long-running queued task)
             // we don't want to shutdown while it is still running.
@@ -69,13 +82,8 @@ namespace Coravel.Queuing.HostedService
 
             while(this._queue.IsRunning)
             {
-                await Task.Delay(50);
+                Thread.Sleep(50);
             }
-        }
-
-        public void Dispose()
-        {
-            this._timer?.Dispose();
         }
     }
 }
