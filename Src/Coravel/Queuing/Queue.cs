@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Coravel.Invocable;
@@ -19,6 +21,7 @@ namespace Coravel.Queuing
         private ILogger<IQueue> _logger;
         private IServiceScopeFactory _scopeFactory;
         private IDispatcher _dispatcher;
+        private int _queueIsConsumming = 0;
 
         public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -36,13 +39,18 @@ namespace Coravel.Queuing
             this._tasks.Enqueue(
                 new ActionOrAsyncFunc(async () =>
                 {
+                    Type invocableType = typeof(T);
                     // This allows us to scope the scheduled IInvocable object
                     /// and allow DI to inject it's dependencies.
                     using (var scope = this._scopeFactory.CreateScope())
                     {
-                        if (scope.ServiceProvider.GetRequiredService(typeof(T)) is IInvocable invocable)
+                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
                         {
                             await invocable.Invoke();
+                        }
+                        else {
+                            this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
+                            throw new Exception($"Queued invocable {invocableType} is not a registered service.");
                         }
                     }
                 })
@@ -68,28 +76,25 @@ namespace Coravel.Queuing
 
         public async Task ConsumeQueueAsync()
         {
-            await this.TryDispatchEvent(new QueueConsumationStarted());
-
-            foreach (ActionOrAsyncFunc task in this.DequeueAllTasks())
+            try
             {
-                try
-                {
-                    this._logger?.LogInformation("Queued task started...");
-                    await task.Invoke();
-                    this._logger?.LogInformation("Queued task finished...");
-                }
-                catch (Exception e)
-                {
-                    await this.TryDispatchEvent(new DequeuedTaskFailed(task));
+                Interlocked.Increment(ref this._queueIsConsumming);
 
-                    if (this._errorHandler != null)
-                    {
-                        this._errorHandler(e);
-                    }
-                }
+                await this.TryDispatchEvent(new QueueConsumationStarted());
+
+                await Task.WhenAll(
+                    this.DequeueAllTasks().Select(t => InvokeTask(t))
+                );
+
+                await this.TryDispatchEvent(new QueueConsumationEnded());
             }
-            await this.TryDispatchEvent(new QueueConsumationEnded());
+            finally
+            {
+                Interlocked.Decrement(ref this._queueIsConsumming);
+            }
         }
+
+        public bool IsRunning => this._queueIsConsumming > 0;
 
         private IEnumerable<ActionOrAsyncFunc> DequeueAllTasks()
         {
@@ -105,6 +110,25 @@ namespace Coravel.Queuing
             if (this._dispatcher != null)
             {
                 await this._dispatcher.Broadcast(toBroadcast);
+            }
+        }
+
+        private async Task InvokeTask(ActionOrAsyncFunc task)
+        {
+            try
+            {
+                this._logger?.LogInformation("Queued task started...");
+                await task.Invoke();
+                this._logger?.LogInformation("Queued task finished...");
+            }
+            catch (Exception e)
+            {
+                await this.TryDispatchEvent(new DequeuedTaskFailed(task));
+
+                if (this._errorHandler != null)
+                {
+                    this._errorHandler(e);
+                }
             }
         }
     }

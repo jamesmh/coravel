@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Controllers
 {
-    public class SampleController : Controller
+    public class QueueController : Controller
     {
         private IQueue _queue;
 
-        public SampleController(IQueue queue)
+        public QueueController(IQueue queue)
         {
             this._queue = queue;
         }

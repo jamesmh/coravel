@@ -17,11 +17,15 @@ namespace Coravel.Queuing.HostedService
         private Timer _timer;
         private Queue _queue;
         private IConfiguration _configuration;
+        private ILogger<QueuingHost> _logger;
+        private readonly string QueueRunningMessage = "Coravel Queuing service is attempting to close but the queue is still running." +
+                                                      " App closing (in background) will be prevented until dequeued tasks are completed.";
 
-        public QueuingHost(IQueue queue, IConfiguration configuration)
+        public QueuingHost(IQueue queue, IConfiguration configuration, ILogger<QueuingHost> logger)
         {
             this._configuration = configuration;
             this._queue = queue as Queue;
+            this._logger = logger;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -49,20 +53,29 @@ namespace Coravel.Queuing.HostedService
             }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             this._shutdown.Cancel();
-            this._timer?.Change(Timeout.Infinite, 0);
-            return Task.CompletedTask;
+            this._timer?.Change(Timeout.Infinite, 0);            
+
+            // Consume the queue one last time.
+            await this._queue.ConsumeQueueAsync();
+
+            // If a previous queue consummation is still running (due to some long-running queued task)
+            // we don't want to shutdown while it is still running.
+            if(this._queue.IsRunning){
+                this._logger.LogWarning(QueueRunningMessage);
+            }
+
+            while(this._queue.IsRunning)
+            {
+                await Task.Delay(50);
+            }
         }
 
         public void Dispose()
         {
             this._timer?.Dispose();
-
-            // Consume the queue one last time.
-            // Even if StopAsync() isn't called (uncaught app error, etc.), Dispose() is called.
-            this._queue.ConsumeQueueAsync().GetAwaiter().GetResult();
         }
     }
 }
