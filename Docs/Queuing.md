@@ -102,6 +102,4 @@ provider
 
 ## On App Closing
 
-When your app is stopped, Coravel will consume any tasks remaining in the queue and/or wait until all long-running tasks are completed.
-
-Of course - if your server was shutdown in a non-graceful way etc. (unplugged... etc.) then you may lose active queued tasks.
+When your app is stopped, Coravel will consume any tasks remaining in the queue and/or wait until all long-running tasks are completed. This will keep your app running in the background - as long as the parent process is not killed.

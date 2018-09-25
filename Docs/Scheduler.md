@@ -303,3 +303,7 @@ provider.UseScheduler(scheduler =>
 ```
 
 The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
+
+## On App Closing
+
+When your app is stopped, Coravel will wait until any running scheduled tasks are completed. This will keep your app running in the background - as long as the parent process is not killed.

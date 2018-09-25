@@ -11,7 +11,7 @@ namespace HostBuilderWithQueue
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             var host = new HostBuilder()
                 .ConfigureAppConfiguration((hostContext, configApp) =>
@@ -22,32 +22,20 @@ namespace HostBuilderWithQueue
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddQueue();
+                    // Add Coravel's Scheduling...
                     services.AddScheduler();
                 })
-                .UseConsoleLifetime()
                 .Build();
 
-            host.Services.GetRequiredService<IQueue>().QueueAsyncTask(async () =>
-            {
-                await Task.Delay(1000);
-                Console.WriteLine("This was queued.");
-            });
-
-            host.Services.UseScheduler(s =>
-                s.Schedule(() => Console.WriteLine("This was scheduled.")).EveryMinute()
+            // Configure the scheduled tasks....
+            host.Services.UseScheduler(scheduler =>
+                scheduler
+                    .Schedule(() => Console.WriteLine("This was scheduled every minute."))
+                    .EveryMinute()
             );
 
-            using (var disposableHost = host)
-            {
-
-                await disposableHost.StartAsync();
-
-                Console.WriteLine("This runs for five minutes then shuts down.");
-                await Task.Delay(60000 * 5);
-
-                await disposableHost.StopAsync();
-            }
+            // Run it!
+            host.Run();
         }
     }
 }
