@@ -249,9 +249,9 @@ Using the `When` method you can add additional restrictions to determine when yo
 
 ```c#
 scheduler
-    .Schedule(() => doSometStuff())
+    .Schedule(() => DoSomeStuff())
     .EveryMinute()
-    .When(someMethodThatChecksStuff);
+    .When(SomeMethodThatChecksStuff);
 ```
 
 If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
@@ -267,7 +267,7 @@ provider.UseScheduler(scheduler =>
     // Assign your schedules
 )
 .OnError((exception) =>
-    doSomethingWithException(exception)
+    DoSomethingWithException(exception)
 );
 ```
 
