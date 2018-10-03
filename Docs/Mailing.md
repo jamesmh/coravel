@@ -139,7 +139,7 @@ namespace App.Mailables
     {
         private UserModel _user;
 
-        public NewUserViewMail(UserModel user) => this._user = user;
+        public NewUserViewMailable(UserModel user) => this._user = user;
 
         public override void Build()
         {
