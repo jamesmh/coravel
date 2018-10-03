@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using Coravel.Scheduling.Schedule.Cron;
 using Xunit;
 
@@ -123,7 +124,7 @@ namespace UnitTests.Scheduling.CronTests
         public void InvokeCron(string cronExpression, string dateString, bool shouldBeDue)
         {
             var expression = new CronExpression(cronExpression);
-            var time = DateTime.Parse(dateString);
+            var time = DateTime.ParseExact(dateString, "M/d/yyyy h:mm tt", CultureInfo.InvariantCulture);
             var isDue = expression.IsDue(time);
             Assert.Equal(shouldBeDue, isDue);
         }
