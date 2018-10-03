@@ -32,7 +32,7 @@ Build .NET Core apps using a simple, expressive and straightforward syntax that 
 
 ## Requirements
 
-Coravel is a .NET Core library. You must be including Coravel in an existing .NET Core application (version 2.1.0+).
+Coravel is a .NET Standard library designed for .NET Core apps. You must be including Coravel into either an existing .NET Core application (version 2.1.0+) or within another .NET Standard project(s).
 
 ### Coravel CLI
 
