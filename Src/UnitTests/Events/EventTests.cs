@@ -63,7 +63,7 @@ namespace UnitTests.Events
             Assert.Equal(3, listenersExecutedCount);
         }
 
-                [Fact]
+        [Fact]
         public async Task TestDuplicateSubscriptionsJustBypasses()
         {
             int listenersExecutedCount = 0;
@@ -117,6 +117,30 @@ namespace UnitTests.Events
 
             await dispatcher.Broadcast(new TestEventWithDispatcher(dispatcher));
             Assert.Equal(3, listenersExecutedCount);
+        }
+
+        [Fact]
+        public async Task TestRegisterSameTypeTwiceDoesntThrow()
+        {
+            int listenersExecutedCount = 0;
+
+            var services = new ServiceCollection();
+            services.AddTransient<Action>(p => () => listenersExecutedCount++);
+            services.AddEvents();
+            services.AddTransient<TestListener1ForEvent1>();
+            var provider = services.BuildServiceProvider();
+
+            var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener1ForEvent1>();
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener1ForEvent1>();
+
+            await dispatcher.Broadcast(new TestEvent1());
+
+            Assert.Equal(1, listenersExecutedCount);
         }
     }
 }

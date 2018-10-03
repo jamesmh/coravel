@@ -12,7 +12,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         private string _weekdays;
 
         public CronExpression(string expression) {
-            var values = expression.Split(" ");
+            var values = expression.Split(' ');
             if(values.Length != 5){
                 throw new Exception($"Cron expression '{expression}' is malformed.");
             }
