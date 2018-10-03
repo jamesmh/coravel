@@ -30,7 +30,13 @@ namespace Coravel.Events
         public IEventSubscription<TEvent> Register<TEvent>() where TEvent : IEvent
         {
             var listeners = new List<Type>();
-            this._events.TryAdd(typeof(TEvent), listeners);
+            var eventType = typeof(TEvent);
+
+            if(!this._events.ContainsKey(eventType))
+            {
+                this._events.Add(eventType, listeners);
+            }
+
             return new EventSubscription<TEvent>(listeners);
         }
 
