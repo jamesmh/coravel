@@ -15,6 +15,33 @@ namespace TestMvcApp.Controllers
             this._cache = cache;
         }
 
+        public IActionResult Get()
+        {
+            const string key = "Get";
+            const string value = "72c41aad-7fec-4603-8f6c-be8a1335b477";
+            this._cache.Remember(key, () => value, TimeSpan.FromDays(1));
+            var result = this._cache.Get<string>(key);
+            return Content($"Was Cached:{(result == value).ToString()}");
+        }
+
+        public async Task<IActionResult> GetAsync()
+        {
+            const string key = "GetAsync";
+            const string value = "aec50a80-7b80-4a99-9617-a32aef61d3c7";
+            this._cache.Remember(key, () => value, TimeSpan.FromDays(1));
+            var result = await this._cache.GetAsync<string>(key);
+            return Content($"Was Cached:{(result == value).ToString()}");
+        }
+
+        public IActionResult Has()
+        {
+            const string key = "Has";
+            const string value = "72c41aad-7fec-4603-8f6c-be8a1335b477";
+            this._cache.Remember(key, () => value, TimeSpan.FromDays(1));
+            var result = this._cache.Has(key);
+            return Content($"Was Cached:{result.ToString()}");
+        }
+
         public IActionResult Remember()
         {
             bool wasCached = false;

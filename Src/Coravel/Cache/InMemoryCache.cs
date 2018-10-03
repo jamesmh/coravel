@@ -22,6 +22,35 @@ namespace Coravel.Cache
             this._keys = new HashSet<string>();
         }
 
+        public TResult Get<TResult>(string key)
+        {
+            return this.Get(key, default(TResult));
+        }
+
+        public TResult Get<TResult>(string key, TResult @default)
+        {
+            if (!this._cache.TryGetValue(key, out var value)) return @default;
+
+            if (value is TResult result) return result;
+
+            return @default;
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string key)
+        {
+            return await this.GetAsync(key, default(TResult));
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string key, TResult @default)
+        {
+            return this.Get(key, @default);
+        }
+
+        public bool Has(string key)
+        {
+            return this._keys.Contains(key);
+        }
+
         public TResult Remember<TResult>(string key, Func<TResult> cacheFunc, TimeSpan expiresIn)
         {
             this._keys.Add(key);
