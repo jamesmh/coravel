@@ -9,7 +9,7 @@ namespace Demo.Listeners
     {
         public Task HandleAsync(DemoEvent broadcasted)
         {
-            Console.WriteLine("Listener writting a static message.");
+            Console.WriteLine("Listener writing a static message.");
             return Task.CompletedTask;
         }
     }
