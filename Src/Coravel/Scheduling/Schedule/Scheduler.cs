@@ -19,7 +19,7 @@ namespace Coravel.Scheduling.Schedule
 {
     public class Scheduler : IScheduler, ISchedulerConfiguration
     {
-        private ConcurrentBag<ScheduledEvent> _tasks;
+        private ConcurrentDictionary<string, ScheduledEvent> _tasks;
         private Action<Exception> _errorHandler;
         private ILogger<IScheduler> _logger;
         private IMutex _mutex;
@@ -30,7 +30,7 @@ namespace Coravel.Scheduling.Schedule
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
-            this._tasks = new ConcurrentBag<ScheduledEvent>();
+            this._tasks = new ConcurrentDictionary<string, ScheduledEvent>();
             this._mutex = mutex;
             this._scopeFactory = scopeFactory;
             this._dispatcher = dispatcher;
@@ -39,23 +39,23 @@ namespace Coravel.Scheduling.Schedule
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
             ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
-            this._tasks.Add(scheduled);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
             ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
-            this._tasks.Add(scheduled);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval Schedule<T>() where T : IInvocable
         {
             ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
-            this._tasks.Add(scheduled);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
-        }
+        }        
 
         public async Task RunSchedulerAsync()
         {
@@ -68,8 +68,10 @@ namespace Coravel.Scheduling.Schedule
             Interlocked.Increment(ref this._runningTasksCount);
 
             var activeTasks = new List<Task>();
-            foreach (var scheduledEvent in this._tasks)
+            foreach (var keyValue in this._tasks)
             {
+                var scheduledEvent = keyValue.Value;
+
                 if (scheduledEvent.IsDue(utcDate))
                 {
                     activeTasks.Add(InvokeEvent(scheduledEvent));
@@ -94,6 +96,18 @@ namespace Coravel.Scheduling.Schedule
         }
 
         public bool IsRunning => this._runningTasksCount > 0;
+
+        public bool TryUnschedule(string uniqueIndentifier) {
+            var toUnschedule = this._tasks.First(scheduledEvent => scheduledEvent.Value.OverlappingUniqueIdentifier() == uniqueIndentifier);
+            
+            if(toUnschedule.Value != null)
+            {
+                string guid = toUnschedule.Key;
+                return this._tasks.TryRemove(guid, out var dummy); // If failed, caller can try again etc.
+            }
+
+            return true; // Nothing to remove - was successful.
+        }
 
         private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {

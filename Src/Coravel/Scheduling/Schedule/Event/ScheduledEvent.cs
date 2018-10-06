@@ -209,13 +209,17 @@ namespace Coravel.Scheduling.Schedule.Event
         public IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier)
         {
             this._preventOverlapping = true;
-            this._eventUniqueID = uniqueIdentifier;
-            return this;
+            return this.AssignUniqueIndentifier(uniqueIdentifier);
         }
 
         public IScheduledEventConfiguration When(Func<Task<bool>> predicate)
         {
             this._whenPredicate = predicate;
+            return this;
+        }
+
+        public IScheduledEventConfiguration AssignUniqueIndentifier(string uniqueIdentifier) {
+            this._eventUniqueID = uniqueIdentifier;
             return this;
         }
 
