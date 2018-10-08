@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
@@ -131,7 +132,7 @@ namespace UnitTests.Scheduling.IntervalTests
 
             scheduler.Schedule(() => taskRan = true).Cron(cronExpression);
 
-            await scheduler.RunAtAsync(DateTime.Parse(dateString));
+            await scheduler.RunAtAsync(DateTime.ParseExact(dateString, "M/d/yyyy h:mm tt", CultureInfo.InvariantCulture));
 
             Assert.Equal(shouldRun, taskRan);
         }
