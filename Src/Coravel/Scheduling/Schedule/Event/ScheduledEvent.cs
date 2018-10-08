@@ -34,8 +34,13 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
+            return WithInvocableType(scopeFactory, typeof(T));
+        }
+
+        public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
+        {
             var scheduledEvent = new ScheduledEvent();
-            scheduledEvent._invocableType = typeof(T);
+            scheduledEvent._invocableType = invocableType;
             scheduledEvent._scopeFactory = scopeFactory;
             return scheduledEvent;
         }

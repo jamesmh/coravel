@@ -55,6 +55,17 @@ namespace Coravel.Scheduling.Schedule
             ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
+        }    
+
+        public IScheduleInterval ScheduleInvocableType(Type invocableType)
+        {
+            if(!typeof(IInvocable).IsAssignableFrom(invocableType)){
+                throw new Exception("ScheduleInvocableType must be passed in a type that implements IInvocable.");
+            }
+
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocableType(this._scopeFactory, invocableType);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
+            return scheduled;
         }        
 
         public async Task RunSchedulerAsync()

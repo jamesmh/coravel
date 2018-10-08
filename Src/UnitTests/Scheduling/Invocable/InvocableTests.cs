@@ -28,6 +28,23 @@ namespace UnitTests.Scheduling.Invocable
             Assert.True(invocableRan);
         }
 
+                [Fact]
+        public async Task TestScheduledInvocableFromTypeRuns()
+        {
+            bool invocableRan = false;
+             var services = new ServiceCollection();
+            services.AddScoped<Action>(p => () => invocableRan = true);
+            services.AddScoped<TestInvocable>();
+            var provider = services.BuildServiceProvider();
+
+            var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            scheduler.ScheduleInvocableType(typeof(TestInvocable)).EveryMinute();
+
+            await scheduler.RunSchedulerAsync();
+
+            Assert.True(invocableRan);
+        }
+
         private class TestInvocable : IInvocable
         {
             private Action _func;
