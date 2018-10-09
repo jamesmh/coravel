@@ -152,6 +152,7 @@ namespace Coravel.Scheduling.Schedule
                     await Invoke();
                 }
 
+                await this.TryDispatchEvent(new ScheduledEventEnded(scheduledEvent));
             }
             catch (Exception e)
             {
@@ -163,10 +164,6 @@ namespace Coravel.Scheduling.Schedule
                 {
                     this._errorHandler(e);
                 }
-            }
-            finally
-            {
-                await this.TryDispatchEvent(new ScheduledEventEnded(scheduledEvent));
             }
         }
 
