@@ -228,6 +228,8 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
+        public Type InvocableType() => this._invocableType;
+
         private async Task<bool> WhenPredicateFails()
         {
             return this._whenPredicate != null && (!await _whenPredicate.Invoke());
