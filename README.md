@@ -1,9 +1,13 @@
-# Coravel
-
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 [![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
 ![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
 ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
+
+<div align="center">
+  <img src="./Docs/img/logo.png" />
+</div>
+
+# Coravel
 
 Coravel is a near-zero config .NET Core framework for Indie developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
 
@@ -11,11 +15,11 @@ Build .NET Core apps using a simple, expressive and straightforward syntax that 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
-## Coravel Is Used By
+## Used By
 
 <p align="center">
   <a href="https://www.builtwithdot.net">
-    <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" />
+    <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
   </a>
 </p>
 <p align="center"><b>BuiltWithDot.Net</b></p>
