@@ -1,10 +1,10 @@
 <div style="text-align: center; margin-bottom:80px;">
-<img src="./Docs/img/logo.png" style="width:30%;" />
+  <img src="./Docs/img/logo.png" style="max-width:30%;" />
 
-[![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
-[![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
-![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
-![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
+  [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
+  [![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
+  ![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
+  ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
 
 </div>
 
