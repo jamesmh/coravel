@@ -1,4 +1,6 @@
-<img src="./Docs/img/logo.png" style="max-width:30%;" />
+<div align="center">
+<img src="./Docs/img/logo.png" />
+</div>
 
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 [![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
