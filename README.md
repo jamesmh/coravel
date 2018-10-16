@@ -1,11 +1,10 @@
-<div align="center">
-  <img src="./Docs/img/logo.png" />
-
 [![CircleCI](https://circleci.com/gh/jamesmh/coravel/tree/master.svg?style=svg)](https://circleci.com/gh/jamesmh/coravel/tree/master)
 [![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
 ![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
 ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
 
+<div align="center">
+  <img src="./Docs/img/logo.png" />
 </div>
 
 # Coravel
