@@ -62,6 +62,11 @@ namespace Coravel.Queuing
             this._tasks.Enqueue(new ActionOrAsyncFunc(asyncTask));
         }
 
+        public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+        {
+            this.QueueAsyncTask(async () => await this._dispatcher.Broadcast(toBroadcast));
+        }
+
         public IQueueConfiguration OnError(Action<Exception> errorHandler)
         {
             this._errorHandler = errorHandler;

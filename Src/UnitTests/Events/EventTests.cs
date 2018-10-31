@@ -17,7 +17,7 @@ namespace UnitTests.Events
             int listenersExecutedCount = 0;
 
             var services = new ServiceCollection();
-            services.AddTransient<Action>(p => () => listenersExecutedCount++);
+            services.AddTransient<Action>(p => () => listenersExecutedCount++); // This is injected into the listeners via DI
             services.AddEvents();
             services.AddTransient<TestListener1ForEvent1>();
             services.AddTransient<TestListener2ForEvent1>();

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Coravel.Events.Interfaces;
 using Coravel.Invocable;
 
 namespace Coravel.Queuing.Interfaces
@@ -26,5 +27,11 @@ namespace Coravel.Queuing.Interfaces
         /// </summary>
         /// <typeparam name="T"></typeparam>
         void QueueInvocable<T>() where T : IInvocable;
+
+        /// <summary>
+        /// Queue an event to be broadcasted.
+        /// </summary>
+        /// <typeparam name="TEvent"></typeparam>
+        void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
     }
 }

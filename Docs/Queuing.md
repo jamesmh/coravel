@@ -57,6 +57,19 @@ To queue an invocable, use `QueueInvocable`:
 this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
 ```
 
+## Queue Event Broadcasting
+
+> New in version 2.1
+
+Event broadcasting is great - but what if your event listeners are doing some heavy / long-winded tasks?
+
+Using `QueueBroadcast` you can queue an event to be broadcasted in the background so your app can continue to be responsive.
+
+```c#
+// This will broadcast the event whenever the queue is consummed in the background.
+this._queue.QueueBroadcast(new OrderCreated(orderId)); 
+```
+
 ## Global Error Handling
 
 > In version 1.9 `ConfigureQueue` was moved as an extension method of `IServiceProvider`.
