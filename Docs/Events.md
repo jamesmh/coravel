@@ -98,6 +98,8 @@ See the [CLI docs](./Cli.md) for more information.
 
 ## Broadcasting Events
 
+### Basic Broadcasting
+
 To broadcast events, Coravel supplies the `Coravel.Events.Interfaces.IDispatcher` interface.
 
 You can inject an instance into your MVC controllers or other DI ready classes.
@@ -121,3 +123,9 @@ public BlogController : Controller
     }
 }
 ```
+
+### Queuing An Event To Be Broadcasted
+
+You may queue events that will be broadcasted in the background of your running app.
+
+See the docs for [Queue Event Broadcasting](Queuing.md#queue-event-broadcasting).
