@@ -71,3 +71,14 @@ Check out the top of this readme for an index of Coravel's features, each linkin
 If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
+
+## Need Something More Powerful?
+
+For those who need even more power than Coravel offers, I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
+
+It includes:
+
+- Database persisted scheduling
+- A beautiful UI to manage your jobs/invocables
+- Health metrics dashboard
+- And more!
