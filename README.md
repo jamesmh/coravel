@@ -72,9 +72,9 @@ If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
 
-## Need Something More Powerful?
+## Need More?
 
-For those who need even more power than Coravel offers, I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
+I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
 
 It includes:
 
