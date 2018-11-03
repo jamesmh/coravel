@@ -74,11 +74,9 @@ Otherwise, please **always** create an issue first ;)
 
 ## Need More?
 
-I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
-
-It includes:
+Check out [Coravel Pro](https://www.pro.coravel.net/) for professional admin tools that integrate seamlessly into your existing .NET Core apps. Includes:
 
 - Database persisted scheduling
 - A beautiful UI to manage your jobs/invocables
 - Health metrics dashboard
-- And more!
+- Easily configured tabular reports of your EF Core data (supports aggregation/complex projections)
