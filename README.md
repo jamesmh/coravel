@@ -79,4 +79,4 @@ Check out [Coravel Pro](https://www.pro.coravel.net/) for professional admin too
 - Database persisted scheduling
 - A beautiful UI to manage your jobs/invocables
 - Health metrics dashboard
-- Easily configured tabular reports of your EF Core data (supports aggregation/complex projections)
+- Easily configured tabular reports of your data (supports aggregation/complex projections)
