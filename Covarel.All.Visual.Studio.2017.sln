@@ -31,6 +31,44 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Mailer", "Src\Corav
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Cli", "Src\Coravel.Cli\Coravel.Cli.csproj", "{02B1E026-EBE1-4BA5-B273-9D58D18100CB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1127EA06-B247-41E7-BBA1-E5116248767C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{227446F8-1914-4CC3-B20D-9045D651748A}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\Caching.md = Docs\Caching.md
+		Docs\Cli.md = Docs\Cli.md
+		Docs\Events.md = Docs\Events.md
+		Docs\Invocables.md = Docs\Invocables.md
+		Docs\Mailing.md = Docs\Mailing.md
+		Docs\Queuing.md = Docs\Queuing.md
+		Docs\Scheduler.md = Docs\Scheduler.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{190A0E5B-562E-4DE8-863C-A0886F13A2B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", "{5E9AB080-5A8C-4961-988C-5E26626CB861}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HostBuilderWithQueue", "HostBuilderWithQueue", "{F5ED9EE1-290E-483A-976B-5C35DAD0AE78}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HostBuilderWithQueue", "Samples\HostBuilderWithQueue\HostBuilderWithQueue.csproj", "{B8233D59-C91F-49E5-B343-90480AC5FDFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{AA0B4535-C19A-4BEA-BCF2-BCA6B6F75D84}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\img\coravelmail.png = Docs\img\coravelmail.png
+		Docs\img\dailyreportinvocable.png = Docs\img\dailyreportinvocable.png
+		Docs\img\email-sample.png = Docs\img\email-sample.png
+		Docs\img\event-blog.png = Docs\img\event-blog.png
+		Docs\img\logo.png = Docs\img\logo.png
+		Docs\img\queueexpensive.png = Docs\img\queueexpensive.png
+		Docs\img\sampleinvocablemvc.png = Docs\img\sampleinvocablemvc.png
+		Docs\img\scheduledailyreport.png = Docs\img\scheduledailyreport.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "used-by", "used-by", "{AD10BE40-999E-4C0D-866F-56D4D42FE904}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\img\used-by\builtwithdotnet.jpg = Docs\img\used-by\builtwithdotnet.jpg
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +99,14 @@ Global
 		{02B1E026-EBE1-4BA5-B273-9D58D18100CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02B1E026-EBE1-4BA5-B273-9D58D18100CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02B1E026-EBE1-4BA5-B273-9D58D18100CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9AB080-5A8C-4961-988C-5E26626CB861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9AB080-5A8C-4961-988C-5E26626CB861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9AB080-5A8C-4961-988C-5E26626CB861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9AB080-5A8C-4961-988C-5E26626CB861}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8233D59-C91F-49E5-B343-90480AC5FDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8233D59-C91F-49E5-B343-90480AC5FDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8233D59-C91F-49E5-B343-90480AC5FDFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8233D59-C91F-49E5-B343-90480AC5FDFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +125,11 @@ Global
 		{88CD896E-EE3B-4788-A7B8-FACE87BA7DC2} = {9F5AD571-ECAB-4CE5-9947-18C054EF3299}
 		{ED8C6FC7-75DF-45A3-8945-07860E395D33} = {B1B780A5-5DBF-47DC-ACAE-352698D5BA30}
 		{02B1E026-EBE1-4BA5-B273-9D58D18100CB} = {5839E6DD-7E1E-44DC-A613-AEF0F60B80F3}
+		{5E9AB080-5A8C-4961-988C-5E26626CB861} = {190A0E5B-562E-4DE8-863C-A0886F13A2B2}
+		{F5ED9EE1-290E-483A-976B-5C35DAD0AE78} = {1127EA06-B247-41E7-BBA1-E5116248767C}
+		{B8233D59-C91F-49E5-B343-90480AC5FDFD} = {F5ED9EE1-290E-483A-976B-5C35DAD0AE78}
+		{AA0B4535-C19A-4BEA-BCF2-BCA6B6F75D84} = {227446F8-1914-4CC3-B20D-9045D651748A}
+		{AD10BE40-999E-4C0D-866F-56D4D42FE904} = {AA0B4535-C19A-4BEA-BCF2-BCA6B6F75D84}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0B0BD97-D18E-470A-98B7-7ED42D230AC9}
