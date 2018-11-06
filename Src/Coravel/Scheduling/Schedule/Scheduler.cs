@@ -35,21 +35,21 @@ namespace Coravel.Scheduling.Schedule
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
+            var scheduled = new ScheduledEvent(actionToSchedule);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
+            var scheduled = new ScheduledEvent(asyncTaskToSchedule);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval Schedule<T>() where T : IInvocable
         {
-            ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
+            var scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }    
@@ -60,14 +60,14 @@ namespace Coravel.Scheduling.Schedule
                 throw new Exception("ScheduleInvocableType must be passed in a type that implements IInvocable.");
             }
 
-            ScheduledEvent scheduled = ScheduledEvent.WithInvocableType(this._scopeFactory, invocableType);
+            var scheduled = ScheduledEvent.WithInvocableType(this._scopeFactory, invocableType);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }        
 
         public async Task RunSchedulerAsync()
         {
-            DateTime utcNow = DateTime.UtcNow;
+            var utcNow = DateTime.UtcNow;
             await this.RunAtAsync(utcNow);
         }
 
@@ -110,7 +110,7 @@ namespace Coravel.Scheduling.Schedule
             
             if(toUnschedule.Value != null)
             {
-                string guid = toUnschedule.Key;
+                var guid = toUnschedule.Key;
                 return this._tasks.TryRemove(guid, out var dummy); // If failed, caller can try again etc.
             }
 
