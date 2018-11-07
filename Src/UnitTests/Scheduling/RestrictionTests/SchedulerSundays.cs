@@ -4,7 +4,6 @@ using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
-using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
 namespace UnitTests.Scheduling.RestrictionTests
 {
