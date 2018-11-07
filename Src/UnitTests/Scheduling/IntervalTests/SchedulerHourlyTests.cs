@@ -44,8 +44,7 @@ namespace UnitTests.Scheduling.IntervalTests
         public async Task ValidHourly(int day, int hour, int minute, bool shouldRun)
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            bool taskRan = false;
-
+            var taskRan = false;
             scheduler.Schedule(() => taskRan = true).Hourly();
 
             await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
