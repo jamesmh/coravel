@@ -26,7 +26,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         }
 
         public CronExpression AppendWeekDay(DayOfWeek day) {
-            int intDay = (int) day;
+            var intDay = (int) day;
 
             if(this._weekdays == "*"){
                 this._weekdays = intDay.ToString();

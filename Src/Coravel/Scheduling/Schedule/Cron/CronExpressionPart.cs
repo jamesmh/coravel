@@ -45,7 +45,7 @@ namespace Coravel.Scheduling.Schedule.Cron
                 return true;
             }
 
-            var isDivisibleUnit = expression.IndexOf("*/") > -1;
+            var isDivisibleUnit = expression.Contains("*/");
 
             if (isDivisibleUnit)
             {
@@ -77,8 +77,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         private IEnumerable<int> GetCronIntArray(string expression)
         {
-            var isRange = expression.IndexOf('-') > -1;
-            var isDelineatedArray = expression.IndexOf(',') > -1;
+            var isRange = expression.Contains('-');
+            var isDelineatedArray = expression.Contains(',');
 
             if (isRange && isDelineatedArray)
             {
