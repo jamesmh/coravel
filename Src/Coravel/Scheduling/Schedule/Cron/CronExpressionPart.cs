@@ -7,7 +7,7 @@ namespace Coravel.Scheduling.Schedule.Cron
     /// <summary>
     /// Represents a cron expression "part" parser needed for determining when events ought to be due.
     /// </summary>
-    public class CronExpressionPart
+    internal class CronExpressionPart
     {
         /// <summary>
         /// The cron expression used to determine when events are due.
