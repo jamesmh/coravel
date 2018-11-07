@@ -81,8 +81,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         private IEnumerable<int> GetCronIntArray(string expression)
         {
-            bool isRange = expression.IndexOf('-') > -1;
-            bool isDelineatedArray = expression.IndexOf(',') > -1;
+            var isRange = expression.IndexOf('-') > -1;
+            var isDelineatedArray = expression.IndexOf(',') > -1;
 
             if (isRange && isDelineatedArray)
             {
