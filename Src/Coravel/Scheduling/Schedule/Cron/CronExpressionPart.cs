@@ -46,7 +46,7 @@ namespace Coravel.Scheduling.Schedule.Cron
                 return true;
             }
 
-            bool isDivisibleUnit = expression.IndexOf("*/") > -1;
+            var isDivisibleUnit = expression.IndexOf("*/") > -1;
 
             if (isDivisibleUnit)
             {
