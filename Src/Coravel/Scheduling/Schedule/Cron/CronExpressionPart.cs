@@ -67,11 +67,8 @@ namespace Coravel.Scheduling.Schedule.Cron
 
                 return time % divisor == 0;
             }
-            else
-            {
-                var values = this.GetCronIntArray(expression);
-                return values.Contains(time);
-            }
+            var values = this.GetCronIntArray(expression);
+            return values.Contains(time);
         }
 
         /// <summary>
@@ -93,14 +90,11 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 return this.GetRange(expression);
             }
-            else if (isDelineatedArray)
+            if (isDelineatedArray)
             {
                 return this.GetDelineatedArray(expression);
             }
-            else
-            {
-                return GetSpecifiedInt(expression);
-            }
+            return GetSpecifiedInt(expression);
         }
 
         /// <summary>
@@ -110,7 +104,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         private static IEnumerable<int> GetSpecifiedInt(string expression)
         {
-            bool parsed = int.TryParse(expression, out var parsedValue);
+            var parsed = int.TryParse(expression, out var parsedValue);
 
             if (!parsed)
             {
@@ -148,8 +142,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         {
             // e.g. "5-10"
             var range = expression.Split('-');
-            bool firstParsed = int.TryParse(range[0], out var first);
-            bool secondParsed = int.TryParse(range[1], out var second);
+            var firstParsed = int.TryParse(range[0], out var first);
+            var secondParsed = int.TryParse(range[1], out var second);
 
             if (!(firstParsed && secondParsed))
             {
