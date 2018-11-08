@@ -128,7 +128,7 @@ namespace Coravel.Scheduling.Schedule
                     this._logger?.LogInformation("Scheduled task started...");
                     await scheduledEvent.InvokeScheduledEvent();
                     this._logger?.LogInformation("Scheduled task finished...");
-                };
+                }
 
                 if (scheduledEvent.ShouldPreventOverlapping())
                 {
@@ -157,7 +157,7 @@ namespace Coravel.Scheduling.Schedule
 
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
 
-                if (this._errorHandler != null)
+                if (this._errorHandler is null)
                 {
                     this._errorHandler(e);
                 }
