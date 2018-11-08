@@ -11,7 +11,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         private string _weekdays;
 
         public CronExpression(string expression) {
-            const int minimumNumberOfCrpnExpressionValues = 5;
+            const int minimumNumberOfCronExpressionValues = 5;
             var values = expression.Split(' ');
             if(values.Length != minimumNumberOfCrpnExpressionValues)
             {
