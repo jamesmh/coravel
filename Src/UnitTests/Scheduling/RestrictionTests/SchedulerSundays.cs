@@ -13,7 +13,7 @@ namespace UnitTests.Scheduling.RestrictionTests
         public async Task DailyOnSundaysOnly()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            int taskRunCount = 0;
+            var taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++)
             .Daily()
