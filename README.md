@@ -71,3 +71,12 @@ Check out the top of this readme for an index of Coravel's features, each linkin
 If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
+
+## Need More?
+
+Check out [Coravel Pro](https://www.pro.coravel.net/) for professional admin tools that integrate seamlessly into your existing .NET Core apps. Includes:
+
+- Database persisted scheduling
+- A beautiful UI to manage your jobs/invocables
+- Health metrics dashboard
+- Easily configured tabular reports of your data (supports aggregation/complex projections)
