@@ -164,10 +164,11 @@ namespace Coravel.Scheduling.Schedule
 
         private async Task TryDispatchEvent(IEvent toBroadcast)
         {
-            if (this._dispatcher != null)
+            if (this._dispatcher is null)
             {
-                await this._dispatcher.Broadcast(toBroadcast);
+                return;
             }
+            await this._dispatcher.Broadcast(toBroadcast);
         }
     }
 }
