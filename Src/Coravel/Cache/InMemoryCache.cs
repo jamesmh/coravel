@@ -1,13 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Coravel.Cache.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace Coravel.Cache
 {
