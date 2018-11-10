@@ -157,10 +157,8 @@ namespace Coravel.Scheduling.Schedule
 
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
 
-                if (this._errorHandler is null)
-                {
-                    this._errorHandler(e);
-                }
+                if (this._errorHandler is null) { return; }
+                this._errorHandler(e);
             }
         }
 
