@@ -72,7 +72,7 @@ If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
 
-## Need More?
+## Coravel Pro
 
 Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. Includes:
 
