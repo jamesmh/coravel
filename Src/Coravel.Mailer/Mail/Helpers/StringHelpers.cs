@@ -9,7 +9,7 @@ namespace Coravel.Mailer.Mail.Helpers
     {
         public static string ToSnakeCase(this string str)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             var charSpan = str.AsSpan();
 
