@@ -47,21 +47,11 @@ namespace Coravel.Scheduling.Schedule.Mutex
                         {
                             return this.CreateLockedMutex(key, timeoutMinutes);
                         }
-                        else
-                        {
-                            return false;
-                        }
+                        return false;
                     }
-                    else
-                    {
-                        return this.CreateLockedMutex(key, timeoutMinutes);
-                    }
-
-                }
-                else
-                {
                     return this.CreateLockedMutex(key, timeoutMinutes);
                 }
+                return this.CreateLockedMutex(key, timeoutMinutes);
             }
         }
 
