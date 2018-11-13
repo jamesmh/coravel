@@ -159,8 +159,9 @@ namespace Coravel.Scheduling.Schedule
 
                 if (this._errorHandler is null)
                 {
-                    this._errorHandler(e);
+                    return;
                 }
+                this._errorHandler(e);
             }
         }
 
