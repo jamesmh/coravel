@@ -91,8 +91,8 @@ namespace Coravel.Events
         /// <returns></returns>
         public IEventSubscription<TEvent> Subscribe<TListener>() where TListener : IListener<TEvent>
         {
-            Type listenerType = typeof(TListener);
-            bool listenerAlreadyRegistered = this._listeners.Any(t => t.Equals(listenerType));
+            var listenerType = typeof(TListener);
+            var listenerAlreadyRegistered = this._listeners.Any(t => t.Equals(listenerType));
 
             if (!listenerAlreadyRegistered)
             {
