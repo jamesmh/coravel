@@ -39,19 +39,20 @@ namespace Coravel.Scheduling.Schedule.Mutex
         {
             lock (this._lock)
             {
-                if (this._mutexCollection.TryGetValue(key, out var mutex))
+                if (!this._mutexCollection.TryGetValue(key, out var mutex))
                 {
-                    if (mutex.Locked)
-                    {
-                        if (this._utcTime.Now >= mutex.ExpiresAt)
-                        {
-                            return this.CreateLockedMutex(key, timeoutMinutes);
-                        }
-                        return false;
-                    }
                     return this.CreateLockedMutex(key, timeoutMinutes);
                 }
-                return this.CreateLockedMutex(key, timeoutMinutes);
+                if (!mutex.Locked)
+                {
+                    return this.CreateLockedMutex(key, timeoutMinutes);
+                }
+
+                if (this._utcTime.Now >= mutex.ExpiresAt)
+                {
+                    return this.CreateLockedMutex(key, timeoutMinutes);
+                }
+                return false;
             }
         }
 
