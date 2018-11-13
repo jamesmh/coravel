@@ -28,7 +28,7 @@ namespace UnitTests.Scheduling.IntervalTests
             }
 
             // This is the method we are testing.
-            scheduler.OnError((_) => errorHandledCount++);
+            scheduler.OnError((e) => errorHandledCount++);
 
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(ThrowsErrorTask).EveryMinute(); // Should error.
