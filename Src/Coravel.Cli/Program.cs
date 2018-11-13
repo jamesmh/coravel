@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Coravel.Cli.Commands;
 using Coravel.Cli.Commands.Events;
 using Coravel.Cli.Commands.Invocable;

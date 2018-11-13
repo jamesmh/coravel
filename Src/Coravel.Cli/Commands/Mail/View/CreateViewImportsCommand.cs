@@ -10,15 +10,15 @@ namespace Coravel.Cli.Commands.Mail.View
 
         public void Execute()
         {
-            string appName = UserApp.GetAppName();
+            var appName = UserApp.GetAppName();
 
-            string content = new StringBuilder()
+            var content = new StringBuilder()
                 .AppendLine($"@using {appName}")
                 .AppendLine("@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers")
                 .AppendLine("@addTagHelper *, Coravel.Mailer.ViewComponents")
                 .ToString();
 
-            bool wasGenerated = Files.WriteFileIfNotCreatedYet(MailDirectory, "_ViewImports.cshtml", content);
+            var wasGenerated = Files.WriteFileIfNotCreatedYet(MailDirectory, "_ViewImports.cshtml", content);
 
             Console.ForegroundColor = ConsoleColor.Green;
             if (wasGenerated)

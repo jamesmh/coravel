@@ -5,7 +5,6 @@ using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Mailers;
 using Coravel.Mailer.Mail.Renderers;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -99,14 +98,11 @@ namespace Coravel
             string globalFromAddress = config.GetValue<string>("Coravel:Mail:From:Address", null);
             string globalFromName = config.GetValue<string>("Coravel:Mail:From:Name", null);
 
-            if (globalFromAddress != null)
-            {
-                return new MailRecipient(globalFromAddress, globalFromName);
-            }
-            else
+            if (globalFromAddress is null)
             {
                 return null;
             }
+            return new MailRecipient(globalFromAddress, globalFromName);
         }
     }
 }
