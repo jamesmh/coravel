@@ -62,6 +62,7 @@ namespace Coravel.Scheduling.Schedule.Event
                 await this._scheduledAction.Invoke();
                 return;
             }
+            
             /// This allows us to scope the scheduled IInvocable object
             /// and allow DI to inject it's dependencies.
             using (var scope = this._scopeFactory.CreateScope())
