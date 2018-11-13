@@ -64,16 +64,14 @@ namespace Coravel.Scheduling.Schedule.Mutex
             {
                 mutex.Locked = true;
                 mutex.ExpiresAt = expiresAt;
-            }
-            else
-            {
-                this._mutexCollection.Add(key, new MutexItem
-                {
-                    Locked = true,
-                    ExpiresAt = expiresAt
-                });
+                return true;
             }
 
+            this._mutexCollection.Add(key, new MutexItem
+            {
+                Locked = true,
+                ExpiresAt = expiresAt
+            });
             return true;
         }
 
