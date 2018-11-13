@@ -13,8 +13,8 @@ namespace UnitTests.Scheduling.IntervalTests
         public async Task TestSchedulerHandlesErrors()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            int errorHandledCount = 0;
-            int successfulTaskCount = 0;
+            var errorHandledCount = 0;
+            var successfulTaskCount = 0;
 
             void DummyTask()
             {
@@ -28,7 +28,7 @@ namespace UnitTests.Scheduling.IntervalTests
             }
 
             // This is the method we are testing.
-            scheduler.OnError((e) => errorHandledCount++);
+            scheduler.OnError((_) => errorHandledCount++);
 
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(ThrowsErrorTask).EveryMinute(); // Should error.
@@ -53,7 +53,7 @@ namespace UnitTests.Scheduling.IntervalTests
             {
                 successfulTaskCount++;
                 Console.Write("dummy");
-            };
+            }
 
             void ThrowsErrorTask()
             {
