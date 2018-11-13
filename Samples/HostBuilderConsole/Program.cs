@@ -1,15 +1,12 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
-using Coravel.Queuing.Interfaces;
 using Coravel;
-using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 
 namespace HostBuilderWithQueue
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
