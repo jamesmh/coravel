@@ -42,10 +42,7 @@ namespace Coravel.Mailer.Mail.Helpers
             {
                 return span.Slice(0, indexOfLastSpace).ToString();
             }
-            else
-            {
-                return str;
-            }
+            return str;
         }
 
         public static string CommaSeparated(this IEnumerable<string> str)
