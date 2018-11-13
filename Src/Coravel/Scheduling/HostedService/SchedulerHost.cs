@@ -57,8 +57,10 @@ namespace Coravel.Scheduling.HostedService
 
         public void Dispose()
         {
-            this._timer?.Dispose();
-            this._logger.LogInformation("Coravel's Scheduling service is now stopped.");
+            _timer?.Dispose();
+            _logger.LogInformation("Coravel's Scheduling service is now stopped.");
+
+            GC.SuppressFinalize(this);
         }
     }
 }
