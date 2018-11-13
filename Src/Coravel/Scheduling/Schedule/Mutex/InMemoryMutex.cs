@@ -58,7 +58,7 @@ namespace Coravel.Scheduling.Schedule.Mutex
 
         private bool CreateLockedMutex(string key, int timeoutMinutes)
         {
-            DateTime? expiresAt = this._utcTime.Now.AddMinutes(timeoutMinutes);
+            var expiresAt = this._utcTime.Now.AddMinutes(timeoutMinutes);
 
             if (this._mutexCollection.TryGetValue(key, out var mutex))
             {
