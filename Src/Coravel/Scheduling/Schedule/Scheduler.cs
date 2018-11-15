@@ -86,11 +86,7 @@ namespace Coravel.Scheduling.Schedule
         public async Task RunAtAsync(DateTime utcDate)
         {
             Interlocked.Increment(ref this._schedulerIterationsActiveCount);
-
-            List<Task> activeTasks = RunWorkersAt(utcDate);
-
-            await Task.WhenAll(activeTasks);
-
+            await RunWorkersAt(utcDate);
             Interlocked.Decrement(ref this._schedulerIterationsActiveCount);
         }
 
@@ -175,7 +171,7 @@ namespace Coravel.Scheduling.Schedule
         /// </summary>
         /// <param name="utcDate"></param>
         /// <returns></returns>
-        private List<Task> RunWorkersAt(DateTime utcDate)
+        private async Task RunWorkersAt(DateTime utcDate)
         {
             // Grab all the scheduled tasks so we can re-arrange them etc.
             List<ScheduledTask> scheduledWorkers = new List<ScheduledTask>();
@@ -185,33 +181,27 @@ namespace Coravel.Scheduling.Schedule
             }
 
             // We want each "worker" (indicated by the "WorkerName" prop) to run on it's own thread.
-            // So we'll group all the scheduled events (the actual work the user wants to perform) into
+            // So we'll group all the "due" scheduled events (the actual work the user wants to perform) into
             // buckets for each "worker".
-            var groupedScheduledEvents = scheduledWorkers.GroupBy(worker => worker.WorkerName);
+            var groupedScheduledEvents = scheduledWorkers
+                .Where(worker => worker.ScheduledEvent.IsDue(utcDate))
+                .GroupBy(worker => worker.WorkerName);
 
-            var activeTasks = new List<Task>();
-            foreach (var workerWithTasks in groupedScheduledEvents)
-            {
+            var activeTasks = groupedScheduledEvents.Select(workerWithTasks => {
                 // Each group represents the "worker" for that group of scheduled events.
                 // Running them on a separate thread means we can segment longer running tasks
                 // onto their own thread, or maybe more cpu intensive operations onto an isolated thread, etc.
-                var task = Task.Run(async () =>
+                return Task.Run(async () =>
                 {
                     foreach (var workerTask in workerWithTasks)
                     {
                         var scheduledEvent = workerTask.ScheduledEvent;
-
-                        if (scheduledEvent.IsDue(utcDate))
-                        {
-                            await InvokeEvent(scheduledEvent);
-                        }
+                        await InvokeEvent(scheduledEvent);                        
                     }
                 });
+            });
 
-                activeTasks.Add(task);
-            }
-
-            return activeTasks;
+            await Task.WhenAll(activeTasks);
         }
 
         private async Task TryDispatchEvent(IEvent toBroadcast)
