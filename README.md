@@ -4,7 +4,7 @@
 ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
 
 <div align="center">
-  <img src="./Docs/img/logo.png" />
+  <img src="./Docs/img/logo.png" style="max-width:200px" />
 </div>
 
 # Coravel
