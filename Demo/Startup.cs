@@ -95,30 +95,40 @@ namespace Demo
 
             app.ApplicationServices.UseScheduler(scheduler =>
             {
-                scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
-                    .EveryMinute();
+                // scheduler.Schedule(() => Console.WriteLine($"Every minute (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                //     .EveryMinute();
 
-                scheduler.Schedule(() => Console.WriteLine($"Every minute#2 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
-                    .EveryMinute();
+                // scheduler.Schedule(() => Console.WriteLine($"Every minute#2 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                //     .EveryMinute();
 
-                scheduler.ScheduleAsync(async () => 
-                {
-                    await Task.Delay(10000);
-                    Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}");
-                })
-                .EveryMinute();
+                // scheduler.ScheduleAsync(async () => 
+                // {
+                //     await Task.Delay(10000);
+                //     Console.WriteLine($"Every minute#3 (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}");
+                // })
+                // .EveryMinute();
 
-                scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
-                    .EveryFiveMinutes();
+                // scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
+                //     .EveryFiveMinutes();
 
-                scheduler.Schedule<SendNightlyReportsEmailJob>()
-                    .Cron("* * * * *")
-                    .PreventOverlapping("SendNightlyReportsEmailJob");
+                // scheduler.Schedule<SendNightlyReportsEmailJob>()
+                //     .Cron("* * * * *")
+                //     .PreventOverlapping("SendNightlyReportsEmailJob");
 
-                    scheduler.ScheduleAsync(async () => {
-                        var dispatcher = app.ApplicationServices.GetRequiredService<IDispatcher>();
-                        await dispatcher.Broadcast(new DemoEvent("This event happens every minute!"));
-                    }).EveryMinute();
+                //     scheduler.ScheduleAsync(async () => {
+                //         var dispatcher = app.ApplicationServices.GetRequiredService<IDispatcher>();
+                //         await dispatcher.Broadcast(new DemoEvent("This event happens every minute!"));
+                //     }).EveryMinute();
+
+                scheduler.OnWorker("EmailTasks");
+                scheduler
+                    .Schedule<SendNightlyReportsEmailJob>().Daily();
+                scheduler
+                    .Schedule<SendPendingNotifications>().EveryMinute();
+
+                scheduler.OnWorker("CPUIntensiveTasks");
+                scheduler
+                    .Schedule<RebuildStaticCachedData>().Hourly();
             });
 
             app.ApplicationServices

@@ -168,6 +168,32 @@ You may schedule tasks by using the `IScheduler` interface. Just inject the inte
 
 Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
 
+## Schedule Workers
+
+What if you have longer running tasks - especially tasks that do some CPU intensive stuff? Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
+
+Schedule workers solves this problem! 
+
+A schedule worker is just a pipeline that you can assign to your tasks - each worker is executed on it's own dedicated thread(s) so you can make your schedules more efficient and scalable.
+
+To begin assigning a schedule worker to a group of scheduled tasks use `OnWorker(string workerName)`:
+
+```c#
+scheduler.OnWorker("worker1");
+// The following are all assigned to "worker1".
+scheduler.Schedule(() => Console.WriteLine("Hey, I'm on worker1!"));
+scheduler.Schedule(() => Console.WriteLine("Me too!"));
+
+scheduler.OnWorker("worker2");
+// The following are all assigned to "worker2".
+scheduler.Schedule(() => Console.WriteLine("These might be long running tasks?"));
+scheduler.Schedule(() => Console.WriteLine("And they won't cause worker1's tasks..."));
+scheduler.Schedule(() => Console.WriteLine("... to wait until these are done!"));
+```
+
+This is useful when using Coravel in a console application, for example. In this case, you can choose to scale-out your scheduled tasks
+however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
+
 ## Intervals
 
 First, methods to apply interval constraints are available.
