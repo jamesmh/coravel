@@ -18,6 +18,7 @@ namespace Demo.Invocables
 
         public async Task Invoke()
         {
+            Console.WriteLine("NightlyReportMailable Started....");
             await Task.Delay(10000);
 
             // You could grab multiple users from a DB query ;)
