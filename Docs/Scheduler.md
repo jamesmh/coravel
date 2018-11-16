@@ -174,7 +174,9 @@ What if you have longer running tasks - especially tasks that do some CPU intens
 
 Schedule workers solves this problem! 
 
-A schedule worker is just a pipeline that you can assign to your tasks - each worker is executed on it's own dedicated thread(s) so you can make your schedules more efficient and scalable.
+A schedule worker is just a pipeline that you can assign to your tasks.
+
+Each worker is executed on it's own dedicated thread(s) so you can make your schedules more efficient and scalable.
 
 To begin assigning a schedule worker to a group of scheduled tasks use `OnWorker(string workerName)`:
 
@@ -191,8 +193,9 @@ scheduler.Schedule(() => Console.WriteLine("And they won't cause worker1's tasks
 scheduler.Schedule(() => Console.WriteLine("... to wait until these are done!"));
 ```
 
-This is useful when using Coravel in a console application, for example. In this case, you can choose to scale-out your scheduled tasks
-however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
+This is useful, for example, when using Coravel in a console application.
+
+You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
 
 ## Intervals
 
