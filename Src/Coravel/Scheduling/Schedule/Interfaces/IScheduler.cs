@@ -29,5 +29,13 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         IScheduleInterval Schedule<T>() where T : IInvocable;
+
+        /// <summary>
+        /// Begin scheduling further tasks on an isolated worker.
+        /// A worker will run all scheduled tasks on it's own separate thread.
+        /// </summary>
+        /// <param name="workerName"></param>
+        /// <returns></returns>
+        IScheduler OnWorker(string workerName);
     }
 }
