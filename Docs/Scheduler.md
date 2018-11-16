@@ -170,28 +170,37 @@ Keep in mind that dynamically scheduled tasks will disappear after the running a
 
 ## Schedule Workers
 
-What if you have longer running tasks - especially tasks that do some CPU intensive stuff? Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
+What if you have longer running tasks - especially tasks that do some CPU intensive stuff? 
 
-Schedule workers solves this problem! 
+Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
 
-A schedule worker is just a pipeline that you can assign to your tasks.
+### What's A Worker?
 
-Each worker is executed on it's own dedicated thread(s) so you can make your schedules more efficient and scalable.
+Schedule workers solves this problem by allowing your to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to your tasks which has a dedicated thread.
+
+**You** can decide how to make your schedules more efficient and scalable.
+
+### Usage
 
 To begin assigning a schedule worker to a group of scheduled tasks use `OnWorker(string workerName)`:
 
 ```c#
-scheduler.OnWorker("worker1");
-// The following are all assigned to "worker1".
-scheduler.Schedule(() => Console.WriteLine("Hey, I'm on worker1!"));
-scheduler.Schedule(() => Console.WriteLine("Me too!"));
+scheduler.OnWorker("EmailTasks");
+scheduler
+    .Schedule<SendNightlyReportsEmailJob>().Daily();
+scheduler
+    .Schedule<SendPendingNotifications>().EveryMinute();
 
-scheduler.OnWorker("worker2");
-// The following are all assigned to "worker2".
-scheduler.Schedule(() => Console.WriteLine("These might be long running tasks?"));
-scheduler.Schedule(() => Console.WriteLine("And they won't cause worker1's tasks..."));
-scheduler.Schedule(() => Console.WriteLine("... to wait until these are done!"));
+scheduler.OnWorker("CPUIntensiveTasks");
+scheduler
+    .Schedule<RebuildStaticCachedData>().Hourly();
 ```
+
+For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will be in their own dedicated pipeline/thread.
+
+`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
+
+### Useful For...
 
 This is useful, for example, when using Coravel in a console application.
 
