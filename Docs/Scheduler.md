@@ -176,7 +176,7 @@ Normally, this may prevent other scheduled tasks that are due from running until
 
 ### What's A Worker?
 
-Schedule workers solves this problem by allowing your to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
+Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
 
 **You** can decide how to make your schedules more efficient and scalable.
 
