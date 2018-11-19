@@ -8,7 +8,7 @@ Invocables allow you to define specific self-contained jobs within your system. 
 
 Creating an invocable uses the shared interface `Coravel.Invocable.IInvocable`.
 
-Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+Using .NET Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
 
 You may [use the Coravel Cli to generate a new invocable](./Cli.md).
 
