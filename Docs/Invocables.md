@@ -32,16 +32,6 @@ A sample implementation of the `SendDailyReportsEmailJob` class might look somet
 
 ![Coravel Invocable Sample](./img/dailyreportinvocable.png)
 
-## Example: Sending A Form To An External API
-
-There might be cases in your app when you have users fill out a form who's data needs to be sent to some external API. 
-
-By using invocables you can separate your presentational logic (MVC controllers) from application or business logic in a simple and expressive way.
-
-Using an invocable in an MVC controller might look like:
-
-![Coravel Invocable Sample](./img/sampleinvocablemvc.png)
-
 ## Example: Trigger Long Running Calculations In Background
 
 You might have a use-case where - from an admin screen - you want to have an HTML button that will fire off an expensive
