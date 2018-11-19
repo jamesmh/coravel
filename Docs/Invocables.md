@@ -1,9 +1,10 @@
 # Invocables
 
-Invocables allow you to define specific self-contained actions or jobs within your system. Since Coravel "understands" how to use invocables, you can do cool stuff like schedule or queue them using a super terse syntax.
+Invocables are ubiquitous classes that all of Coravel's features understand how to work with.
 
-> Ex. You might want to send an e-mail to your users every night. 
-  Using an invocable and Coravel's Mailer, you can easily create a self-contained class that will grab data from your DB and send mail to your users.
+Invocables allow you to define specific self-contained jobs within your system. Since Coravel "understands" how to use invocables, you can do cool stuff like schedule or queue them using a super terse syntax.
+
+Perhaps most importantly, invocables are 100% integrated into .NET Core's Dependency Injection services - so you can schedule, queue, etc. an invocable class - and it will automatically have it's dependencies injected for you!
 
 ## Creating An Invocable
 
