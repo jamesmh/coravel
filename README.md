@@ -72,11 +72,13 @@ If you are fixing a typo in one file / place - issue a PR.
 
 Otherwise, please **always** create an issue first ;)
 
-## Coravel Pro
+## Need Something More Powerful?
 
-Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. Includes:
+For those who need even more power than Coravel offers, I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
+
+It includes:
 
 - Database persisted scheduling
 - A beautiful UI to manage your jobs/invocables
 - Health metrics dashboard
-- Easily configured tabular reports of your data (supports aggregation/complex projections)
+- And more!

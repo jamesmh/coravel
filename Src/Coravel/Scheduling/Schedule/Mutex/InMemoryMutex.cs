@@ -39,39 +39,50 @@ namespace Coravel.Scheduling.Schedule.Mutex
         {
             lock (this._lock)
             {
-                if (!this._mutexCollection.TryGetValue(key, out var mutex))
+                if (this._mutexCollection.TryGetValue(key, out var mutex))
                 {
-                    return this.CreateLockedMutex(key, timeoutMinutes);
-                }
-                if (!mutex.Locked)
-                {
-                    return this.CreateLockedMutex(key, timeoutMinutes);
-                }
+                    if (mutex.Locked)
+                    {
+                        if (this._utcTime.Now >= mutex.ExpiresAt)
+                        {
+                            return this.CreateLockedMutex(key, timeoutMinutes);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return this.CreateLockedMutex(key, timeoutMinutes);
+                    }
 
-                if (this._utcTime.Now >= mutex.ExpiresAt)
+                }
+                else
                 {
                     return this.CreateLockedMutex(key, timeoutMinutes);
                 }
-                return false;
             }
         }
 
         private bool CreateLockedMutex(string key, int timeoutMinutes)
         {
-            var expiresAt = this._utcTime.Now.AddMinutes(timeoutMinutes);
+            DateTime? expiresAt = this._utcTime.Now.AddMinutes(timeoutMinutes);
 
             if (this._mutexCollection.TryGetValue(key, out var mutex))
             {
                 mutex.Locked = true;
                 mutex.ExpiresAt = expiresAt;
-                return true;
+            }
+            else
+            {
+                this._mutexCollection.Add(key, new MutexItem
+                {
+                    Locked = true,
+                    ExpiresAt = expiresAt
+                });
             }
 
-            this._mutexCollection.Add(key, new MutexItem
-            {
-                Locked = true,
-                ExpiresAt = expiresAt
-            });
             return true;
         }
 

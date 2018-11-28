@@ -1,7 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using Coravel.Cli.Commands.Mail.Mailable;
 using Coravel.Cli.Commands.Mail.View;
+using Coravel.Cli.Shared;
 
 namespace Coravel.Cli.Commands.Mail.Install
 {

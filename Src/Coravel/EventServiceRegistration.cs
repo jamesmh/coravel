@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using Coravel.Events;
 using Coravel.Events.Interfaces;
 using Microsoft.Extensions.DependencyInjection;

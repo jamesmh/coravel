@@ -4,6 +4,7 @@ using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
 namespace UnitTests.Scheduling.IntervalTests
 {
@@ -13,14 +14,14 @@ namespace UnitTests.Scheduling.IntervalTests
         public async Task TestSchedulerHandlesErrors()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            var errorHandledCount = 0;
-            var successfulTaskCount = 0;
+            int errorHandledCount = 0;
+            int successfulTaskCount = 0;
 
             void DummyTask()
             {
                 successfulTaskCount++;
                 Console.Write("dummy");
-            }
+            };
 
             void ThrowsErrorTask()
             {
@@ -46,14 +47,14 @@ namespace UnitTests.Scheduling.IntervalTests
         [Fact]
         public async Task TestSchedulerSkipsErrors()
         {
-            var successfulTaskCount = 0;
+            int successfulTaskCount = 0;
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
 
             void DummyTask()
             {
                 successfulTaskCount++;
                 Console.Write("dummy");
-            }
+            };
 
             void ThrowsErrorTask()
             {

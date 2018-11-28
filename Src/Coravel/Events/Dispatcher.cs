@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,8 +92,8 @@ namespace Coravel.Events
         /// <returns></returns>
         public IEventSubscription<TEvent> Subscribe<TListener>() where TListener : IListener<TEvent>
         {
-            var listenerType = typeof(TListener);
-            var listenerAlreadyRegistered = this._listeners.Any(t => t.Equals(listenerType));
+            Type listenerType = typeof(TListener);
+            bool listenerAlreadyRegistered = this._listeners.Any(t => t.Equals(listenerType));
 
             if (!listenerAlreadyRegistered)
             {

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -57,10 +59,8 @@ namespace Coravel.Scheduling.HostedService
 
         public void Dispose()
         {
-            _timer?.Dispose();
-            _logger.LogInformation("Coravel's Scheduling service is now stopped.");
-
-            GC.SuppressFinalize(this);
+            this._timer?.Dispose();
+            this._logger.LogInformation("Coravel's Scheduling service is now stopped.");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
@@ -11,10 +12,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         private string _weekdays;
 
         public CronExpression(string expression) {
-            const int minimumNumberOfCronExpressionValues = 5;
             var values = expression.Split(' ');
-            if(values.Length != minimumNumberOfCronExpressionValues)
-            {
+            if(values.Length != 5){
                 throw new Exception($"Cron expression '{expression}' is malformed.");
             }
 
@@ -26,7 +25,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         }
 
         public CronExpression AppendWeekDay(DayOfWeek day) {
-            var intDay = (int) day;
+            int intDay = (int) day;
 
             if(this._weekdays == "*"){
                 this._weekdays = intDay.ToString();

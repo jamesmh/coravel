@@ -9,7 +9,7 @@ namespace Coravel.Mailer.Mail.Helpers
     {
         public static string ToSnakeCase(this string str)
         {
-            var builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
 
             var charSpan = str.AsSpan();
 
@@ -42,7 +42,10 @@ namespace Coravel.Mailer.Mail.Helpers
             {
                 return span.Slice(0, indexOfLastSpace).ToString();
             }
-            return str;
+            else
+            {
+                return str;
+            }
         }
 
         public static string CommaSeparated(this IEnumerable<string> str)

@@ -5,8 +5,7 @@ namespace Coravel.Queuing.Broadcast
 {
     public class QueueConsumationStarted : IEvent
     {
-        public DateTime StartedAtUtc { get; }
-
+        public DateTime StartedAtUtc { get; private set; }
         public QueueConsumationStarted()
         {
             this.StartedAtUtc = DateTime.UtcNow;

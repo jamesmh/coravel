@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
@@ -44,7 +45,8 @@ namespace UnitTests.Scheduling.IntervalTests
         public async Task ValidHourly(int day, int hour, int minute, bool shouldRun)
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            var taskRan = false;
+            bool taskRan = false;
+
             scheduler.Schedule(() => taskRan = true).Hourly();
 
             await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);

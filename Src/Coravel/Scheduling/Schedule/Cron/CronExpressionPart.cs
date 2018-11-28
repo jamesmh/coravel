@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Coravel.Scheduling.Schedule.Helpers;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
     /// <summary>
     /// Represents a cron expression "part" parser needed for determining when events ought to be due.
     /// </summary>
-    internal class CronExpressionPart
+    public class CronExpressionPart
     {
         /// <summary>
         /// The cron expression used to determine when events are due.
@@ -45,7 +46,7 @@ namespace Coravel.Scheduling.Schedule.Cron
                 return true;
             }
 
-            var isDivisibleUnit = expression.Contains("*/");
+            bool isDivisibleUnit = expression.IndexOf("*/") > -1;
 
             if (isDivisibleUnit)
             {
@@ -66,8 +67,11 @@ namespace Coravel.Scheduling.Schedule.Cron
 
                 return time % divisor == 0;
             }
-            var values = this.GetCronIntArray(expression);
-            return values.Contains(time);
+            else
+            {
+                var values = this.GetCronIntArray(expression);
+                return values.Contains(time);
+            }
         }
 
         /// <summary>
@@ -77,8 +81,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         private IEnumerable<int> GetCronIntArray(string expression)
         {
-            var isRange = expression.Contains('-');
-            var isDelineatedArray = expression.Contains(',');
+            bool isRange = expression.IndexOf('-') > -1;
+            bool isDelineatedArray = expression.IndexOf(',') > -1;
 
             if (isRange && isDelineatedArray)
             {
@@ -89,11 +93,14 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 return this.GetRange(expression);
             }
-            if (isDelineatedArray)
+            else if (isDelineatedArray)
             {
                 return this.GetDelineatedArray(expression);
             }
-            return GetSpecifiedInt(expression);
+            else
+            {
+                return GetSpecifiedInt(expression);
+            }
         }
 
         /// <summary>
@@ -103,7 +110,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         private static IEnumerable<int> GetSpecifiedInt(string expression)
         {
-            var parsed = int.TryParse(expression, out var parsedValue);
+            bool parsed = int.TryParse(expression, out var parsedValue);
 
             if (!parsed)
             {
@@ -141,8 +148,8 @@ namespace Coravel.Scheduling.Schedule.Cron
         {
             // e.g. "5-10"
             var range = expression.Split('-');
-            var firstParsed = int.TryParse(range[0], out var first);
-            var secondParsed = int.TryParse(range[1], out var second);
+            bool firstParsed = int.TryParse(range[0], out var first);
+            bool secondParsed = int.TryParse(range[1], out var second);
 
             if (!(firstParsed && secondParsed))
             {

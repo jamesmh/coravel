@@ -25,11 +25,11 @@ namespace Coravel.Tasks
         {
             if (this._isAsync)
             {
-                await this._asyncAction.Invoke();
+                await this._asyncAction();
             }
             else
             {
-                this._action.Invoke();
+                this._action();
             }
         }
     }

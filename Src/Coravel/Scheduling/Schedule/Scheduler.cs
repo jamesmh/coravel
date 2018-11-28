@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Coravel.Queuing;
+using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
+using Coravel.Scheduling.Schedule.Helpers;
 using Coravel.Scheduling.Schedule.Event;
 using Microsoft.Extensions.DependencyInjection;
 using Coravel.Invocable;
@@ -35,21 +38,21 @@ namespace Coravel.Scheduling.Schedule
 
         public IScheduleInterval Schedule(Action actionToSchedule)
         {
-            var scheduled = new ScheduledEvent(actionToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(actionToSchedule);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval ScheduleAsync(Func<Task> asyncTaskToSchedule)
         {
-            var scheduled = new ScheduledEvent(asyncTaskToSchedule);
+            ScheduledEvent scheduled = new ScheduledEvent(asyncTaskToSchedule);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }
 
         public IScheduleInterval Schedule<T>() where T : IInvocable
         {
-            var scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }    
@@ -60,14 +63,14 @@ namespace Coravel.Scheduling.Schedule
                 throw new Exception("ScheduleInvocableType must be passed in a type that implements IInvocable.");
             }
 
-            var scheduled = ScheduledEvent.WithInvocableType(this._scopeFactory, invocableType);
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocableType(this._scopeFactory, invocableType);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), scheduled);
             return scheduled;
         }        
 
         public async Task RunSchedulerAsync()
         {
-            var utcNow = DateTime.UtcNow;
+            DateTime utcNow = DateTime.UtcNow;
             await this.RunAtAsync(utcNow);
         }
 
@@ -110,7 +113,7 @@ namespace Coravel.Scheduling.Schedule
             
             if(toUnschedule.Value != null)
             {
-                var guid = toUnschedule.Key;
+                string guid = toUnschedule.Key;
                 return this._tasks.TryRemove(guid, out var dummy); // If failed, caller can try again etc.
             }
 
@@ -128,7 +131,7 @@ namespace Coravel.Scheduling.Schedule
                     this._logger?.LogInformation("Scheduled task started...");
                     await scheduledEvent.InvokeScheduledEvent();
                     this._logger?.LogInformation("Scheduled task finished...");
-                }
+                };
 
                 if (scheduledEvent.ShouldPreventOverlapping())
                 {
@@ -157,19 +160,19 @@ namespace Coravel.Scheduling.Schedule
 
                 this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
 
-                if (this._errorHandler is null) { return; }
-                this._errorHandler(e);
+                if (this._errorHandler != null)
+                {
+                    this._errorHandler(e);
+                }
             }
-
         }
 
         private async Task TryDispatchEvent(IEvent toBroadcast)
         {
-            if (this._dispatcher is null)
+            if (this._dispatcher != null)
             {
-                return;
+                await this._dispatcher.Broadcast(toBroadcast);
             }
-            await this._dispatcher.Broadcast(toBroadcast);
         }
     }
 }

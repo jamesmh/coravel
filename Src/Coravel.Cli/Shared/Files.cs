@@ -6,7 +6,7 @@ namespace Coravel.Cli.Shared
     {
         public static bool WriteFileIfNotCreatedYet(string path, string filename, string content)
         {
-            var fullFilePath = path + "/" + filename;
+            string fullFilePath = path + "/" + filename;
 
             Directory.CreateDirectory(path);
 
@@ -18,7 +18,10 @@ namespace Coravel.Cli.Shared
                 }
                 return true;
             }
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
 }

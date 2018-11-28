@@ -4,6 +4,7 @@ using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
+using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
 namespace UnitTests.Scheduling.RestrictionTests
 {
@@ -13,7 +14,7 @@ namespace UnitTests.Scheduling.RestrictionTests
         public async Task DailyOnSundaysOnly()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            var taskRunCount = 0;
+            int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++)
             .Daily()

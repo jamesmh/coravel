@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coravel.Cli.Shared;
 
 namespace Coravel.Cli.Commands.Events
@@ -7,7 +9,6 @@ namespace Coravel.Cli.Commands.Events
     {
         private readonly static string EventsPath = $"./Events";
         private readonly static string ListenersPath = $"./Listeners";
-
         public void Execute(string eventName, string listenerName)
         {
             string appName = UserApp.GetAppName();
@@ -55,7 +56,6 @@ namespace {appName}.Listeners
         }}
     }}
 }}";
-
             return Files.WriteFileIfNotCreatedYet(ListenersPath, listenerName + ".cs", content);
         }
 

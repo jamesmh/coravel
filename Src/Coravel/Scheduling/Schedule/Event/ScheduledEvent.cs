@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Coravel.Scheduling.Schedule.Cron;
@@ -37,11 +39,9 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
         {
-            var scheduledEvent = new ScheduledEvent
-            {
-                _invocableType = invocableType,
-                _scopeFactory = scopeFactory
-            };
+            var scheduledEvent = new ScheduledEvent();
+            scheduledEvent._invocableType = invocableType;
+            scheduledEvent._scopeFactory = scopeFactory;
             return scheduledEvent;
         }
 
@@ -60,16 +60,17 @@ namespace Coravel.Scheduling.Schedule.Event
             if (this._invocableType is null)
             {
                 await this._scheduledAction.Invoke();
-                return;
             }
-            
-            /// This allows us to scope the scheduled IInvocable object
-            /// and allow DI to inject it's dependencies.
-            using (var scope = this._scopeFactory.CreateScope())
+            else
             {
-                if (scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable)
+                /// This allows us to scope the scheduled IInvocable object
+                /// and allow DI to inject it's dependencies.
+                using (var scope = this._scopeFactory.CreateScope())
                 {
-                    await invocable.Invoke();
+                    if (scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable)
+                    {
+                        await invocable.Invoke();
+                    }
                 }
             }
         }

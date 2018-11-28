@@ -17,6 +17,7 @@ namespace Coravel
         /// Register Coravel's Scheduler.
         /// </summary>
         /// <param name="services">Service collection</param>
+        /// <param name="assignScheduledTasks">Action that assigns all your scheduled tasks</param>
         /// <returns></returns>
         public static IServiceCollection AddScheduler(this IServiceCollection services)
         {
