@@ -74,7 +74,9 @@ Otherwise, please **always** create an issue first ;)
 
 ## Coravel Pro
 
-Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. Includes:
+Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. I.e. it's an admin panel for .NET Core apps.
+
+Includes:
 
 - Database persisted scheduling
 - A beautiful UI to manage your jobs/invocables
