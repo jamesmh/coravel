@@ -4,7 +4,7 @@
 ![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
 
 <div align="center">
-  <img src="./Docs/img/logo.png" />
+  <img src="./Docs/img/logo.png" style="max-width:200px" />
 </div>
 
 # Coravel
@@ -74,9 +74,9 @@ Otherwise, please **always** create an issue first ;)
 
 ## Need Something More Powerful?
 
-For those who need even more power than Coravel offers, I'm building a professional suite of admin tools that are an extension of Coravel: [Coravel Pro](https://www.pro.coravel.net/).
+Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. I.e. it's an admin panel for .NET Core apps.
 
-It includes:
+Includes:
 
 - Database persisted scheduling
 - A beautiful UI to manage your jobs/invocables

@@ -1,15 +1,14 @@
 # Invocables
 
-Invocables allow you to define specific self-contained actions or jobs within your system. Since Coravel "understands" how to use invocables, you can do cool stuff like schedule or queue them using a super terse syntax.
+Invocables are ubiquitous classes that all of Coravel's features understand how to work with.
 
-> Ex. You might want to send an e-mail to your users every night. 
-  Using an invocable and Coravel's Mailer, you can easily create a self-contained class that will grab data from your DB and send mail to your users.
+Invocables allow you to define specific self-contained jobs within your system. Since Coravel "understands" how to use invocables, you can do cool stuff like schedule or queue them using a super terse syntax.
 
 ## Creating An Invocable
 
 Creating an invocable uses the shared interface `Coravel.Invocable.IInvocable`.
 
-Using .Net Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
+Using .NET Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
 
 You may [use the Coravel Cli to generate a new invocable](./Cli.md).
 
@@ -32,16 +31,6 @@ In this example, `SendDailyReportsEmailJob` is an invocable that was created by 
 A sample implementation of the `SendDailyReportsEmailJob` class might look something like this (which is using Coravel's Mailer to send e-mail):
 
 ![Coravel Invocable Sample](./img/dailyreportinvocable.png)
-
-## Example: Sending A Form To An External API
-
-There might be cases in your app when you have users fill out a form who's data needs to be sent to some external API. 
-
-By using invocables you can separate your presentational logic (MVC controllers) from application or business logic in a simple and expressive way.
-
-Using an invocable in an MVC controller might look like:
-
-![Coravel Invocable Sample](./img/sampleinvocablemvc.png)
 
 ## Example: Trigger Long Running Calculations In Background
 
