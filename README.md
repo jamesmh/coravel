@@ -9,7 +9,7 @@
 
 # Coravel
 
-Coravel is a near-zero config .NET Core framework for Indie developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
+Coravel is a near-zero config .NET Core framework for developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
 
 Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
