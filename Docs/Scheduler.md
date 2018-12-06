@@ -267,11 +267,13 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 ## Prevent Overlapping Tasks
 
-Sometimes you may have longer running tasks (longer than 1 minute). The normal behavior of the scheduler is to simply fire off a task if it is due.
+Sometimes you may have longer running tasks (longer than 1 minute?). The normal behavior of the scheduler is to simply fire off a task if it is due.
 
 What if the previous task is **still** running?
 
-In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task.
+In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
+
+In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
 
 ```c#
 scheduler
