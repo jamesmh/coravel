@@ -9,7 +9,7 @@
 
 # Coravel
 
-Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually very advanced features super easy-to-use and accessible - without needing to install any extra 3rd-party infrastructure. Features like:
+Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually advanced features super easy-to-use and accessible - without needing to install any extra 3rd-party infrastructure. Includes:
 
 - Task scheduling
 - Queuing
