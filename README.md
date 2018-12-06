@@ -9,7 +9,13 @@
 
 # Coravel
 
-Coravel is a near-zero config .NET Core framework for developers needing to get their next groundbreaking app to market faster - without compromising code quality and elegance.
+Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually very advanced features super easy-to-use and accessible - without needing to install any extra 3rd-party infrastructure. Features like:
+
+- Task scheduling
+- Queuing
+- Caching
+- Event broadcasting
+- and more!
 
 Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
