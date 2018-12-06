@@ -9,13 +9,7 @@
 
 # Coravel
 
-Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually advanced features super easy-to-use and accessible - without needing to install any extra 3rd-party infrastructure. Includes:
-
-- Task scheduling
-- Queuing
-- Caching
-- Event broadcasting
-- and more!
+Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually advanced features accessible and easy-to-use - without needing to install any extra 3rd-party infrastructure.
 
 Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
