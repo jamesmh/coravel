@@ -77,7 +77,7 @@ public class TweetNewPost : IListener<BlogPostCreated>
     private TweetingService _tweeter;
 
     public TweetNewPost(TweetingService tweeter){
-        this._tweeter = tweeter // Injected via service container
+        this._tweeter = tweeter // Injected via service provider.
     }
 
     public async Task HandleAsync(BlogPostCreated broadcasted)
