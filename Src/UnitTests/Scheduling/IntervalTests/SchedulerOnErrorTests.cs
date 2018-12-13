@@ -38,7 +38,7 @@ namespace UnitTests.Scheduling.IntervalTests
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
             scheduler.Schedule(DummyTask).EveryMinute(); // Should run.
 
-            await scheduler.RunAtAsync(DateTime.UtcNow); // All tasks will run.
+            await scheduler.RunAtAsync(new DateTime(2019, 1, 1)); // All tasks will run.
 
             Assert.True(errorHandledCount == 2);
             Assert.True(successfulTaskCount == 4);
@@ -64,7 +64,7 @@ namespace UnitTests.Scheduling.IntervalTests
             scheduler.Schedule(ThrowsErrorTask).EveryMinute();
             scheduler.Schedule(DummyTask).EveryMinute();
 
-            await scheduler.RunAtAsync(DateTime.UtcNow);
+            await scheduler.RunAtAsync(new DateTime(2019, 1, 1));
 
             Assert.True(successfulTaskCount == 1);
         }

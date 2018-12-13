@@ -100,5 +100,35 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <param name="cronExpression"></param>
         /// <returns></returns>
         IScheduledEventConfiguration Cron(string cronExpression);
+
+        /// <summary>
+        /// Scheduled task runs once a second.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EverySecond();
+
+        /// <summary>
+        /// Scheduled task runs once every five seconds.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EveryFiveSeconds();
+
+        /// <summary>
+        /// Scheduled task runs once every ten seconds.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EveryTenSeconds();
+
+        /// <summary>
+        /// Scheduled task runs once every fifteen seconds.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EveryFifteenSeconds();
+
+        /// <summary>
+        /// Scheduled task runs once every thirty seconds.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EveryThirtySeconds();
     }
 }

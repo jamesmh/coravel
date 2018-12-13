@@ -23,7 +23,7 @@ namespace UnitTests.Scheduling.Invocable
             var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
             scheduler.Schedule<TestInvocable>().EveryMinute();
 
-            await scheduler.RunSchedulerAsync();
+            await (scheduler as Scheduler).RunAtAsync(new DateTime(2019, 1, 1));
 
             Assert.True(invocableRan);
         }
@@ -40,7 +40,7 @@ namespace UnitTests.Scheduling.Invocable
             var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
             scheduler.ScheduleInvocableType(typeof(TestInvocable)).EveryMinute();
 
-            await scheduler.RunSchedulerAsync();
+            await (scheduler as Scheduler).RunAtAsync(new DateTime(2019, 1, 1));
 
             Assert.True(invocableRan);
         }

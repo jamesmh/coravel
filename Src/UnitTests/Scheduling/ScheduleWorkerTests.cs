@@ -13,7 +13,7 @@ namespace UnitTests.Scheduling
     public class ScheduleWorkerTests
     {
         [Fact]
-        public async Task ScheduleWorkerSuccessfulOnMultipleThreads()
+        public async Task ScheduleWorkerSuccessfulWithOneThreadPerWorker()
         {
             for (int i = 0; i < 100; i++)
             {
@@ -124,24 +124,6 @@ namespace UnitTests.Scheduling
                 Assert.True(threads6.Distinct().Count() == 1);
                 Assert.True(threads7.Distinct().Count() == 1);
                 Assert.True(threads8.Distinct().Count() == 1);
-
-                // Now make sure more than 1 different threads were used alltogether.
-                int distinctThreads = threads1
-                    .Concat(threads2)
-                    .Concat(threads3)
-                    .Concat(threads4)
-                    .Concat(threads5)
-                    .Concat(threads6)
-                    .Concat(threads7)
-                    .Concat(threads8)
-                    .Distinct()
-                    .Count();
-
-                // We can't know how many threads will "really" be used since 
-                // some workers may finish early and that thread will be re-used for another worker.
-                // Debugging this uses 7 different threads sometimes, other times lower...
-                // So we'll pick a "safe" number of "more than 1"? Good for now.
-                Assert.True(distinctThreads > 1);
             }
         }
 
