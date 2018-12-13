@@ -104,9 +104,9 @@ scheduler.ScheduleAsync(async () =>
 
 To learn about creating and using invocables [see the docs.](./Invocables.md)
 
-1. Don't forget to make sure that your invocable is registered with the service providers as a scoped or transient service.
+1. Don't forget to make sure that your invocable is registered with the service provider as a scoped or transient service.
 
-2. To schedule a invocable, use the `Schedule` method:
+2. To schedule an invocable, use the `Schedule` method:
 
 ```c#
 scheduler
