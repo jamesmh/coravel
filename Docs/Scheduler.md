@@ -104,7 +104,9 @@ scheduler.ScheduleAsync(async () =>
 
 To learn about creating and using invocables [see the docs.](./Invocables.md)
 
-To schedule a invocable, use the `Schedule` method:
+1. Don't forget to make sure that your invocable is registered with the service providers as a scoped or transient service.
+
+2. To schedule a invocable, use the `Schedule` method:
 
 ```c#
 scheduler
@@ -113,8 +115,6 @@ scheduler
 ```
 
 What a simple, terse and expressive syntax! Easy Peasy!
-
-_Note: Coravel also supports queuing invocables too!_
 
 ### Sample: Scheduling An Invocable That Sends A Daily Report
 
