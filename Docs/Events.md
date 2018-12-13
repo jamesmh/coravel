@@ -39,7 +39,7 @@ registration
 
 ## Creating An Event
 
-Creating an event is simple:
+Creating an event is simple.
 
 Create a class that implements the interface `Coravel.Events.Interfaces.IEvent`. That's it!
 
