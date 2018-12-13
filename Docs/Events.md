@@ -2,7 +2,7 @@
 
 Coravel's events allow you to subscribe and listen to events that occur in your application. This is a great way to build maintainable applications who's parts are loosely coupled.
 
-An event will have one or more independent listeners which, when an event is broadcasted, will be "given" the broadcasted event. The listeners can then independently perform their specific application logic with that specific event.
+An event will have one or more independent listeners which, when an event is broadcasted, will be "given" the broadcasted event. The listeners can then independently perform their specific application logic based on the event's data.
 
 ## Example: Broadcasting A New Blog Post To The Public
 
