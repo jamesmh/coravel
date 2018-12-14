@@ -124,7 +124,6 @@ namespace UnitTests.Scheduling.IntervalTests
         [InlineData("1/1/2018 4:46:30 pm", true)]
         [InlineData("1/1/2018 12:01:00 am", true)]
         [InlineData("1/1/2018 12:01:30 am", true)]
-
         [InlineData("1/1/2018 2:00:01 am", false)]
         [InlineData("1/1/2018 3:00:02 am", false)]
         [InlineData("1/1/2018 4:00:05 am", false)]
@@ -141,8 +140,38 @@ namespace UnitTests.Scheduling.IntervalTests
             await TestSubMinuteInterval(dateString, shouldRun, e => e.EveryThirtySeconds());
         }
 
-        // TODO!!!! Make sure that when second based tasks run the appropriate minute based ones trigger at the correct intervals too.
-        // IE a mixed test
+        [Theory]
+        [InlineData("2/15/2020 12:00:00 am", 9)]
+        [InlineData("2/15/2020 12:00:01 am", 1)]
+        [InlineData("2/15/2020 12:01:01 am", 1)]
+        [InlineData("2/15/2020 12:01:05 am", 2)]
+        [InlineData("2/15/2020 12:01:10 am", 3)]
+        [InlineData("2/15/2020 12:01:15 am", 3)]
+        [InlineData("2/15/2020 12:01:20 am", 3)]
+        [InlineData("2/15/2020 12:01:30 am", 5)]
+        [InlineData("2/15/2020 12:01:00 am", 6)]  
+        [InlineData("2/15/2020 12:30:00 am", 7)]  
+        [InlineData("2/15/2020 5:00:00 am", 8)]
+        public async Task ScheduledEventTestingSubMinuteMixed(string dateString, int expectedRuns)
+        {
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+            int taskRunCount = 0;
+            Action run = () => Interlocked.Increment(ref taskRunCount);
+
+            scheduler.Schedule(run).EverySecond();
+            scheduler.Schedule(run).EveryFiveSeconds();
+            scheduler.Schedule(run).EveryTenSeconds();
+            scheduler.Schedule(run).EveryFifteenSeconds();
+            scheduler.Schedule(run).EveryThirtySeconds();
+
+            scheduler.Schedule(run).EveryMinute();
+            scheduler.Schedule(run).EveryThirtyMinutes();
+            scheduler.Schedule(run).Hourly();
+            scheduler.Schedule(run).Daily();
+
+            await scheduler.RunAtAsync(DateTime.ParseExact(dateString, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture));
+            Assert.Equal(expectedRuns, taskRunCount);
+        }
 
         private static async Task TestSubMinuteInterval(string dateString, bool shouldRun, Action<IScheduleInterval> scheduleIt)
         {
