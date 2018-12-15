@@ -210,11 +210,21 @@ You can choose to scale-out your scheduled tasks however you feel is most effici
 
 First, methods to apply interval constraints are available.
 
-These methods tell your task to execute at certain intervals. They are basically all wrappers of the `Cron` method (keep reading...). 
+These methods tell your task to execute at certain intervals. 
 
-For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
+### Sub-minute Intervals
 
-`Daily` will run at midnight each day (`0 0 * * *`).
+There are a few intervals that are seconds based:
+
+- `EverySecond()`
+- `EveryFiveSeconds()`
+- `EveryTenSeconds()`
+- `EveryFifteenSeconds()`
+- `EveryThirtySeconds()`
+
+These may be useful for performing quick tasks like polling, etc.
+
+### Minute Intervals
 
 - `EveryMinute();`
 - `EveryFiveMinutes();`
@@ -227,6 +237,12 @@ For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
 - `HourlyAt(int minute)`
 - `DailyAtHour(int hour)`
 - `DailyAt(int hour, int minute)`
+
+These are basically all wrappers of the `Cron` method (keep reading...). 
+
+For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
+
+`Daily` will run at midnight each day (`0 0 * * *`).
 
 _Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
 
@@ -267,9 +283,9 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 
 ## Prevent Overlapping Tasks
 
-Sometimes you may have longer running tasks (longer than 1 minute?). The normal behavior of the scheduler is to simply fire off a task if it is due.
+Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
 
-What if the previous task is **still** running?
+But, what if the previous task is **still** running?
 
 In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
 
