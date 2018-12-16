@@ -237,7 +237,7 @@ If you require access to dependencies that are registered with the service provi
 
 Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
 
-But, what if the previous task is **still** running?
+But, what if the previous instance of this scheduled task is **still** running?
 
 In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
 
