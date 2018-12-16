@@ -47,11 +47,19 @@ namespace Coravel.Scheduling.Schedule.Event
             return scheduledEvent;
         }
 
+        private static readonly int _OneMinuteAsSeconds = 60;
         public bool IsDue(DateTime utcNow)
         {
             if(this._isScheduledPerSecond)
             {
-                return utcNow.Second % this._secondsInterval == 0;
+              
+                if(utcNow.Second == 0)
+                {
+                    return _OneMinuteAsSeconds % this._secondsInterval == 0;
+                }
+                else {
+                    return utcNow.Second % this._secondsInterval == 0;
+                }
             }
             else {
                 return this._expression.IsDue(utcNow);
