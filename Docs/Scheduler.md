@@ -40,11 +40,9 @@ After calling `Schedule()` you can chain method calls further to specify:
 - Other restrictions such as preventing a long running task from running again while
   the previous one is still active.
 
-> Under the covers, scheduling is similar to cron. Using `EveryFiveMinutes()`, for example, will trigger only when the minute is 0, 5, 10, 15, etc. The same goes for second based intervals, like `EveryFiveSeconds()` - which would trigger on any second that is divisible by 5.
+## A Few Samples To Get An Idea Of How Task Scheduling Works
 
-## A Few Samples
-
-### Example: Run a task once an hour only on Mondays.
+### Run a task once an hour only on Mondays.
 
 ```c#
 scheduler.Schedule(
@@ -54,7 +52,7 @@ scheduler.Schedule(
 .Monday();
 ```
 
-### Example: Run a task every day at 1pm
+### Run a task every day at 1pm
 
 ```c#
 scheduler.Schedule(
@@ -63,7 +61,7 @@ scheduler.Schedule(
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
 
-### Example: Run a task on the first day of the month.
+### Run a task on the first day of the month.
 
 ```c#
 scheduler.Schedule(
