@@ -249,7 +249,7 @@ scheduler
     .EveryMinute()
     .PreventOverlapping("SomeInvocable");
 ```
-This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release ;)
+This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
 
 ## Schedule Workers
 
