@@ -72,6 +72,9 @@ scheduler.Schedule(
 ```
 ## Scheduling Usage
 
+We'll start with some simpler scenarios but it is generally recommended that you [schedule your tasks by using invocables](#scheduling-invocables).
+
+
 ### Scheduler / Scheduling Tasks
 
 After you have called the `Schedule()` method from the `Scheduler`, you can begin to configure the various constraints of your task.
@@ -102,7 +105,13 @@ scheduler.ScheduleAsync(async () =>
 
 ### Scheduling Invocables
 
-To learn about creating and using invocables [see the docs.](./Invocables.md)
+**Using invocables is the recommended way to schedule all your tasks.**
+
+Why? Because it ensures that your task logic is self-contained, easy to test and leverages the built-in .NET Core dependency injection system.
+
+In other words - it's really powerful yet easy to use!
+
+To learn about creating invocables [see the docs.](./Invocables.md)
 
 1. Don't forget to make sure that your invocable is registered with the service provider as a scoped or transient service.
 
