@@ -168,44 +168,6 @@ You may schedule tasks by using the `IScheduler` interface. Just inject the inte
 
 Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
 
-## Schedule Workers
-
-What if you have longer running tasks - especially tasks that do some CPU intensive stuff? 
-
-Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
-
-### What's A Worker?
-
-Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
-
-**You** can decide how to make your schedules more efficient and scalable.
-
-### Usage
-
-To begin assigning a schedule worker to a group of scheduled tasks use `OnWorker(string workerName)`:
-
-```c#
-scheduler.OnWorker("EmailTasks");
-scheduler
-    .Schedule<SendNightlyReportsEmailJob>().Daily();
-scheduler
-    .Schedule<SendPendingNotifications>().EveryMinute();
-
-scheduler.OnWorker("CPUIntensiveTasks");
-scheduler
-    .Schedule<RebuildStaticCachedData>().Hourly();
-```
-
-For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will be in their own dedicated pipeline/thread.
-
-`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
-
-### Useful For...
-
-This is useful, for example, when using Coravel in a console application.
-
-You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
-
 ## Intervals
 
 First, methods to apply interval constraints are available.
@@ -311,6 +273,44 @@ scheduler
 ```
 
 If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
+
+## Schedule Workers
+
+What if you have longer running tasks - especially tasks that do some CPU intensive stuff? 
+
+Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
+
+### What's A Worker?
+
+Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
+
+**You** can decide how to make your schedules more efficient and scalable.
+
+### Usage
+
+To begin assigning a schedule worker to a group of scheduled tasks use `OnWorker(string workerName)`:
+
+```c#
+scheduler.OnWorker("EmailTasks");
+scheduler
+    .Schedule<SendNightlyReportsEmailJob>().Daily();
+scheduler
+    .Schedule<SendPendingNotifications>().EveryMinute();
+
+scheduler.OnWorker("CPUIntensiveTasks");
+scheduler
+    .Schedule<RebuildStaticCachedData>().Hourly();
+```
+
+For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will be in their own dedicated pipeline/thread.
+
+`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
+
+### Useful For...
+
+This is useful, for example, when using Coravel in a console application.
+
+You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
 
 ## Global Error Handling
 
