@@ -71,8 +71,9 @@ scheduler.Schedule(
 )
 .Cron("0 0 1 * *") // At midnight on the 1st day of each month.
 ```
+## Scheduling Usage
 
-## Scheduler / Scheduling Tasks
+### Scheduler / Scheduling Tasks
 
 After you have called the `Schedule()` method from the `Scheduler`, you can begin to configure the various constraints of your task.
 
@@ -85,7 +86,7 @@ scheduler.Schedule(
 .EveryMinute();
 ```
 
-## Scheduling Async Tasks
+### Scheduling Async Tasks
 
 Coravel will also handle scheduling `async` methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be awaitable (as it will be invoked by the scheduler at a later time).
 
@@ -100,7 +101,7 @@ scheduler.ScheduleAsync(async () =>
 
 > You are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
-## Scheduling Invocables
+### Scheduling Invocables
 
 To learn about creating and using invocables [see the docs.](./Invocables.md)
 
@@ -116,7 +117,7 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
-### Sample: Scheduling An Invocable That Sends A Daily Report
+#### Sample: Scheduling An Invocable That Sends A Daily Report
 
 Imagine you have a "daily report" that you send out to users at the end of each day. What would be a simple, elegant way to do this?
 
@@ -160,7 +161,7 @@ scheduler
 
 **Woah!** How readable and maintainable could **your** system be by using Coravel?
 
-## Scheduling Tasks Dynamically
+### Scheduling Tasks Dynamically
 
 While this is not necessarily recommended, it is possible.
 
@@ -168,66 +169,44 @@ You may schedule tasks by using the `IScheduler` interface. Just inject the inte
 
 Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
 
-## Intervals
+### Intervals
 
 First, methods to apply interval constraints are available.
 
 These methods tell your task to execute at certain intervals. 
 
-### Sub-minute Intervals
+| Method | Description |
+|--------|--------------|
+| `EverySecond()`                   | Run the task every second |
+| `EveryFiveSeconds()`              | Run the task every five seconds |
+| `EveryTenSeconds()`               | Run the task every ten seconds |
+| `EveryFifteenSeconds()`           | Run the task every fifteen seconds |
+| `EveryThirtySeconds()`            | Run the task every thirty seconds |
+| `EveryMinute()`                   | Run the task once a minute |
+| `EveryFiveMinutes()`              | Run the task every five minutes |
+| `EveryTenMinutes()`               | Run the task every ten minutes |
+| `EveryFifteenMinutes()`           | Run the task every fifteen minutes |
+| `EveryThirtyMinutes()`            | Run the task every thirty minutes |
+| `Hourly()`                        | Run the task every hour |
+| `HourlyAt(12)`                    | Run the task at 12 minutes past every hour |
+| `Daily()`                         | Run the task once a day at midnight |
+| `DailyAtHour(13)`                 | Run the task once a day at 1 p.m. UTC |
+| `DailyAt(13, 30)`                 | Run the task once a day at 1:30 p.m. UTC |
+| `Weekly()`                        | Run the task once a week |
+| `Cron("* * * * *")`               | Run the task using a Cron expression |
 
-There are a few intervals that are seconds based:
+_Please note that the scheduler is using UTC time._
 
-- `EverySecond()`
-- `EveryFiveSeconds()`
-- `EveryTenSeconds()`
-- `EveryFifteenSeconds()`
-- `EveryThirtySeconds()`
+Supported Cron expressions are:
 
-These may be useful for performing quick tasks like polling, etc.
+- "\*" matches every value (`* * * * *` -> run every minute)
+- "5" supply the literal value (`00 13 * * *` -> run at 1:00 pm daily)
+- "5,6,7" matches each value (`00 1,2,3 * * *` -> run at 1:00 pm, 2:00 pm and 3:00 pm daily)
+- "5-7" indicates a range of values (`00 1-3 * * *` -> same as above)
+- "\*/5" indicates any value divisible by the value (`00 */2 * * *` -> run every two hours on the hour)
 
-### Minute Intervals
 
-- `EveryMinute();`
-- `EveryFiveMinutes();`
-- `EveryTenMinutes();`
-- `EveryFifteenMinutes();`
-- `EveryThirtyMinutes();`
-- `Hourly();`
-- `Daily();`
-- `Weekly();`
-- `HourlyAt(int minute)`
-- `DailyAtHour(int hour)`
-- `DailyAt(int hour, int minute)`
-
-These are basically all wrappers of the `Cron` method (keep reading...). 
-
-For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
-
-`Daily` will run at midnight each day (`0 0 * * *`).
-
-_Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
-
-### Cron Expressions
-
-You can use the `Cron()` method to supply a cron like expression.
-
-```c#
-scheduler.Schedule(
-    () => Console.WriteLine("Scheduled task.")
-)
-.Cron("00 00 1 * *"); // First day of the month at midnight.
-```
-
-Supported expressions are:
-
-- "\*" matches every value (`* * * * *` - run every minute)
-- "5" supply the literal value (`00 13 * * *` - run at 1:00 pm daily)
-- "5,6,7" matches each value (`00 1,2,3 * * *` - run at 1:00 pm, 2:00 pm and 3:00 pm daily)
-- "5-7" indicates a range of values (`00 1-3 * * *` - same as above)
-- "\*/5" indicates any value divisible by the value (`00 */2 * * *` - run every two hours on the hour)
-
-## Day Constraints
+### Day Constraints
 
 After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
 
@@ -242,6 +221,19 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 - `Sunday()`
 - `Weekday()`
 - `Weekend()`
+
+### Custom Boolean Constraint
+
+Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
+
+```c#
+scheduler
+    .Schedule(() => DoSomeStuff())
+    .EveryMinute()
+    .When(SomeMethodThatChecksStuff);
+```
+
+If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
 
 ## Prevent Overlapping Tasks
 
@@ -261,30 +253,17 @@ scheduler
 ```
 This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release ;)
 
-## Further Restrict When Tasks Run
-
-Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
-
-```c#
-scheduler
-    .Schedule(() => DoSomeStuff())
-    .EveryMinute()
-    .When(SomeMethodThatChecksStuff);
-```
-
-If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
-
 ## Schedule Workers
 
-What if you have longer running tasks - especially tasks that do some CPU intensive stuff? 
+In order to make Coravel work well in web scenarios, the scheduler will run all due tasks sequentially (although asynchronously).
 
-Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
+If you have longer running tasks - especially tasks that do some CPU intensive work - this will cause any subsequent tasks to execute much later than you might have expected or desired.
 
 ### What's A Worker?
 
-Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
+Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which will have a dedicated thread.
 
-**You** can decide how to make your schedules more efficient and scalable.
+**You** can decide how to make your schedules more efficient and scalable!
 
 ### Usage
 
@@ -306,7 +285,7 @@ For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` wi
 
 `RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
 
-### Useful For...
+### Useful For
 
 This is useful, for example, when using Coravel in a console application.
 
