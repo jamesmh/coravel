@@ -39,6 +39,7 @@ After calling `Schedule()` you can chain method calls further to specify:
 - Restricting which days your task is allowed to run on (Monday's only? etc.)
 - Other restrictions such as preventing a long running task from running again while
   the previous one is still active.
+- And more...
 
 ## A Few Samples To Get An Idea Of How Task Scheduling Works
 
