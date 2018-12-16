@@ -169,14 +169,6 @@ scheduler
 
 **Woah!** How readable and maintainable could **your** system be by using Coravel?
 
-### Scheduling Tasks Dynamically
-
-While this is not necessarily recommended, it is possible.
-
-You may schedule tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
-
-Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
-
 ### Intervals
 
 First, methods to apply interval constraints are available.
