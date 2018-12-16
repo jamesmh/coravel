@@ -231,7 +231,7 @@ scheduler
     .When(SomeMethodThatChecksStuff);
 ```
 
-If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
+If you require access to dependencies that are registered with the service provider, it is recommended that you [schedule your tasks by using an invocable](#scheduling-invocables) and perform any further restriction logic there.
 
 ## Prevent Overlapping Tasks
 
