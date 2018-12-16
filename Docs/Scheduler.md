@@ -173,8 +173,6 @@ scheduler
 
 After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
-These methods tell your task to execute at certain intervals. 
-
 | Method | Description |
 |--------|--------------|
 | `EverySecond()`                   | Run the task every second |
