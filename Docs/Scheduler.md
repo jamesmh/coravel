@@ -171,7 +171,7 @@ scheduler
 
 ### Intervals
 
-First, methods to apply interval constraints are available.
+After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
 These methods tell your task to execute at certain intervals. 
 
