@@ -24,7 +24,7 @@ provider.UseScheduler(scheduler =>
     scheduler.Schedule(
         () => Console.WriteLine("Every minute during the week.")
     )
-    .EveryMinute();
+    .EveryMinute()
     .Weekday();
 });
 ```
