@@ -106,7 +106,7 @@ namespace Coravel.Scheduling.Schedule
 
         public bool TryUnschedule(string uniqueIndentifier)
         {
-            var toUnschedule = this._tasks.First(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIndentifier);
+            var toUnschedule = this._tasks.FirstOrDefault(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIndentifier);
 
             if (toUnschedule.Value != null)
             {
