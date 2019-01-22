@@ -74,7 +74,7 @@ Otherwise, please **always** create an issue first ;)
 
 ## Coravel Pro
 
-Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for professional visual admin tools that seamlessly integrate into your .NET Core web apps. I.e. it's an admin panel for .NET Core apps.
+Check out [Coravel Pro](https://github.com/jamesmh/coravelpro) for a professional admin panel and visual tools that seamlessly integrate into your .NET Core apps.
 
 Includes:
 

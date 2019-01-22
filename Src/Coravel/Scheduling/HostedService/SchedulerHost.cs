@@ -27,11 +27,11 @@ namespace Coravel.Scheduling.HostedService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            this._timer = new Timer(this.RunSchedulerAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
+            this._timer = new Timer(this.RunSchedulerPerSecondAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
             return Task.CompletedTask;
         }
 
-        private async void RunSchedulerAsync(object state)
+        private async void RunSchedulerPerSecondAsync(object state)
         {
             if (this._schedulerEnabled)
             {

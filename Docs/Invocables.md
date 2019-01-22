@@ -14,13 +14,16 @@ You may [use the Coravel Cli to generate a new invocable](./Cli.md).
 
 Alternatively, to create an invocable by hand:
 
-1. Implement the interface above in your class.
+1. Implement the interface `Coravel.Invocable.IInvocable` in your class.
 
-2. In your invocable's constructor, inject any types that are available from your application's service container.
+2. In your invocable's constructor, inject any types that are available from your application's service provider.
 
 3. Make sure that your invocable _itself_ is available in the service container.
 
-4. Use it!
+```csharp
+services.AddScoped<SendDailyStatsReport>();
+services.AddScoped<SomeOtherInvocable>();
+```
 
 ## Example: Generating A Daily Report And Emailing To Users
 

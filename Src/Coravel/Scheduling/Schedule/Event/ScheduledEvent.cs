@@ -19,6 +19,8 @@ namespace Coravel.Scheduling.Schedule.Event
         private string _eventUniqueID = null;
         private IServiceScopeFactory _scopeFactory;
         private Func<Task<bool>> _whenPredicate;
+        private bool _isScheduledPerSecond = false;
+        private int? _secondsInterval = null;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -45,9 +47,23 @@ namespace Coravel.Scheduling.Schedule.Event
             return scheduledEvent;
         }
 
+        private static readonly int _OneMinuteAsSeconds = 60;
         public bool IsDue(DateTime utcNow)
         {
-            return this._expression.IsDue(utcNow);
+            if(this._isScheduledPerSecond)
+            {
+              
+                if(utcNow.Second == 0)
+                {
+                    return _OneMinuteAsSeconds % this._secondsInterval == 0;
+                }
+                else {
+                    return utcNow.Second % this._secondsInterval == 0;
+                }
+            }
+            else {
+                return this._expression.IsDue(utcNow);
+            }
         }
 
         public async Task InvokeScheduledEvent()
@@ -78,6 +94,8 @@ namespace Coravel.Scheduling.Schedule.Event
         public bool ShouldPreventOverlapping() => this._preventOverlapping;
 
         public string OverlappingUniqueIdentifier() => this._eventUniqueID;
+
+        public bool IsScheduledCronBasedTask() => !this._isScheduledPerSecond;
 
         public IScheduledEventConfiguration Daily()
         {
@@ -223,7 +241,8 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration AssignUniqueIndentifier(string uniqueIdentifier) {
+        public IScheduledEventConfiguration AssignUniqueIndentifier(string uniqueIdentifier)
+        {
             this._eventUniqueID = uniqueIdentifier;
             return this;
         }
@@ -233,6 +252,41 @@ namespace Coravel.Scheduling.Schedule.Event
         private async Task<bool> WhenPredicateFails()
         {
             return this._whenPredicate != null && (!await _whenPredicate.Invoke());
+        }
+
+        public IScheduledEventConfiguration EverySecond()
+        {
+            this._secondsInterval = 1;
+            this._isScheduledPerSecond = true;
+            return this;
+        }
+
+        public IScheduledEventConfiguration EveryFiveSeconds()
+        {
+            this._secondsInterval = 5;
+            this._isScheduledPerSecond = true;
+            return this;
+        }
+
+        public IScheduledEventConfiguration EveryTenSeconds()
+        {
+            this._secondsInterval = 10;
+            this._isScheduledPerSecond = true;
+            return this;
+        }
+
+        public IScheduledEventConfiguration EveryFifteenSeconds()
+        {
+            this._secondsInterval = 15;
+            this._isScheduledPerSecond = true;
+            return this;
+        }
+
+        public IScheduledEventConfiguration EveryThirtySeconds()
+        {
+            this._secondsInterval = 30;
+            this._isScheduledPerSecond = true;
+            return this;
         }
     }
 }
