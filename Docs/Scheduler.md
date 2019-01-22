@@ -24,7 +24,7 @@ provider.UseScheduler(scheduler =>
     scheduler.Schedule(
         () => Console.WriteLine("Every minute during the week.")
     )
-    .EveryMinute();
+    .EveryMinute()
     .Weekday();
 });
 ```
@@ -39,12 +39,11 @@ After calling `Schedule()` you can chain method calls further to specify:
 - Restricting which days your task is allowed to run on (Monday's only? etc.)
 - Other restrictions such as preventing a long running task from running again while
   the previous one is still active.
+- And more...
 
-> Under the covers, all scheduling is similar to cron. Using `EveryFiveMinutes()`, for example, will trigger only when the minute is 0, 5, 10, 15, etc.
+## A Few Samples To Get An Idea Of How Task Scheduling Works
 
-## A Few Samples
-
-### Example: Run a task once an hour only on Mondays.
+### Run a task once an hour only on Mondays.
 
 ```c#
 scheduler.Schedule(
@@ -54,7 +53,7 @@ scheduler.Schedule(
 .Monday();
 ```
 
-### Example: Run a task every day at 1pm
+### Run a task every day at 1pm
 
 ```c#
 scheduler.Schedule(
@@ -63,7 +62,7 @@ scheduler.Schedule(
 .DailyAtHour(13); // Or .DailyAt(13, 00)
 ```
 
-### Example: Run a task on the first day of the month.
+### Run a task on the first day of the month.
 
 ```c#
 scheduler.Schedule(
@@ -71,8 +70,12 @@ scheduler.Schedule(
 )
 .Cron("0 0 1 * *") // At midnight on the 1st day of each month.
 ```
+## Scheduling Usage
 
-## Scheduler / Scheduling Tasks
+We'll start with some simpler scenarios but it is generally recommended that you [schedule your tasks by using invocables](#scheduling-invocables).
+
+
+### Scheduler / Scheduling Tasks
 
 After you have called the `Schedule()` method from the `Scheduler`, you can begin to configure the various constraints of your task.
 
@@ -85,7 +88,7 @@ scheduler.Schedule(
 .EveryMinute();
 ```
 
-## Scheduling Async Tasks
+### Scheduling Async Tasks
 
 Coravel will also handle scheduling `async` methods by using the `ScheduleAsync()` method. Note that this doesn't need to be awaited - the method or Func you provide _itself_ must be awaitable (as it will be invoked by the scheduler at a later time).
 
@@ -100,11 +103,19 @@ scheduler.ScheduleAsync(async () =>
 
 > You are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 
-## Scheduling Invocables
+### Scheduling Invocables
 
-To learn about creating and using invocables [see the docs.](./Invocables.md)
+**Using invocables is the recommended way to schedule all your tasks.**
 
-To schedule a invocable, use the `Schedule` method:
+Why? Because it ensures that your task logic is self-contained, easy to test and leverages the built-in .NET Core dependency injection system.
+
+In other words - it's really powerful yet easy to use!
+
+To learn about creating invocables [see the docs.](./Invocables.md)
+
+1. Don't forget to make sure that your invocable is registered with the service provider as a scoped or transient service.
+
+2. To schedule an invocable, use the `Schedule` method:
 
 ```c#
 scheduler
@@ -114,9 +125,7 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
-_Note: Coravel also supports queuing invocables too!_
-
-### Sample: Scheduling An Invocable That Sends A Daily Report
+#### Sample: Scheduling An Invocable That Sends A Daily Report
 
 Imagine you have a "daily report" that you send out to users at the end of each day. What would be a simple, elegant way to do this?
 
@@ -160,25 +169,99 @@ scheduler
 
 **Woah!** How readable and maintainable could **your** system be by using Coravel?
 
-## Scheduling Tasks Dynamically
+### Intervals
 
-While this is not necessarily recommended, it is possible.
+After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
-You may schedule tasks by using the `IScheduler` interface. Just inject the interface wherever DI is available.
+| Method | Description |
+|--------|--------------|
+| `EverySecond()`                   | Run the task every second |
+| `EveryFiveSeconds()`              | Run the task every five seconds |
+| `EveryTenSeconds()`               | Run the task every ten seconds |
+| `EveryFifteenSeconds()`           | Run the task every fifteen seconds |
+| `EveryThirtySeconds()`            | Run the task every thirty seconds |
+| `EveryMinute()`                   | Run the task once a minute |
+| `EveryFiveMinutes()`              | Run the task every five minutes |
+| `EveryTenMinutes()`               | Run the task every ten minutes |
+| `EveryFifteenMinutes()`           | Run the task every fifteen minutes |
+| `EveryThirtyMinutes()`            | Run the task every thirty minutes |
+| `Hourly()`                        | Run the task every hour |
+| `HourlyAt(12)`                    | Run the task at 12 minutes past every hour |
+| `Daily()`                         | Run the task once a day at midnight |
+| `DailyAtHour(13)`                 | Run the task once a day at 1 p.m. UTC |
+| `DailyAt(13, 30)`                 | Run the task once a day at 1:30 p.m. UTC |
+| `Weekly()`                        | Run the task once a week |
+| `Cron("* * * * *")`               | Run the task using a Cron expression |
 
-Keep in mind that dynamically scheduled tasks will disappear after the running application has terminated due to re-deployment, etc.
+_Please note that the scheduler is using UTC time._
+
+Supported Cron expressions are:
+
+- "\*" matches every value (`* * * * *` -> run every minute)
+- "5" supply the literal value (`00 13 * * *` -> run at 1:00 pm daily)
+- "5,6,7" matches each value (`00 1,2,3 * * *` -> run at 1:00 pm, 2:00 pm and 3:00 pm daily)
+- "5-7" indicates a range of values (`00 1-3 * * *` -> same as above)
+- "\*/5" indicates any value divisible by the value (`00 */2 * * *` -> run every two hours on the hour)
+
+
+### Day Constraints
+
+After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
+
+All these methods are further chainable - like `Monday().Wednesday()`. This would mean only running the task on Mondays and Wednesdays. Be careful since you could do something like this `.Weekend().Weekday()` which basically means there are no constraints (it runs on any day).
+
+- `Monday()`
+- `Tuesday()`
+- `Wednesday()`
+- `Thursday()`
+- `Friday()`
+- `Saturday()`
+- `Sunday()`
+- `Weekday()`
+- `Weekend()`
+
+### Custom Boolean Constraint
+
+Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
+
+```c#
+scheduler
+    .Schedule(() => DoSomeStuff())
+    .EveryMinute()
+    .When(SomeMethodThatChecksStuff);
+```
+
+If you require access to dependencies that are registered with the service provider, it is recommended that you [schedule your tasks by using an invocable](#scheduling-invocables) and perform any further restriction logic there.
+
+## Prevent Overlapping Tasks
+
+Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
+
+But, what if the previous instance of this scheduled task is **still** running?
+
+In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
+
+In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
+
+```c#
+scheduler
+    .Schedule<SomeInvocable>()
+    .EveryMinute()
+    .PreventOverlapping("SomeInvocable");
+```
+This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
 
 ## Schedule Workers
 
-What if you have longer running tasks - especially tasks that do some CPU intensive stuff? 
+In order to make Coravel work well in web scenarios, the scheduler will run all due tasks sequentially (although asynchronously).
 
-Normally, this may prevent other scheduled tasks that are due from running until the CPU intensive task(s) are completed.
+If you have longer running tasks - especially tasks that do some CPU intensive work - this will cause any subsequent tasks to execute much later than you might have expected or desired.
 
 ### What's A Worker?
 
-Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which has a dedicated thread.
+Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which will have a dedicated thread.
 
-**You** can decide how to make your schedules more efficient and scalable.
+**You** can decide how to make your schedules more efficient and scalable!
 
 ### Usage
 
@@ -200,101 +283,11 @@ For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` wi
 
 `RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
 
-### Useful For...
+### Useful For
 
 This is useful, for example, when using Coravel in a console application.
 
 You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
-
-## Intervals
-
-First, methods to apply interval constraints are available.
-
-These methods tell your task to execute at certain intervals. They are basically all wrappers of the `Cron` method (keep reading...). 
-
-For example, `Hourly` will run on the hour, every hour (`0 * * * *`).
-
-`Daily` will run at midnight each day (`0 0 * * *`).
-
-- `EveryMinute();`
-- `EveryFiveMinutes();`
-- `EveryTenMinutes();`
-- `EveryFifteenMinutes();`
-- `EveryThirtyMinutes();`
-- `Hourly();`
-- `Daily();`
-- `Weekly();`
-- `HourlyAt(int minute)`
-- `DailyAtHour(int hour)`
-- `DailyAt(int hour, int minute)`
-
-_Please note that the scheduler is using UTC time. So, for example, using `DailyAt(13, 00)` will run your task daily at 1pm UTC time._
-
-### Cron Expressions
-
-You can use the `Cron()` method to supply a cron like expression.
-
-```c#
-scheduler.Schedule(
-    () => Console.WriteLine("Scheduled task.")
-)
-.Cron("00 00 1 * *"); // First day of the month at midnight.
-```
-
-Supported expressions are:
-
-- "\*" matches every value (`* * * * *` - run every minute)
-- "5" supply the literal value (`00 13 * * *` - run at 1:00 pm daily)
-- "5,6,7" matches each value (`00 1,2,3 * * *` - run at 1:00 pm, 2:00 pm and 3:00 pm daily)
-- "5-7" indicates a range of values (`00 1-3 * * *` - same as above)
-- "\*/5" indicates any value divisible by the value (`00 */2 * * *` - run every two hours on the hour)
-
-## Day Constraints
-
-After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
-
-All these methods are further chainable - like `Monday().Wednesday()`. This would mean only running the task on Mondays and Wednesdays. Be careful since you could do something like this `.Weekend().Weekday()` which basically means there are no constraints (it runs on any day).
-
-- `Monday()`
-- `Tuesday()`
-- `Wednesday()`
-- `Thursday()`
-- `Friday()`
-- `Saturday()`
-- `Sunday()`
-- `Weekday()`
-- `Weekend()`
-
-## Prevent Overlapping Tasks
-
-Sometimes you may have longer running tasks (longer than 1 minute?). The normal behavior of the scheduler is to simply fire off a task if it is due.
-
-What if the previous task is **still** running?
-
-In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
-
-In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
-
-```c#
-scheduler
-    .Schedule<SomeInvocable>()
-    .EveryMinute()
-    .PreventOverlapping("SomeInvocable");
-```
-This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release ;)
-
-## Further Restrict When Tasks Run
-
-Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
-
-```c#
-scheduler
-    .Schedule(() => DoSomeStuff())
-    .EveryMinute()
-    .When(SomeMethodThatChecksStuff);
-```
-
-If you require access to dependencies that are registered with the service container, it is recommended that you [create an invocable](./Invocables.md) class and perform any further restriction logic there.
 
 ## Global Error Handling
 

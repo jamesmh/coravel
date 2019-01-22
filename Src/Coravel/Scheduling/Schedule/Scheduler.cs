@@ -106,7 +106,7 @@ namespace Coravel.Scheduling.Schedule
 
         public bool TryUnschedule(string uniqueIndentifier)
         {
-            var toUnschedule = this._tasks.First(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIndentifier);
+            var toUnschedule = this._tasks.FirstOrDefault(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIndentifier);
 
             if (toUnschedule.Value != null)
             {
@@ -175,9 +175,25 @@ namespace Coravel.Scheduling.Schedule
         {
             // Grab all the scheduled tasks so we can re-arrange them etc.
             List<ScheduledTask> scheduledWorkers = new List<ScheduledTask>();
+
             foreach (var keyValue in this._tasks)
             {
-                scheduledWorkers.Add(keyValue.Value);
+                bool timerIsNotAtMinute = utcDate.Second != 0;
+                bool taskIsPerMinuteCronTask = keyValue.Value.ScheduledEvent.IsScheduledCronBasedTask();
+                bool appendTask = true;
+
+                // If this task is scheduled as a cron based task (should only be checked if due per min)
+                // but the time is not at the minute mark, we won't include those tasks to be checked if due.
+                // The second based schedules are always checked.
+                if(taskIsPerMinuteCronTask && timerIsNotAtMinute)
+                {
+                    appendTask = false;
+                }
+
+                if(appendTask)
+                {
+                    scheduledWorkers.Add(keyValue.Value);
+                }
             }
 
             // We want each "worker" (indicated by the "WorkerName" prop) to run on it's own thread.
@@ -187,7 +203,8 @@ namespace Coravel.Scheduling.Schedule
                 .Where(worker => worker.ScheduledEvent.IsDue(utcDate))
                 .GroupBy(worker => worker.WorkerName);
 
-            var activeTasks = groupedScheduledEvents.Select(workerWithTasks => {
+            var activeTasks = groupedScheduledEvents.Select(workerWithTasks =>
+            {
                 // Each group represents the "worker" for that group of scheduled events.
                 // Running them on a separate thread means we can segment longer running tasks
                 // onto their own thread, or maybe more cpu intensive operations onto an isolated thread, etc.
@@ -196,7 +213,7 @@ namespace Coravel.Scheduling.Schedule
                     foreach (var workerTask in workerWithTasks)
                     {
                         var scheduledEvent = workerTask.ScheduledEvent;
-                        await InvokeEvent(scheduledEvent);                        
+                        await InvokeEvent(scheduledEvent);
                     }
                 });
             });
@@ -212,15 +229,16 @@ namespace Coravel.Scheduling.Schedule
             }
         }
 
-        private class ScheduledTask {
+        private class ScheduledTask
+        {
             public ScheduledTask(string workerName, ScheduledEvent scheduledEvent)
             {
                 this.WorkerName = workerName;
                 this.ScheduledEvent = scheduledEvent;
             }
 
-            public ScheduledEvent ScheduledEvent {get;set;}
-            public string WorkerName {get;set;}
+            public ScheduledEvent ScheduledEvent { get; set; }
+            public string WorkerName { get; set; }
         }
     }
 }
