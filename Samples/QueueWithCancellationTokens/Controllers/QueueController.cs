@@ -51,8 +51,10 @@ namespace QueueWithCancellationTokens.Controllers
         [HttpGet]
         public IActionResult Stop([FromQuery] Guid guid)
         {
-            CancellationTokenSource  token = _tokens.GetValueOrDefault(guid);
+            // Make sure we remove and dispose tokens to avoid leaking...🤣
+            _tokens.TryRemove(guid, out var token);
             token.Cancel();
+            token.Dispose();
             return Json("It worked!");
         }
     }
