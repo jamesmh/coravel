@@ -141,6 +141,42 @@ namespace UnitTests.Scheduling.IntervalTests
         }
 
         [Theory]
+        [InlineData("1/1/2018 12:00:00 am", true)]
+        [InlineData("1/1/2018 12:00:30 am", true)]
+        [InlineData("1/1/2018 4:46:00 pm", true)]
+        [InlineData("1/1/2018 4:46:30 pm", true)]
+        [InlineData("1/1/2018 12:01:00 am", true)]
+        [InlineData("1/1/2018 12:01:30 am", true)]
+        [InlineData("1/1/2018 2:00:01 am", false)]
+        [InlineData("1/1/2018 3:00:02 am", false)]
+        [InlineData("1/1/2018 4:00:06 am", true)]
+        [InlineData("1/1/2018 5:00:12 am", true)]
+        [InlineData("1/1/2018 6:00:15 am", false)]
+        [InlineData("1/1/2018 7:00:30 am", true)]
+        [InlineData("1/1/2018 8:00:31 am", false)]
+        [InlineData("2/15/2020 5:55:00 pm", true)]
+        [InlineData("2/15/2020 5:55:04 pm", false)]
+        [InlineData("2/15/2020 5:55:05 pm", false)]
+        [InlineData("2/15/2020 5:55:06 pm", true)]
+        public async Task ScheduledEventEveryNSeconds(string dateString, bool shouldRun)
+        {
+            await TestSubMinuteInterval(dateString, shouldRun, e => e.EverySeconds(6));
+        }
+
+        [Theory]
+        [InlineData("2/15/2020 5:55:06 pm", true)]
+        public async Task ScheduledEventEveryNSecondsFails(string dateString, bool shouldRun)
+        {
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await TestSubMinuteInterval(dateString, shouldRun, e => e.EverySeconds(0))
+            );
+
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+                await TestSubMinuteInterval(dateString, shouldRun, e => e.EverySeconds(60))
+            );
+        }
+
+        [Theory]
         [InlineData("2/15/2020 12:00:00 am", 9)]
         [InlineData("2/15/2020 12:00:01 am", 1)]
         [InlineData("2/15/2020 12:01:01 am", 1)]

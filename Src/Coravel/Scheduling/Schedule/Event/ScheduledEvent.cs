@@ -288,5 +288,17 @@ namespace Coravel.Scheduling.Schedule.Event
             this._isScheduledPerSecond = true;
             return this;
         }
+
+        public IScheduledEventConfiguration EverySeconds(int seconds)
+        {
+            if(seconds < 1 || seconds > 59)
+            {
+                throw new ArgumentException("When calling 'EverySeconds(int seconds)', 'seconds' must be between 0 and 60");
+            }
+            
+            this._secondsInterval = seconds;
+            this._isScheduledPerSecond = true;
+            return this;
+        }
     }
 }
