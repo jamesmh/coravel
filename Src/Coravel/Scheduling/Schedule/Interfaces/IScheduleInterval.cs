@@ -130,5 +130,11 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration EveryThirtySeconds();
+
+        /// <summary>
+        /// Scheduled task runs once every N seconds.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration EverySeconds(int seconds);
     }
 }
