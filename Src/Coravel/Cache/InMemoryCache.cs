@@ -8,8 +8,8 @@ namespace Coravel.Cache
 {
     public class InMemoryCache : ICache
     {
-        private IMemoryCache _cache;
-        private HashSet<string> _keys;
+        private readonly IMemoryCache _cache;
+        private readonly HashSet<string> _keys;
 
         public InMemoryCache(IMemoryCache cache)
         {
@@ -24,7 +24,7 @@ namespace Coravel.Cache
             return this._cache.GetOrCreate(key, entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.Add(expiresIn);
-                entry.RegisterPostEvictionCallback(EvictionCallback);
+                entry.RegisterPostEvictionCallback(this.EvictionCallback);
                 return cacheFunc();
             });
         }
@@ -36,7 +36,7 @@ namespace Coravel.Cache
             return await this._cache.GetOrCreateAsync(key, async entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.Add(expiresIn);
-                entry.RegisterPostEvictionCallback(EvictionCallback);
+                entry.RegisterPostEvictionCallback(this.EvictionCallback);
                 return await cacheFunc();
             });
         }
@@ -83,7 +83,7 @@ namespace Coravel.Cache
         {
             if (reason == EvictionReason.Expired || reason == EvictionReason.Capacity || reason == EvictionReason.Removed)
             {
-                _keys.Remove(key.ToString());
+                this._keys.Remove(key.ToString());
             }
         }
     }
