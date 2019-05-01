@@ -180,7 +180,7 @@ After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule int
 | `EveryTenSeconds()`               | Run the task every ten seconds |
 | `EveryFifteenSeconds()`           | Run the task every fifteen seconds |
 | `EveryThirtySeconds()`            | Run the task every thirty seconds |
-| `EverySeconds()`                  | Run the task every N seconds. |
+| `EverySeconds(3)`                 | Run the task every 3 seconds. |
 | `EveryMinute()`                   | Run the task once a minute |
 | `EveryFiveMinutes()`              | Run the task every five minutes |
 | `EveryTenMinutes()`               | Run the task every ten minutes |
