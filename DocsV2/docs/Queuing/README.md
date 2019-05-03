@@ -12,9 +12,7 @@ meta:
 
 Coravel allows zero-configuration queues (at run time).
 
-Every 30 seconds, if there are any available items in the queue, they will be dequeued.
-
-## Setup
+## Config
 
 In your `Startup` file, in the `ConfigureServices()` just do this:
 
@@ -22,33 +20,38 @@ In your `Startup` file, in the `ConfigureServices()` just do this:
 services.AddQueue();
 ```
 
-That's it! This will automatically register the queue in your service container.
+That's it!
 
-## How To Queue Tasks
+## Essentials
 
-In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue`.
+### Setup
 
-You use the `QueueTask()` method to add a task to the queue.
+In order to use the queue, you need to inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
 
 ```csharp
 IQueue _queue;
 
 public HomeController(IQueue queue) {
-    this._queue = queue;
-}
-
-//... Further down ...
-
-public IActionResult QueueTask() {
-    // Call .QueueTask() to add item to the queue!
-    this._queue.QueueTask(() => Console.WriteLine("This was queued!"));
-    return Ok();
-}
+    this._queue = queue;}
 ```
 
-## Queue Async Task
+### Queuing Invocables
 
-Use the `QueueAsyncTask` to queue up an async Task (which will run async whenever the queue is consumed).
+:::tip
+Queuing invocables is the recommended way to use Coravel's queuing.
+
+To learn about creating and using invocables [see here.](/Invocables/)
+:::
+
+To queue an invocable, use `QueueInvocable`:
+
+```csharp
+this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
+```
+
+### Queuing An Async Task
+
+Use the `QueueAsyncTask` to queue up an async task:
 
 ```csharp
  this._queue.QueueAsyncTask(async() => {
@@ -57,35 +60,32 @@ Use the `QueueAsyncTask` to queue up an async Task (which will run async wheneve
  });
 ```
 
-## Queue Invocables
+### Queuing A Synchronous Task
 
-To learn about creating and using invocables [see the docs.](/Invocables/)
-
-To queue an invocable, use `QueueInvocable`:
+You use the `QueueTask()` method to add a  task to the queue.
 
 ```csharp
-this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
+public IActionResult QueueTask() {
+    this._queue.QueueTask(() => Console.WriteLine("This was queued!"));
+    return Ok();
+}
 ```
 
-## Queue Event Broadcasting
+### Queuing An Event Broadcast
 
-> New in version 2.1
+Event broadcasting is great - but what if your event listeners are doing some heavy / long-winded tasks? You don't want that to happen on the same thread as your HTTP request!
 
-Event broadcasting is great - but what if your event listeners are doing some heavy / long-winded tasks?
-
-Using `QueueBroadcast` you can queue an event to be broadcasted in the background so your app can continue to be responsive.
+By using `QueueBroadcast`, you can queue an event to be broadcasted in the background.
 
 ```csharp
-// This will broadcast the event whenever the queue is consummed in the background.
 this._queue.QueueBroadcast(new OrderCreated(orderId)); 
 ```
 
-## Global Error Handling
+## Extras
 
-> In version 1.9 `ConfigureQueue` was moved as an extension method of `IServiceProvider`.
-> This allows Coravel's dependencies to be significantly slimmed down 👌
+### Global Error Handling
 
-In the `Configure` method of your `Startup` file, first call `app.ApplicationServices.ConfigureQueue()` and further chain the `OnError()` method to register a global error handler.
+In the `Configure` method of your `Startup` file:
 
 ```csharp
 var provider = app.ApplicationServices;
@@ -93,11 +93,11 @@ provider
     .ConfigureQueue()
     .OnError(e =>
     {
-        //.... handle the error
+        //... handle the error
     });
 ```
 
-## Adjusting The Consummation Delay
+### Adjusting The Consummation Delay
 
 Normally, the queue will consume all of it's queued tasks every 30 seconds.
 You can adjust this delay in the `appsettings.json` file.
@@ -110,11 +110,9 @@ You can adjust this delay in the `appsettings.json` file.
 }
 ```
 
-## Logging Executed Task Progress
+### Logging Executed Task Progress
 
-Coravel uses the `ILogger` .NET Core interface to allow logging task progress.
-
-Enable logging by further chaining off the `ConfigureQueue` method, grabbing a logger from the service provider and passing it into `LogQueuedTaskProgress`:
+Coravel uses the `ILogger` .NET Core interface to allow logging task progress:
 
 ```csharp
 var provider = app.ApplicationServices;
@@ -125,4 +123,6 @@ provider
 
 ## On App Closing
 
-When your app is stopped, Coravel will consume any tasks remaining in the queue and/or wait until all long-running tasks are completed. This will keep your app running in the background - as long as the parent process is not killed.
+When your app is stopped, Coravel will immediately begin consuming any remaining tasks and wait until they are completed. 
+
+This will keep your app running in the background - as long as the parent process is not killed.
