@@ -10,9 +10,11 @@
 
 # Coravel
 
-Coravel focuses on helping developers get their web applications up-and-running fast - without compromising code quality. It makes what are usually advanced features accessible and easy-to-use - without needing to install any extra 3rd-party infrastructure.
+Coravel helps developers get their web applications up-and-running fast - without compromising code quality. 
 
-Build .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
+It makes what are usually advanced features accessible and easy-to-use, without needing to install any extra 3rd-party infrastructure.
+
+Build your .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
@@ -26,8 +28,6 @@ Build .NET Core apps using a simple, expressive and straightforward syntax that 
 <p align="center"><b>BuiltWithDot.Net</b></p>
 
 ## Features
-
-Coravel provides intuitive and easy to use APIs for the following features:
 
 - Task Scheduling
 - Queuing
