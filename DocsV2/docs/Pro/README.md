@@ -9,4 +9,4 @@ Features include:
 - Health metrics dashboard
 - Easily configured tabular reports of your data (supports aggregation/complex projections)
 
-If you love Coravel, are building a .NET Core app with EF Core, and want even more awesome tools - check it out!
+If you love Coravel, are building a .NET Core app with EF Core, and want even more awesome tools - [check it out!](https://www.pro.coravel.net) 
