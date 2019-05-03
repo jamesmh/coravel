@@ -10,13 +10,11 @@ meta:
 
 [[toc]]
 
-Invocables are ubiquitous classes that all of Coravel's features can leverage to make your code much easier to write, compose and maintain.
+Invocables are ubiquitous classes that most of Coravel's features can leverage to make your code much easier to write, compose and maintain.
 
 Each invocable represents a self-contained job within your system. 
 
-Since Coravel understands how to use them natively, you can do cool stuff like schedule or queue them using terse syntax.
-
-Here's an example of scheduling an invocable, `ReIndexDatabase`, to run every weekday at 1 a.m. UTC:
+Here's an example of scheduling an invocable:
 
 ```csharp
     scheduler.Schedule<ReIndexDatabase>()
@@ -25,7 +23,7 @@ Here's an example of scheduling an invocable, `ReIndexDatabase`, to run every we
 ```
 
 :::tip
-It's handy to know about up-front  invocables so you can use Coravel's features as intended!
+It's handy to know about invocables up-front so you can use Coravel's features as intended!
 :::
 
 ## Creating An Invocable
@@ -34,9 +32,11 @@ Creating an invocable uses the shared interface `Coravel.Invocable.IInvocable`.
 
 Using .NET Core's dependency injection services, your invocables will have all their dependencies injected whenever they are executed.
 
+### CLI
+
 You may [use the Coravel Cli to generate a new invocable](/Cli/#invocables).
 
-Alternatively, to create an invocable by hand:
+### Manually
 
 1. Implement the interface `Coravel.Invocable.IInvocable` in your class.
 

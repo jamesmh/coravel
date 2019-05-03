@@ -3,7 +3,7 @@ module.exports = {
     description: 'Near-zero config .NET Core library that makes Task Scheduling, Caching, Queuing, Mailing, Event Broadcasting (and more) a breeze!',
     markdown: {
         toc: {
-            includeLevel: [1,2]
+            includeLevel: [1,2,3]
         }
     },
     themeConfig: {

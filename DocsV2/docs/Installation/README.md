@@ -28,15 +28,15 @@ Coravel requires the nuget package `Coravel` to get started.
 
 Alternatively, you may install Coravel using the [Coravel CLI](/Cli/).
 
-Coravel CLI is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet` etc.) that gives you easy installs, scaffolding abilities, etc.
+Coravel CLI is a dotnet core tool that you can use as a global executable (similar to `npm` or `dotnet`) that gives you easy installs, scaffolding abilities, etc.
 
-Install the tool:
+To install the CLI:
 
 ``` 
 dotnet tool install --global coravel-cli
 ```
 
-Then install coravel into the current project:
+To install Coravel into an existing project with the CLI:
 
 ```
 coravel install
