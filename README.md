@@ -38,7 +38,7 @@ Build your .NET Core apps using a simple, expressive and straightforward syntax 
 
 # Docs
 
-[You can view he official docs here.](https://coravel-docs.netlify.com/Installation/)
+[You can view the official docs here.](https://coravel-docs.netlify.com/Installation/)
 
 ## Contributing
 
