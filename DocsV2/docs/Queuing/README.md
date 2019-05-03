@@ -18,7 +18,7 @@ Every 30 seconds, if there are any available items in the queue, they will be de
 
 In your `Startup` file, in the `ConfigureServices()` just do this:
 
-```c#
+```csharp
 services.AddQueue();
 ```
 
@@ -30,7 +30,7 @@ In your controller that is using DI, inject a `Coravel.Queuing.Interfaces.IQueue
 
 You use the `QueueTask()` method to add a task to the queue.
 
-```c#
+```csharp
 IQueue _queue;
 
 public HomeController(IQueue queue) {
@@ -50,7 +50,7 @@ public IActionResult QueueTask() {
 
 Use the `QueueAsyncTask` to queue up an async Task (which will run async whenever the queue is consumed).
 
-```c#
+```csharp
  this._queue.QueueAsyncTask(async() => {
     await Task.Delay(1000);
     Console.WriteLine("This was queued!");
@@ -59,11 +59,11 @@ Use the `QueueAsyncTask` to queue up an async Task (which will run async wheneve
 
 ## Queue Invocables
 
-To learn about creating and using invocables [see the docs.](./Invocables.md)
+To learn about creating and using invocables [see the docs.](/Invocables/)
 
 To queue an invocable, use `QueueInvocable`:
 
-```c#
+```csharp
 this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
 ```
 
@@ -75,7 +75,7 @@ Event broadcasting is great - but what if your event listeners are doing some he
 
 Using `QueueBroadcast` you can queue an event to be broadcasted in the background so your app can continue to be responsive.
 
-```c#
+```csharp
 // This will broadcast the event whenever the queue is consummed in the background.
 this._queue.QueueBroadcast(new OrderCreated(orderId)); 
 ```
@@ -87,7 +87,7 @@ this._queue.QueueBroadcast(new OrderCreated(orderId));
 
 In the `Configure` method of your `Startup` file, first call `app.ApplicationServices.ConfigureQueue()` and further chain the `OnError()` method to register a global error handler.
 
-```c#
+```csharp
 var provider = app.ApplicationServices;
 provider
     .ConfigureQueue()
@@ -116,7 +116,7 @@ Coravel uses the `ILogger` .NET Core interface to allow logging task progress.
 
 Enable logging by further chaining off the `ConfigureQueue` method, grabbing a logger from the service provider and passing it into `LogQueuedTaskProgress`:
 
-```c#
+```csharp
 var provider = app.ApplicationServices;
 provider
     .ConfigureQueue()

@@ -18,13 +18,13 @@ An event will have one or more independent listeners which, when an event is bro
 
 For example, you might have a .NET Core application that has a blog built into it. You want to add a feature that sends a twitter tweet and an e-mail updating your social network about any new posts you add to your blog:
 
-![Coravel Event](./img/event-blog.png)
+![Coravel Event](/img/event-blog.png)
 
 ## Configuring Events
 
 In your startup file, in the `ConfigureServices` method:
 
-```c#
+```csharp
 services.AddEvents();
 ```
 
@@ -33,14 +33,14 @@ services.AddEvents();
 
 Next, in the `Configure` method call `ConfigureEvents` off of the service provider:
 
-```c#
+```csharp
 var provider = app.ApplicationServices;
 IEventRegistration registration = provider.ConfigureEvents();
 ```
 
 Now you can start registering events and their listeners:
 
-```c#
+```csharp
 registration
 	.Register<BlogPostCreated>()
 	.Subscribe<TweetNewPost>()
@@ -57,7 +57,7 @@ An event is merely a data object that will be supplied to each listener. It shou
 
 For example, a `BlogPostCreated` event should accept the `Blog` that was created and then expose it via a public property.
 
-```c#
+```csharp
 public class BlogPostCreated : IEvent
 {
     public BlogPost Post { get; set; }
@@ -79,7 +79,7 @@ The `IListener<TEvent>` interface requires you implement `HandleAsync(TEvent bro
 
 Using the example of the new blog post event, we might create a listener named `TweetNewPost`:
 
-```c#
+```csharp
 // The IListener generic parameter is the event
 // that you will be listening to.
 public class TweetNewPost : IListener<BlogPostCreated>
@@ -104,7 +104,7 @@ Finally, **you must register your listener with the service container** by using
 
 You can let Coravel generate events and listeners for you!
 
-See the [CLI docs](./Cli.md) for more information.
+See the [CLI docs](/Cli/) for more information.
 
 ## Broadcasting Events
 
@@ -116,7 +116,7 @@ You can inject an instance into your MVC controllers or other DI ready classes.
 
 By using the `Broadcast` method, you may broadcast a new event.
 
-```c#
+```csharp
 public BlogController : Controller
 {
     private IDispatcher _dispatcher;
@@ -138,4 +138,4 @@ public BlogController : Controller
 
 You may queue events that will be broadcasted in the background of your running app.
 
-See the docs for [Queue Event Broadcasting](Queuing.md#queue-event-broadcasting).
+See the docs for [Queue Event Broadcasting](/Queuing/#queue-event-broadcasting).

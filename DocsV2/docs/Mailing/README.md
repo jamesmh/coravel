@@ -23,13 +23,13 @@ Satire aside now - e-mails are not as easy as they should be. Luckily for you, C
 - Quick and simple configuration via `appsettings.json`
 - And more!
 
-![Coravel's Mailer](./img/coravelmail.png)
+![Coravel's Mailer](/img/coravelmail.png)
 
 ## Installation
 
 ### Cli
 
-Install the [Coravel Cli](./Cli.md):
+Install the [Coravel Cli](/Cli/):
 
 `dotnet tool install --global coravel-cli`
 
@@ -46,7 +46,7 @@ This will install the nuget package `Coravel.Mailer`, along with scaffolding som
 
 ### Configure Services
 
-```c#
+```csharp
 // In Startup.ConfigureServices()
 services.AddMailer(this.Configuration); // Instance of IConfiguration.
 ```
@@ -89,7 +89,7 @@ This will allow you to send mail via SMTP. Add the following keys:
 
 The custom driver allows you to decide how you want to send e-mails (through some API call, etc.). Because it requires a closure, you need to explicitly call `AddCustomMailer()` in `ConfigureServices()`:
 
-```c#
+```csharp
 // A local function with the expected signature.
 // This defines how all e-mails are sent.
 async Task SendMailCustomAsync(
@@ -119,7 +119,7 @@ The Coravel Cli already created the file `~/Views/Mail/_ViewStart.cshtml`. It de
 
 If you wish to use a more _plain_ template, replace the file contents with this:
 
-```c#
+```csharp
 @{
     Layout = "~/Areas/Coravel/Pages/Mail/PlainTemplate.cshtml";
 }
@@ -139,7 +139,7 @@ Mailables inherit from `Coravel.Mailer.Mail.Mailable` and accept a generic type 
 
 Here's a sample Mailable class:
 
-```c#
+```csharp
 using Coravel.Mailer.Mail;
 using App.Models;
 
@@ -225,7 +225,7 @@ The type of the `viewModel` parameter must match the type of your Mailable's gen
 
 For views that do not require a view model, just inherit your Mailable from `Mailable<string>` and use `View(string viewPath)`.
 
-```c#
+```csharp
 public class MyMailable : Mailable<string>
 {
     public override void Build()
@@ -241,7 +241,7 @@ public class MyMailable : Mailable<string>
 
 If you want to supply raw Html as your e-mail use the `Html(string html)` method:
 
-```c#
+```csharp
 public override void Build()
 {
     this.To(this._user)
@@ -262,7 +262,7 @@ Let's say we have a Mailable that uses the view `~/Views/Mail/NewUser.cshtml`.
 
 It might look like this:
 
-```c#
+```csharp
 @model App.Models.UserModel
 
 @{
@@ -303,7 +303,7 @@ There are two main sections you can define in Coravel's templates by using the `
 
 Links that are displayed in the footer.
 
-```c#
+```csharp
 @section links
 {
     @* Put some html here *@
@@ -314,7 +314,7 @@ Links that are displayed in the footer.
 
 Override the entire footer with custom content.
 
-```c#
+```csharp
 @section footer
 {
     @* Put some html here *@
@@ -352,7 +352,7 @@ Displays a clickable e-mail friendly button which will forward your user to a li
 
 To use in your razor template, do this:
 
-```c#
+```csharp
 @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com" })
 ```
 
@@ -363,7 +363,7 @@ The default color of the button is `#539be2` (blue), but you may set two further
 
 Both arguments accept either a hex value or rgb/rgba value:
 
-```c#
+```csharp
 @await Component.InvokeAsync("EmailLinkButton", new  { text = "click me", url = "www.google.com", backgroundColor = "#333" })
 ```
 
@@ -371,7 +371,7 @@ Both arguments accept either a hex value or rgb/rgba value:
 
 Inject an instance of `Coravel.Mailer.Mail.IMailer` and use the `SendAsync` method to send mail:
 
-```c#
+```csharp
 private readonly IMailer _mailer;
 
 public MyController(IMailer mailer)
@@ -391,7 +391,7 @@ It's just like sending mail, except you call `RenderAsync` instead of `SendAsync
 
 Here's how you might render a Mailable and return it as an Html response - for viewing in the browser:
 
-```c#
+```csharp
 // Controller action that returns a Mailable viewable in the browser!
 public async Task<IActionResult> RenderView()
 {
@@ -406,7 +406,7 @@ Coravel is configured so that you can queue mail!
 
 Assuming you are using Coravel's queuing feature, you can do this:
 
-```c#
+```csharp
 this._queue.QueueAsyncTask(async () =>
     await this._mailer.SendAsync(new MyMailable())
 );
@@ -418,7 +418,7 @@ There may be instances when you want to be able to build / configure a Mailable 
 
 1. Define an empty Mailable class.
 
-```c#
+```csharp
 public GenericMailable : Mailable<string>
 {
     public override void Build() { }
@@ -427,7 +427,7 @@ public GenericMailable : Mailable<string>
 
 2. "Build" your Mailable dynamically before sending:
 
-```c#
+```csharp
 var mail = new GenericMailable()
     .To("to@test.com")
     .From("from@test.com")
@@ -438,7 +438,7 @@ await this._mailer.SendAsync(mail);
 
 You may choose to call **some** methods inside you `Build` method and leave the caller to decide about further methods:
 
-```c#
+```csharp
 public GenericMailable : Mailable<string>
 {
     public override void Build()
@@ -449,7 +449,7 @@ public GenericMailable : Mailable<string>
 }
 ```
 
-```c#
+```csharp
 var mail = new GenericMailable()
     .To("to@test.com")
     .From("from@test.com");

@@ -22,7 +22,7 @@ Install Coravel, if not installed.
 
 Next, in `Startup.cs`, put this in `ConfigureServices()`:
 
-```c#
+```csharp
 services.AddCache();
 ```
 
@@ -30,7 +30,7 @@ This will enable in-memory (RAM) caching.
 
 Then, inject `ICache` (from `Coravel.Cache.Interfaces`) via dependency injection. 
 
-```c#
+```csharp
 private ICache _cache;
 
 public CacheController(ICache cache)
@@ -54,7 +54,7 @@ Now, in your controller/injectable class, you may use Coravel's caching methods.
 
 For example:
 
-```c#
+```csharp
 string BigDataLocalFunction() 
 {
     return "Some Big Data";
@@ -71,7 +71,7 @@ _P.S. It is always recommended that you not use hardcoded cache keys._
 
 It's `Remember`, but async:
 
-```c#
+```csharp
 async SomeType BigDataLocalFunctionAsync() 
 {
     // ... Doing some stuff ... 
@@ -85,7 +85,7 @@ await this._cache.RememberAsync("BigDataCacheKey", BigDataLocalFunctionAsync, Ti
 
 Similar to `Remember`, but your item will be cached indefinitely (see `Forget` and `Flush` for cache clearing).
 
-```c#
+```csharp
 this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
 ```
 
@@ -93,7 +93,7 @@ this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
 
 It's `Forever`, but async:
 
-```c#
+```csharp
 await this._cache.ForeverAsync("BigDataCacheKey", BigDataLocalFunctionAsync);
 ```
 
@@ -101,7 +101,7 @@ await this._cache.ForeverAsync("BigDataCacheKey", BigDataLocalFunctionAsync);
 
 `Flush` will clear your entire cache.
 
-```c#
+```csharp
 this._cache.Flush();
 ```
 
@@ -109,7 +109,7 @@ this._cache.Flush();
 
 `Forget` will clear a specific cache entry by key.
 
-```c#
+```csharp
 this._cache.Forget("BigDataCacheKey");
 ```
 
@@ -121,7 +121,7 @@ First, implement a class that extends the `ICache` interface.
 
 Next, to register your driver to be used, just pass it into the `AddCache` method:
 
-```c#
+```csharp
 services.AddCache(new RedisCache());
 
 // Or, if you need the service provider to create your object:
