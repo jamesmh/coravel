@@ -10,7 +10,7 @@ meta:
 
 [[toc]]
 
-Invocables are ubiquitous classes that most of Coravel's features can leverage to make your code much easier to write, compose and maintain.
+Invocables are classes that some of Coravel's features leverage to make your code much easier to write, compose and maintain.
 
 Each invocable represents a self-contained job within your system. 
 
