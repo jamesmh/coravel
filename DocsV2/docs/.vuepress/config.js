@@ -42,16 +42,10 @@ module.exports = {
                 title: 'Extras',
                 collapsable: false,
                 children: [
-                    'Cli/'
-                ]
-            },
-            {
-                title: 'Pro',
-                collapsable: false,
-                children: [
+                    'Cli/',
                     'Pro/'
                 ]
-            }                    
+            }                 
         ]
     }
 }
