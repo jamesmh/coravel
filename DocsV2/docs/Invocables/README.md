@@ -16,6 +16,14 @@ Each invocable represents a self-contained job within your system.
 
 Since Coravel understands how to use them natively, you can do cool stuff like schedule or queue them using terse syntax.
 
+Here's an example of scheduling an invocable, `ReIndexDatabase`, to run every weekday at 1 a.m. UTC:
+
+```csharp
+    scheduler.Schedule<ReIndexDatabase>()
+      .DailyAtHour(01)
+      .Weekday();
+```
+
 :::tip
 It's handy to know about up-front  invocables so you can use Coravel's features as intended!
 :::
