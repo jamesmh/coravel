@@ -36,7 +36,7 @@ Build your .NET Core apps using a simple, expressive and straightforward syntax 
 - Events
 - And More...
 
-# Docs
+## Docs
 
 [You can view the official docs here.](https://coravel-docs.netlify.com/Installation/)
 
