@@ -39,12 +39,19 @@ module.exports = {
                 ]
             },
             {
-                title: 'Tools',
+                title: 'Extras',
                 collapsable: false,
                 children: [
                     'Cli/'
                 ]
-            }                 
+            },
+            {
+                title: 'Pro',
+                collapsable: false,
+                children: [
+                    'Pro/'
+                ]
+            }                    
         ]
     }
 }

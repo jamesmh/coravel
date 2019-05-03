@@ -37,3 +37,7 @@ Then install coravel into the current project:
 ```
 coravel install
 ```
+
+## Pro
+
+If you are using EF Core in your project, you might want to have a look at [Coravel Pro](/Pro/).
