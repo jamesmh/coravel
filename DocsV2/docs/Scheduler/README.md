@@ -42,7 +42,7 @@ Simple enough?
 
 ## Scheduling Tasks
 
-### Scheduling Invocables
+### Invocables
 
 :::tip
 Using invocables is the recommended way to schedule your tasks.
@@ -64,7 +64,7 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
-### Scheduling Async Tasks
+### Async Tasks
 
 Coravel will also handle scheduling `async` methods by using the `ScheduleAsync()` method.
 
@@ -85,7 +85,7 @@ scheduler.ScheduleAsync(async () =>
 You are able to register an async method when using `Schedule()` by mistake. Always use `ScheduleAsync()` when registering an async method.
 :::
 
-### Scheduling Synchronous Tasks
+### Synchronous Tasks
 
 While generally not recommended, there may be times when you aren't doing any async operations.
 
