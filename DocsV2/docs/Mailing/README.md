@@ -150,34 +150,6 @@ In your `appsettings.json`, you may add the following global values that will po
 }
 ```
 
-## Sending Mail
-
-### Basic
-
-Inject an instance of `Coravel.Mailer.Mail.IMailer` and pass a [Mailable](#mailable-basics) to the `SendAsync` method:
-
-```csharp
-private readonly IMailer _mailer;
-
-public MyController(IMailer mailer)
-{
-    this._mailer = mailer;
-}
-
-// Inside a controller action...
-await this._mailer.SendAsync(new NewUserViewMailable(user));
-```
-
-### Queuing Mail
-
-Assuming you are using Coravel's queuing feature, you can do this:
-
-```csharp
-this._queue.QueueAsyncTask(async () =>
-    await this._mailer.SendAsync(new MyMailable())
-);
-```
-
 ## Mailables
 
 ### Creating A Mailable
@@ -385,6 +357,34 @@ Override the entire footer with custom content.
 }
 ```
 
+## Sending Mail
+
+### Basic
+
+Inject an instance of `Coravel.Mailer.Mail.IMailer` and pass a [Mailable](#mailable-basics) to the `SendAsync` method:
+
+```csharp
+private readonly IMailer _mailer;
+
+public MyController(IMailer mailer)
+{
+    this._mailer = mailer;
+}
+
+// Inside a controller action...
+await this._mailer.SendAsync(new NewUserViewMailable(user));
+```
+
+### Queuing Mail
+
+Assuming you are using Coravel's queuing feature, you can do this:
+
+```csharp
+this._queue.QueueAsyncTask(async () =>
+    await this._mailer.SendAsync(new MyMailable())
+);
+```
+
 ## On-The-Fly Mailables
 
 There may be instances when you want to be able to build / configure a Mailable dynamically. You can do this the following way.
@@ -407,27 +407,6 @@ var mail = new GenericMailable()
     .Html("<html><body><h1>Hi!</h1></body></html>");
 
 await this._mailer.SendAsync(mail);
-```
-
-You may choose to call **some** methods inside you `Build` method and leave the caller to decide about further methods:
-
-```csharp
-public GenericMailable : Mailable<string>
-{
-    public override void Build()
-    {
-        this.Subject("This is a static subject")
-            .Html("<html><body>Static content</body></html>");
-    }
-}
-```
-
-```csharp
-var mail = new GenericMailable()
-    .To("to@test.com")
-    .From("from@test.com");
-
-// etc...
 ```
 
 ## E-mail Components
