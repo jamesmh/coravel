@@ -50,7 +50,7 @@ Create a class that implements the interface `Coravel.Events.Interfaces.IEvent`.
 
 An event is merely a data object that will be supplied to each listener. It should expose data that is associated with this specific event.
 
-For example, a `BlogPostCreated` event should accept the `Blog` that was created and then expose it via a public property.
+For example, a `BlogPostCreated` event should accept the `BlogPost` that was created and then expose it via a public property.
 
 ```csharp
 public class BlogPostCreated : IEvent
@@ -99,7 +99,7 @@ Don't forget to register your listener with the service container by using `AddT
 
 ### Using The CLI
 
-You can use [Coravel's CLI to generate events and listeners for you]((/Cli/#events-and-listeners)).
+You can use [Coravel's CLI to generate events and listeners for you](/Cli/#events-and-listeners).
 
 ## Broadcasting
 
@@ -131,4 +131,4 @@ public BlogController : Controller
 
 If your listeners do some heavy or long-winded work, then you might want to do that in the background (e.g. not on the current HTTP request).
 
-See the docs for [queue event broadcasting](/Queuing/#queue-event-broadcasting).
+See the docs for [queue event broadcasting](/Queuing/#queuing-an-event-broadcast).

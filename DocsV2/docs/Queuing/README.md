@@ -16,7 +16,7 @@ This is useful to offload long-winded tasks to the background instead of making 
 
 ## Config
 
-In your `Startup` file, in the `ConfigureServices()` just do this:
+In your `Startup` file, in the `ConfigureServices()`:
 
 ```csharp
 services.AddQueue();
@@ -28,7 +28,7 @@ That's it!
 
 ### Setup
 
-In order to use the queue, you need to inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
+Inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
 
 ```csharp
 IQueue _queue;
@@ -39,17 +39,17 @@ public HomeController(IQueue queue) {
 
 ### Queuing Invocables
 
-:::tip
-Queuing invocables is the recommended way to use Coravel's queuing.
-
-To learn about creating and using invocables [see here.](/Invocables/)
-:::
-
 To queue an invocable, use `QueueInvocable`:
 
 ```csharp
 this._queue.QueueInvocable<GrabDataFromApiAndPutInDBInvocable>();
 ```
+
+:::tip
+Queuing invocables is the recommended way to use Coravel's queuing.
+
+To learn about creating and using invocables [see here.](/Invocables/)
+:::
 
 ### Queuing An Async Task
 
