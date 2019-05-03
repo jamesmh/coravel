@@ -10,7 +10,7 @@ meta:
 
 [[toc]]
 
-Coravel CLI is a .net core global tool that gives you an _even quicker_ way to get started with Coravel!
+Coravel CLI is a .NET core global tool that gives you an _even quicker_ way to get started with Coravel!
 
 ## Installation
 
@@ -20,33 +20,33 @@ Install by running this command in your terminal:
 
 ## Install Coravel
 
-You may use the CLI to install Coravel into an existing .net core project.
+You may use the CLI to install Coravel into an existing .NET core project.
 
 In the root of your project, enter the command:
 
 `coravel install`
 
-This will install the required nuget package(s) for you!
+This will install the required Nuget package(s) for you!
 
 ## Mailer
 
 ### Scaffold Mail Views
 
-You can scaffold most of the mailer service by using the CLI:
+You can scaffold most of the mailer feature by using the CLI:
 
 `coravel mail install`
 
 ### Create A New Mailable
 
-You can generate a new mailable class with the CLI:
+You can generate a new mailable:
 
 `coravel mail new [nameOfYourMailable]`
 
-This will create a new mailable class and view!
+This will create both a new mailable class and view.
 
 ## Invocables
 
-You may generate a new invocable by issuing the command:
+You may generate a new invocable:
 
 `coravel invocable new [nameOfYourInvocable]`
 
@@ -54,7 +54,7 @@ The new class will be under `./Invocables`.
 
 ## Events And Listeners
 
-To generate Coravel events and corresponding listeners, use the command:
+You may generate events and corresponding listeners:
 
 `coravel event new [eventName] [listenerName]`
 
@@ -69,4 +69,6 @@ listeners for the same event:
 
 Given the event `UserCreatedEvent` already existed before issuing the commands above, only the new listeners will be created for you.
 
-_Note: Remember to register your listeners into the service container and register/subscribe your events and listeners._
+:::warning
+Remember to register your listeners into the service container and register/subscribe your events and listeners.
+:::
