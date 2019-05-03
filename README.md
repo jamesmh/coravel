@@ -38,7 +38,7 @@ Coravel provides intuitive and easy to use APIs for the following features:
 
 # Docs
 
-[You can view he official docs here.](https://docs.coravel.net/Installation/)
+[You can view he official docs here.](https://coravel-docs.netlify.com/Installation/)
 
 ## Contributing
 
