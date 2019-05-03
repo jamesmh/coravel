@@ -172,24 +172,6 @@ scheduler
 
 If you require access to dependencies that are registered with the service provider, it is recommended that you [schedule your tasks by using an invocable](#scheduling-invocables) and perform any further restriction logic there.
 
-### Prevent Overlapping Tasks
-
-Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
-
-But, what if the previous instance of this scheduled task is **still** running?
-
-In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
-
-In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
-
-```csharp
-scheduler
-    .Schedule<SomeInvocable>()
-    .EveryMinute()
-    .PreventOverlapping("SomeInvocable");
-```
-This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
-
 ### Global Error Handling
 
 Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
@@ -237,6 +219,26 @@ provider.UseScheduler(scheduler =>
 ```
 
 The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
+
+## Advanced
+
+## Prevent Overlapping Tasks
+
+Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
+
+But, what if the previous instance of this scheduled task is **still** running?
+
+In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
+
+In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
+
+```csharp
+scheduler
+    .Schedule<SomeInvocable>()
+    .EveryMinute()
+    .PreventOverlapping("SomeInvocable");
+```
+This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
 
 ## Schedule Workers
 
