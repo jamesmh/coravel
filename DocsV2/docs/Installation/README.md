@@ -12,7 +12,9 @@ meta:
 
 ## Requirements
 
-Coravel is a .NET Standard library designed for .NET Core apps. You must be including Coravel into either an existing .NET Core application (version 2.1.0+) or within another .NET Standard project(s).
+Coravel is a .NET Standard library designed for .NET Core apps.
+
+Include Coravel in either an existing .NET Core application (version 2.1.0+) or another .NET Standard project(s).
 
 ## Installation
 
