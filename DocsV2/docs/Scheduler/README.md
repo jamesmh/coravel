@@ -40,7 +40,7 @@ provider.UseScheduler(scheduler =>
 
 Simple enough?
 
-## Scheduling Essentials
+## Essentials
 
 ### Scheduling Invocables
 
@@ -157,7 +157,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 Be careful since you could do something like `.Weekend().Weekday()`, which means there are no constraints (it runs on any day).
 :::
 
-## Scheduling Extras
+## Extras
 
 ### Custom Boolean Constraint
 

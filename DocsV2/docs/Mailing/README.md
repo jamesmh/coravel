@@ -10,13 +10,7 @@ meta:
 
 [[toc]]
 
-You love configuring e-mails! 
-
-Especially building an an e-mail friendly template that you can re-use throughout your app. Oh yah! (😒 _sarcasm..._)
-
-Sending email through your database is so easy to configure and use, right? And don't forget about storing e-mail templates **in your database**! So maintainable and easy to use! (😒 _sarcasm again..._)
-
-Sarcasm aside now - e-mails are not as easy as they should be. Luckily for you, Coravel solves this by offering:
+E-mails are not as easy as they should be. Luckily for you, Coravel solves this by offering:
 
 - Built-in e-mail friendly razor templates
 - Simple and flexible mailing API
@@ -29,13 +23,13 @@ Sarcasm aside now - e-mails are not as easy as they should be. Luckily for you, 
 
 ## Installation
 
-### Cli
+### CLI
 
-Install the [Coravel Cli](/Cli/):
+Install the [Coravel CLI](/Cli/):
 
 `dotnet tool install --global coravel-cli`
 
-Using the cli, installer the mailer feature:
+Using the CLI, installer the mailer feature:
 
 `coravel mail install`
 
@@ -46,6 +40,8 @@ This will install the Nuget package `Coravel.Mailer`, along with scaffolding som
 - `~/Views/Mail/Example.cshtml` - A sample mail view
 - `~/Mailables/Example.cs` - A sample Mailable
 
+## Config
+
 ### Configure Services
 
 In `Startup.ConfigureServices()`:
@@ -53,8 +49,6 @@ In `Startup.ConfigureServices()`:
 ```csharp
 services.AddMailer(this.Configuration); // Instance of IConfiguration.
 ```
-
-## Config
 
 ### Drivers
 
@@ -158,6 +152,8 @@ In your `appsettings.json`, you may add the following global values that will po
 
 ## Sending Mail
 
+### Basic
+
 Inject an instance of `Coravel.Mailer.Mail.IMailer` and pass a [Mailable](#mailable-basics) to the `SendAsync` method:
 
 ```csharp
@@ -172,7 +168,7 @@ public MyController(IMailer mailer)
 await this._mailer.SendAsync(new NewUserViewMailable(user));
 ```
 
-## Queuing Mail
+### Queuing Mail
 
 Assuming you are using Coravel's queuing feature, you can do this:
 
@@ -182,7 +178,7 @@ this._queue.QueueAsyncTask(async () =>
 );
 ```
 
-## Mailable Basics
+## Mailables
 
 ### Creating A Mailable
 
@@ -361,7 +357,7 @@ Assigned a value to `ViewBag.Preview` will display as a "preview" on some email 
 
 ### Footer
 
-The footer will grab values from your `appsettings.json` file, if they are set (see section below).
+The footer will grab values from your `appsettings.json` file, if they are set (see [Global Template Configuration](Mailing/#global-template-configuration)).
 
 ### Template Sections
 
@@ -434,7 +430,7 @@ var mail = new GenericMailable()
 // etc...
 ```
 
-### E-mail Components
+## E-mail Components
 
 The CLI generated a `_ViewImports.cshtml` file in the root of your mail views. This allows you to use Coravel's view components.
 

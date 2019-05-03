@@ -35,7 +35,7 @@ public CacheController(ICache cache)
 }
 ```
 
-## Caching Methods
+## Methods
 
 ### Remember
 

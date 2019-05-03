@@ -97,7 +97,7 @@ public class TweetNewPost : IListener<BlogPostCreated>
 Don't forget to register your listener with the service container by using `AddTransient` or `AddScoped`.
 :::
 
-## Using The CLI
+### Using The CLI
 
 You can use [Coravel's CLI to generate events and listeners for you]((/Cli/#events-and-listeners)).
 
