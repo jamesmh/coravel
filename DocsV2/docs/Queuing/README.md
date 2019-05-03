@@ -10,7 +10,9 @@ meta:
 
 [[toc]]
 
-Coravel allows zero-configuration queues (at run time).
+Coravel gives you a zero-configuration queue that runs in-memory. 
+
+This is useful to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish.
 
 ## Config
 
