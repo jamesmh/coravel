@@ -40,7 +40,7 @@ provider.UseScheduler(scheduler =>
 
 Simple enough?
 
-## Essentials
+## Scheduling Tasks
 
 ### Scheduling Invocables
 
@@ -98,7 +98,7 @@ scheduler.Schedule(
 .EveryMinute();
 ```
 
-### Intervals
+## Intervals
 
 After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
@@ -127,7 +127,7 @@ After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule int
 Please note that the scheduler is using UTC time.
 :::
 
-#### Cron Expressions
+### Cron Expressions
 
 Supported types of Cron expressions are:
 
@@ -137,7 +137,7 @@ Supported types of Cron expressions are:
 - `00 1-3 * * *` same as above
 - `00 */2 * * *` run every two hours on the hour
 
-### Day Constraints
+## Day Constraints
 
 After specifying an interval, you can further chain to restrict what day(s) the scheduled task is allowed to run on.
 
