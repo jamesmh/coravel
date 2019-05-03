@@ -20,7 +20,9 @@ Coravel requires the nuget package `Coravel` to get started.
 
 `dotnet add package coravel`
 
-## Coravel CLI
+## Extras
+
+### Coravel CLI
 
 Alternatively, you may install Coravel using the [Coravel CLI](/Cli/).
 
@@ -38,6 +40,6 @@ Then install coravel into the current project:
 coravel install
 ```
 
-## Pro
+### Coravel Pro
 
 If you are using EF Core in your project, you might want to have a look at [Coravel Pro](/Pro/).
