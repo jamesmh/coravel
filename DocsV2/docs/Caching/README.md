@@ -12,15 +12,11 @@ meta:
 
 Coravel provides you with an easy to use API for caching in your .Net Core applications.
 
-## Under The Hood
+By default, it uses an in-memory cache.
 
-Coravel's cache is basically a wrapper for .Net Core's built-in caching. Coravel provides you with some extra features and a simpler syntax when doing typical/common caching operations.
+## Config 
 
-## Setup 
-
-Install Coravel, if not installed.
-
-Next, in `Startup.cs`, put this in `ConfigureServices()`:
+In `Startup.ConfigureServices()`:
 
 ```csharp
 services.AddCache();
@@ -28,7 +24,7 @@ services.AddCache();
 
 This will enable in-memory (RAM) caching.
 
-Then, inject `ICache` (from `Coravel.Cache.Interfaces`) via dependency injection. 
+To use caching, inject `Coravel.Cache.Interfaces.ICache` via dependency injection. 
 
 ```csharp
 private ICache _cache;
@@ -39,9 +35,7 @@ public CacheController(ICache cache)
 }
 ```
 
-Now, in your controller/injectable class, you may use Coravel's caching methods.
-
-## Available Methods
+## Caching Methods
 
 ### Remember
 
@@ -63,10 +57,6 @@ string BigDataLocalFunction()
 this._cache.Remember("BigDataCacheKey", BigDataLocalFunction, TimeSpan.FromMinutes(10));
 ```
 
-Pretty simple? 
-
-_P.S. It is always recommended that you not use hardcoded cache keys._
-
 ### RememberAsync
 
 It's `Remember`, but async:
@@ -83,7 +73,7 @@ await this._cache.RememberAsync("BigDataCacheKey", BigDataLocalFunctionAsync, Ti
 
 ### Forever
 
-Similar to `Remember`, but your item will be cached indefinitely (see `Forget` and `Flush` for cache clearing).
+Similar to `Remember`, but your item will be cached indefinitely.
 
 ```csharp
 this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
@@ -113,9 +103,9 @@ this._cache.Flush();
 this._cache.Forget("BigDataCacheKey");
 ```
 
-## Extending Coravel With Custom Drivers
+## Custom Drivers
 
-If you wish, you can create your own cache driver that extends `Coravel.Cache.Interfaces.ICache`. Maybe you want to use Coravel but use a Redis store? 
+If you wish, you can create your own cache driver that extends `Coravel.Cache.Interfaces.ICache`. Maybe you want to use start using a Redis store? 
 
 First, implement a class that extends the `ICache` interface.
 
@@ -125,7 +115,6 @@ Next, to register your driver to be used, just pass it into the `AddCache` metho
 services.AddCache(new RedisCache());
 
 // Or, if you need the service provider to create your object:
-
 services.AddCache(provider => new RedisCache(provider.GetService<ISomeRegisteredInterface>()));
 ```
 

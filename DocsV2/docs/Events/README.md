@@ -6,21 +6,19 @@ meta:
     content: dotnet dotnetcore ".NET Core task scheduling" ".NET Core scheduler" ".NET Core framework" ".NET Core Queue" ".NET Core Queuing" ".NET Core Caching" Coravel
 ---
 
-# Events
+# Event Broadcasting
 
 [[toc]]
 
-Coravel's events allow you to subscribe and listen to events that occur in your application. This is a great way to build maintainable applications who's parts are loosely coupled.
+Coravel's event broadcasting allows listeners to subscribe to events that occur in your application. 
 
-An event will have one or more independent listeners which, when an event is broadcasted, will be "given" the broadcasted event. The listeners can then independently perform their specific application logic based on the event's data.
+This is a great way to build maintainable applications who's parts are loosely coupled!
 
-## Example: Broadcasting A New Blog Post To The Public
-
-For example, you might have a .NET Core application that has a blog built into it. You want to add a feature that sends a twitter tweet and an e-mail updating your social network about any new posts you add to your blog:
+For example, you want to add a feature that sends a twitter tweet and an e-mail updating your social network about any new posts you add to your blog:
 
 ![Coravel Event](/img/event-blog.png)
 
-## Configuring Events
+## Config
 
 In your startup file, in the `ConfigureServices` method:
 
@@ -28,10 +26,7 @@ In your startup file, in the `ConfigureServices` method:
 services.AddEvents();
 ```
 
-> In version 1.9 `ConfigureEvents` was moved as an extension method of `IServiceProvider`.
-> This allows Coravel's dependencies to be significantly slimmed down 👌
-
-Next, in the `Configure` method call `ConfigureEvents` off of the service provider:
+Next, in the `Configure` method:
 
 ```csharp
 var provider = app.ApplicationServices;
@@ -47,9 +42,9 @@ registration
   	.Subscribe<NotifyEmailSubscribersOfNewPost>();
 ```
 
-## Creating An Event
+## Creating Events And Listeners
 
-Creating an event is simple.
+### Events
 
 Create a class that implements the interface `Coravel.Events.Interfaces.IEvent`. That's it!
 
@@ -69,50 +64,48 @@ public class BlogPostCreated : IEvent
 }
 ```
 
-## Creating A Listener
+### Listeners
 
-Create a new class that implements the interface `Coravel.Events.Interfaces.IListener<TEvent>` - where `TEvent` is the event that you will be listening to.
+Create a new class that implements the interface `Coravel.Events.Interfaces.IListener<TEvent>` where `TEvent` is the event that you will be listening to.
 
-> _Note: Each listener can only be associated with one event - since the event will be passed in the `HandleAsync` method._
+:::tip
+Each listener can only be associated with one event.
+:::
 
 The `IListener<TEvent>` interface requires you implement `HandleAsync(TEvent broadcasted)`.
 
-Using the example of the new blog post event, we might create a listener named `TweetNewPost`:
+Using the example event in the previous section, we might create a listener named `TweetNewPost`:
 
 ```csharp
-// The IListener generic parameter is the event
-// that you will be listening to.
 public class TweetNewPost : IListener<BlogPostCreated>
 {
     private TweetingService _tweeter;
 
     public TweetNewPost(TweetingService tweeter){
-        this._tweeter = tweeter // Injected via service provider.
+        this._tweeter = tweeter;
     }
 
     public async Task HandleAsync(BlogPostCreated broadcasted)
     {
-        var post = broadcasted.Post; // Post is a public property of the event.
+        var post = broadcasted.Post;
         await this._tweeter.TweetNewPost(post);
     }
 }
 ```
 
-Finally, **you must register your listener with the service container** by using `AddTransient` or `AddScoped`.
+:::warning
+Don't forget to register your listener with the service container by using `AddTransient` or `AddScoped`.
+:::
 
-## Generate Events And Listeners Using Coravel's CLI
+## Using The CLI
 
-You can let Coravel generate events and listeners for you!
+You can use [Coravel's CLI to generate events and listeners for you]((/Cli/#events-and-listeners)).
 
-See the [CLI docs](/Cli/) for more information.
+## Broadcasting
 
-## Broadcasting Events
+### Basic
 
-### Basic Broadcasting
-
-To broadcast events, Coravel supplies the `Coravel.Events.Interfaces.IDispatcher` interface.
-
-You can inject an instance into your MVC controllers or other DI ready classes.
+Inject an instance of `Coravel.Events.Interfaces.IDispatcher` into your controllers or other DI ready classes.
 
 By using the `Broadcast` method, you may broadcast a new event.
 
@@ -134,8 +127,8 @@ public BlogController : Controller
 }
 ```
 
-### Queuing An Event To Be Broadcasted
+### Queuing
 
-You may queue events that will be broadcasted in the background of your running app.
+If your listeners do some heavy or long-winded work, then you might want to do that in the background (e.g. not on the current HTTP request).
 
-See the docs for [Queue Event Broadcasting](/Queuing/#queue-event-broadcasting).
+See the docs for [queue event broadcasting](/Queuing/#queue-event-broadcasting).
