@@ -40,7 +40,7 @@ Build your .NET Core apps using a simple, expressive and straightforward syntax 
 
 ## Docs
 
-[You can view the official docs here.](https://docs.coravel.net//Installation/)
+[You can view the official docs here.](https://docs.coravel.net/Installation/)
 
 ## Contributing
 
