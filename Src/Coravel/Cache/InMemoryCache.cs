@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Coravel.Cache.Interfaces;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace Coravel.Cache
 {
     public class InMemoryCache : ICache
     {
-        private IMemoryCache _cache;
-        private HashSet<string> _keys;
+        private readonly IMemoryCache _cache;
+        private readonly HashSet<string> _keys;
 
         public InMemoryCache(IMemoryCache cache)
         {
@@ -29,6 +24,7 @@ namespace Coravel.Cache
             return this._cache.GetOrCreate(key, entry =>
             {
                 entry.AbsoluteExpiration = DateTimeOffset.Now.Add(expiresIn);
+                entry.RegisterPostEvictionCallback(this.EvictionCallback);
                 return cacheFunc();
             });
         }
@@ -38,10 +34,11 @@ namespace Coravel.Cache
             this._keys.Add(key);
 
             return await this._cache.GetOrCreateAsync(key, async entry =>
-           {
-               entry.AbsoluteExpiration = DateTimeOffset.Now.Add(expiresIn);
-               return await cacheFunc();
-           });
+            {
+                entry.AbsoluteExpiration = DateTimeOffset.Now.Add(expiresIn);
+                entry.RegisterPostEvictionCallback(this.EvictionCallback);
+                return await cacheFunc();
+            });
         }
 
         public TResult Forever<TResult>(string key, Func<TResult> cacheFunc)
@@ -60,10 +57,10 @@ namespace Coravel.Cache
             this._keys.Add(key);
 
             return await this._cache.GetOrCreateAsync(key, async entry =>
-           {
-               entry.Priority = CacheItemPriority.NeverRemove;
-               return await cacheFunc();
-           });
+            {
+                entry.Priority = CacheItemPriority.NeverRemove;
+                return await cacheFunc();
+            });
         }
 
         public void Forget(string key)
@@ -72,12 +69,22 @@ namespace Coravel.Cache
             this._keys.Remove(key);
         }
 
-        public void Flush() {
-            foreach(string key in this._keys){
+        public void Flush()
+        {
+            foreach (string key in this._keys)
+            {
                 this._cache.Remove(key);
             }
 
             this._keys.Clear();
+        }
+
+        private void EvictionCallback(object key, object value, EvictionReason reason, object state)
+        {
+            if (reason == EvictionReason.Expired || reason == EvictionReason.Capacity || reason == EvictionReason.Removed)
+            {
+                this._keys.Remove(key.ToString());
+            }
         }
     }
 }
