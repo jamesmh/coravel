@@ -14,7 +14,14 @@
 
 Coravel helps developers get their web applications up-and-running fast - without compromising code quality. 
 
-It makes what are usually advanced features accessible and easy-to-use, without needing to install any extra 3rd-party infrastructure.
+It makes advanced app features accessible and easy-to-use, without needing to install extra 3rd-party infrastructure. Features include: 
+
+- Task Scheduling
+- Queuing
+- Caching
+- Mailing
+- Events
+- And more!
 
 Build your .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
@@ -29,16 +36,9 @@ Build your .NET Core apps using a simple, expressive and straightforward syntax 
 </p>
 <p align="center"><b>BuiltWithDot.Net</b></p>
 
-## Features
+_Want to be featured? Open an issue!_
 
-- Task Scheduling
-- Queuing
-- Caching
-- Mailing
-- Events
-- And More...
-
-## Docs
+## Official Documention
 
 [You can view the official docs here.](https://docs.coravel.net/Installation/)
 
