@@ -20,7 +20,7 @@ It makes advanced app features accessible and easy-to-use, without needing to in
 - Queuing
 - Caching
 - Mailing
-- Events
+- Event Broadcasting
 - And more!
 
 Build your .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
