@@ -3,7 +3,7 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace Coravel.Cache.Database
+namespace Coravel.Cache.Database.Core
 {
     internal static class Extensions
     {

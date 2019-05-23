@@ -1,23 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coravel", "Coravel\Coravel.csproj", "{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel", "Coravel\Coravel.csproj", "{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coravel.Cache.Database", "Coravel.Cache.Database\Coravel.Cache.Database.csproj", "{F395F1A4-1C74-4A71-9203-067C6F9F2D75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Cli", "Coravel.Cli\Coravel.Cli.csproj", "{FF3A8DD2-8E9A-404F-ACF6-0E6E372703A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coravel.Cli", "Coravel.Cli\Coravel.Cli.csproj", "{FF3A8DD2-8E9A-404F-ACF6-0E6E372703A8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Coravel.Mailer", "Coravel.Mailer\Coravel.Mailer.csproj", "{A2CD67E1-476C-4577-B47F-B3CBD362B500}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Mailer", "Coravel.Mailer\Coravel.Mailer.csproj", "{A2CD67E1-476C-4577-B47F-B3CBD362B500}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{9ED16D9A-B43C-4168-B32F-9E978920EE0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "IntegrationTests\Tests\Tests.csproj", "{382FCFB6-02BC-4471-86E5-5C8E7091C71C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "IntegrationTests\Tests\Tests.csproj", "{382FCFB6-02BC-4471-86E5-5C8E7091C71C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMvcApp", "IntegrationTests\TestMvcApp\TestMvcApp.csproj", "{E1EA978B-4DB5-454A-8D74-E10BB515CD10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestMvcApp", "IntegrationTests\TestMvcApp\TestMvcApp.csproj", "{E1EA978B-4DB5-454A-8D74-E10BB515CD10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{24785D20-ED2F-4EF0-A300-EECAD3AE5237}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{24785D20-ED2F-4EF0-A300-EECAD3AE5237}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Cache.SqlServer", "Coravel.Cache.Database\Coravel.Cache.SqlServer\Coravel.Cache.SqlServer.csproj", "{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Cache.Database.Core", "Coravel.Cache.Database\Core\Coravel.Cache.Database.Core.csproj", "{92943479-016D-4743-9086-2688A7560296}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel.Cache.PostgreSQL", "Coravel.Cache.Database\Coravel.Cache.PostgreSQL\Coravel.Cache.PostgreSQL.csproj", "{9A90D15F-78EA-416D-8576-CFC00C6630E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +31,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -44,18 +45,6 @@ Global
 		{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}.Release|x64.Build.0 = Release|Any CPU
 		{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}.Release|x86.ActiveCfg = Release|Any CPU
 		{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}.Release|x86.Build.0 = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|x64.Build.0 = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Debug|x86.Build.0 = Debug|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|x64.ActiveCfg = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|x64.Build.0 = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|x86.ActiveCfg = Release|Any CPU
-		{F395F1A4-1C74-4A71-9203-067C6F9F2D75}.Release|x86.Build.0 = Release|Any CPU
 		{FF3A8DD2-8E9A-404F-ACF6-0E6E372703A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF3A8DD2-8E9A-404F-ACF6-0E6E372703A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF3A8DD2-8E9A-404F-ACF6-0E6E372703A8}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -116,9 +105,51 @@ Global
 		{24785D20-ED2F-4EF0-A300-EECAD3AE5237}.Release|x64.Build.0 = Release|Any CPU
 		{24785D20-ED2F-4EF0-A300-EECAD3AE5237}.Release|x86.ActiveCfg = Release|Any CPU
 		{24785D20-ED2F-4EF0-A300-EECAD3AE5237}.Release|x86.Build.0 = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|x64.Build.0 = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Debug|x86.Build.0 = Debug|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|x64.ActiveCfg = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|x64.Build.0 = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3E5CD92-FE8D-4216-85D9-93DDFA00B25C}.Release|x86.Build.0 = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|x64.Build.0 = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Debug|x86.Build.0 = Debug|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|x64.ActiveCfg = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|x64.Build.0 = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|x86.ActiveCfg = Release|Any CPU
+		{92943479-016D-4743-9086-2688A7560296}.Release|x86.Build.0 = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|x64.Build.0 = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Debug|x86.Build.0 = Debug|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|x64.ActiveCfg = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|x64.Build.0 = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|x86.ActiveCfg = Release|Any CPU
+		{9A90D15F-78EA-416D-8576-CFC00C6630E3}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{382FCFB6-02BC-4471-86E5-5C8E7091C71C} = {9ED16D9A-B43C-4168-B32F-9E978920EE0D}
 		{E1EA978B-4DB5-454A-8D74-E10BB515CD10} = {9ED16D9A-B43C-4168-B32F-9E978920EE0D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50AB2DB7-A977-4EBF-A50D-90F65BC8E961}
 	EndGlobalSection
 EndGlobal

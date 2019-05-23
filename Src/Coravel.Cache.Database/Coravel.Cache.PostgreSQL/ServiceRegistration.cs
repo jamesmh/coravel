@@ -1,4 +1,4 @@
-using Coravel.Cache.Database;
+using Coravel.Cache.Database.Core;
 using Coravel.Cache.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 

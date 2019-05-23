@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Coravel.Cache.Database
+namespace Coravel.Cache.Database.Core
 {
     internal class CacheEntryDBModel
     {

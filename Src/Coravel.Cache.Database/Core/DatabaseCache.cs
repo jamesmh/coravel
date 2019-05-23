@@ -5,7 +5,7 @@ using Coravel.Cache.Interfaces;
 using Dapper;
 using Newtonsoft.Json;
 
-namespace Coravel.Cache.Database
+namespace Coravel.Cache.Database.Core
 {
     public class DatabaseCache : ICache
     {

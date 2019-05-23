@@ -1,5 +1,5 @@
 using System.Data.Common;
-using Coravel.Cache.Database;
+using Coravel.Cache.Database.Core;
 using Npgsql;
 
 namespace Coravel.Cache.PostgreSQL

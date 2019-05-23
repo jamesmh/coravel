@@ -1,7 +1,7 @@
 
 using System.Data.Common;
 using System.Data.SqlClient;
-using Coravel.Cache.Database;
+using Coravel.Cache.Database.Core;
 
 namespace Coravel.Cache.SqlServer
 {
