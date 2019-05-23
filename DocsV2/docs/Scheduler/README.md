@@ -220,8 +220,6 @@ provider.UseScheduler(scheduler =>
 
 The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
 
-## Advanced
-
 ## Prevent Overlapping Tasks
 
 Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
