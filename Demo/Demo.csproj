@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
@@ -11,8 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Src\Coravel\Coravel.csproj" />
+    <!-- <ProjectReference Include="..\Src\Coravel\Coravel.csproj" /> -->
     <ProjectReference Include="..\Src\Coravel.Mailer\Coravel.Mailer.csproj" />
+    <ProjectReference Include="..\Src\Coravel.Cache.Database\Coravel.Cache.SqlServer\Coravel.Cache.SqlServer.csproj" />
+    <ProjectReference Include="..\Src\Coravel.Cache.Database\Coravel.Cache.PostgreSQL\Coravel.Cache.PostgreSQL.csproj" />
 
   </ItemGroup>
 

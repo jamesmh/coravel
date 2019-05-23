@@ -1,32 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Coravel;
+using Coravel.Events.Interfaces;
+using Coravel.Queuing.Interfaces;
+using Coravel.Cache.PostgreSQL;
+using Coravel.Cache.SqlServer;
+using Demo.Events;
+using Demo.Invocables;
+using Demo.Listeners;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Coravel;
 using Microsoft.Extensions.Logging;
-using Coravel.Scheduling.Schedule.Interfaces;
-using Coravel.Queuing.Interfaces;
-using Demo.Invocables;
-using System.Threading;
-using Coravel.Events.Interfaces;
-using Demo.Listeners;
-using Demo.Events;
 
 namespace Demo
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IServiceProvider services)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration, IServiceProvider services) => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -49,7 +42,8 @@ namespace Demo
             services.AddQueue();
 
             // Coravel Caching
-            services.AddCache();
+            services.AddSqlServerCache(this.Configuration.GetConnectionString("DefaultConnection"));
+           // services.AddPostgreSQLCache(this.Configuration.GetConnectionString("PostGreSQL"));
 
             // Coravel Mail
             services.AddMailer(this.Configuration);
