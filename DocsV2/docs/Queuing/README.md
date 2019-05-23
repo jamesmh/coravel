@@ -6,7 +6,7 @@ meta:
     content: dotnet dotnetcore ".NET Core task scheduling" ".NET Core scheduler" ".NET Core framework" ".NET Core Queue" ".NET Core Queuing" ".NET Core Caching" Coravel
 ---
 
-# Task Queuing
+# Queuing
 
 [[toc]]
 

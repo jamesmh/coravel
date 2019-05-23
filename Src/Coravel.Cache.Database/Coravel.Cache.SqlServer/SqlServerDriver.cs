@@ -3,9 +3,9 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using Coravel.Cache.Database.Core;
 
-namespace Coravel.Cache.SqlServer
+namespace Coravel.Cache.SQLServer
 {
-    public class SqlServerDriver : IDriver
+    public class SQLServerDriver : IDriver
     {
          public string TableName => "[dbo].[CoravelCacheStore]";
           public string DeleteByKeySQL => $@"

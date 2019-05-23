@@ -3,7 +3,7 @@ using Coravel;
 using Coravel.Events.Interfaces;
 using Coravel.Queuing.Interfaces;
 using Coravel.Cache.PostgreSQL;
-using Coravel.Cache.SqlServer;
+using Coravel.Cache.SQLServer;
 using Demo.Events;
 using Demo.Invocables;
 using Demo.Listeners;
@@ -42,7 +42,7 @@ namespace Demo
             services.AddQueue();
 
             // Coravel Caching
-            services.AddSqlServerCache(this.Configuration.GetConnectionString("DefaultConnection"));
+            services.AddSQLServerCache(this.Configuration.GetConnectionString("DefaultConnection"));
            // services.AddPostgreSQLCache(this.Configuration.GetConnectionString("PostGreSQL"));
 
             // Coravel Mail

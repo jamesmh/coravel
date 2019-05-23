@@ -6,6 +6,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Coravel.Cache.SQLServer</PackageId>
+    <Version>1.0.0-preview</Version>
+    <Authors>James Hickey</Authors>
+    <Company>-</Company>
+    <Title>Coravel SQL Server Cache Driver</Title>
+    <Description>Distributed MS SQL Server cache driver for Coravel</Description>
+    <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>netcore;coravel;caching;sqlserver</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

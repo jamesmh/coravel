@@ -2,11 +2,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>2.4.1</Version>
+    <Version>2.5.1-preview</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
-    <Description>.Net Core meets Laravel: Scheduling, Queuing, etc.</Description>
+    <Description>Near-zero config .NET Core library that makes Task Scheduling, Caching, Queuing, Mailing, Event Broadcasting (and more) a breeze!</Description>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
