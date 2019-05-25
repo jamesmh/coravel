@@ -110,7 +110,7 @@ this._cache.Forget("BigDataCacheKey");
 By default, an in-memory caching driver is used. Coravel also offers drivers that will cache your data to a database!
 
 ::: tip
-This allows multiple servers or application instances (e.g. load-balancing, etc.) to share the same cache. It also can alleviate the extra memory required in your application's memory when using the in-memory driver.
+This allows multiple servers or application instances (e.g. load-balancing, etc.) to share the same cache. It can also alleviate the extra memory required by your application instance(s) when using the in-memory driver.
 :::
 
 ### SQL Server
