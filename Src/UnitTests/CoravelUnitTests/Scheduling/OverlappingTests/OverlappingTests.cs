@@ -11,7 +11,7 @@ namespace UnitTests.Scheduling.OverlappingTests
 {
     public class OverlappingTests
     {
-       // [Fact]
+        [Fact]
         public async Task LongRunningEventPreventOverlap()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
@@ -44,7 +44,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             Assert.Equal(1, taskCount);
         }
 
-       // [Fact]
+        [Fact]
         public async Task OverlapNotPrevented()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
