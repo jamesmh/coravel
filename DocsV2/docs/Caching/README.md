@@ -10,9 +10,11 @@ meta:
 
 [[toc]]
 
-Coravel provides you with an easy to use API for caching in your .Net Core applications.
+Coravel provides you with an easy to use API for caching in your .NET Core applications.
 
 By default, it uses an in-memory cache.
+
+Coravel also provides some [database drivers](#database-drivers/) for more robust scenarios.
 
 ## Config 
 
@@ -102,6 +104,38 @@ this._cache.Flush();
 ```csharp
 this._cache.Forget("BigDataCacheKey");
 ```
+
+## Database Drivers
+
+By default, an in-memory caching driver is used. Coravel also offers drivers that will cache your data to a database!
+
+::: TIP
+This allows multiple servers or application instances (e.g. load-balancing, etc.) to share the same cache. It also can alleviate the extra memory required in your application's memory when using the in-memory driver.
+:::
+
+### SQL Server
+
+Install the NuGet package `Coravel.Cache.SQLServer`.
+
+Next, in `Startup.cs` in the `Configure()` method:
+
+```c#
+services.AddSQLServerCache(connectionString);
+```
+
+The driver will automatically create the table `dbo.CoravelCacheStore` to be used for caching.
+
+### PostgreSQL
+
+Install the NuGet package `Coravel.Cache.PostgreSQL`.
+
+Next, in `Startup.cs` in the `Configure()` method:
+
+```c#
+services.AddPostgreSQLCache(connectionString);
+```
+
+The driver will automatically create the table `public.CoravelCacheStore` to be used for caching.
 
 ## Custom Drivers
 

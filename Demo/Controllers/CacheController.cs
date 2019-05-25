@@ -15,16 +15,28 @@ namespace Demo.Controllers
             this._cache = cache;
         }
 
+        public class t
+        {
+            public string name { get; set; }
+            public DateTimeOffset setAt { get; set; }
+        }
+
         public IActionResult Remember()
         {
-            Func<string> bigData = () =>
+            Func<t> bigData = () =>
             {
                 Thread.Sleep(500); // Simulate some work.
-                return "I AM A BIG PEICE OF DATA!";
+                return new t
+                {
+                    name = "James",
+                    setAt = DateTimeOffset.UtcNow
+                };
             };
 
+            t model = this._cache.Remember("bigdata", bigData, TimeSpan.FromSeconds(10));
+
             var content = Content(
-                this._cache.Remember("bigdata", bigData, TimeSpan.FromSeconds(10))
+                $"name = {model.name}, number = {model.setAt}"
             );
 
             return content;
@@ -36,7 +48,7 @@ namespace Demo.Controllers
             Func<Task<string>> bigData = async () =>
             {
                 await Task.Delay(500);
-                return "I AM A BIG PEICE OF DATA!";
+                return "I AM A BIG PEICE OF DATA!" + DateTime.UtcNow;
             };
 
             var content = Content(
@@ -51,11 +63,48 @@ namespace Demo.Controllers
             Func<string> bigData = () =>
             {
                 Thread.Sleep(500); // Simulate some work.
-                return "I AM A BIG PEICE OF DATA!";
+                return "I AM A BIG PEICE OF DATA!" + DateTime.UtcNow;
             };
 
             var content = Content(
                 this._cache.Forever("bigdataforever", bigData)
+            );
+
+            return content;
+        }
+
+        public async Task<IActionResult> ForeverAsync()
+        {
+            Func<Task<string>> bigData = async () =>
+            {
+                await Task.Delay(500); // Simulate some work.
+                return "I AM A BIG PEICE OF DATA!" + DateTime.UtcNow;
+            };
+
+            var content = Content(
+                await this._cache.ForeverAsync("bigdataforever", bigData)
+            );
+
+            return content;
+        }
+
+        public IActionResult Flush()
+        {
+            this._cache.Flush();
+
+            var content = Content(
+                "flushed"
+            );
+
+            return content;
+        }
+
+        public IActionResult Forget([FromQuery] string key)
+        {
+            this._cache.Forget(key);
+
+            var content = Content(
+                "forgot"
             );
 
             return content;

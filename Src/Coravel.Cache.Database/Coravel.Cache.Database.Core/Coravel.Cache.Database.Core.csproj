@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Coravel.Cache.Database.Core</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>James Hickey</Authors>
+    <Company>-</Company>
+    <Title>Coravel Database Cache Driver Shared Library</Title>
+    <Description>Core tools for Coravel database cache drivers</Description>
+    <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>netcore;coravel;caching;database</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Coravel" Version="2.5.0" />
+    <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+</Project>
