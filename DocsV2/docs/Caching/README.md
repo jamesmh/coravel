@@ -109,7 +109,7 @@ this._cache.Forget("BigDataCacheKey");
 
 By default, an in-memory caching driver is used. Coravel also offers drivers that will cache your data to a database!
 
-::: TIP
+::: tip
 This allows multiple servers or application instances (e.g. load-balancing, etc.) to share the same cache. It also can alleviate the extra memory required in your application's memory when using the in-memory driver.
 :::
 
@@ -119,7 +119,7 @@ Install the NuGet package `Coravel.Cache.SQLServer`.
 
 Next, in `Startup.cs` in the `Configure()` method:
 
-```c#
+```csharp
 services.AddSQLServerCache(connectionString);
 ```
 
@@ -131,7 +131,7 @@ Install the NuGet package `Coravel.Cache.PostgreSQL`.
 
 Next, in `Startup.cs` in the `Configure()` method:
 
-```c#
+```csharp
 services.AddPostgreSQLCache(connectionString);
 ```
 
