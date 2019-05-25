@@ -14,7 +14,7 @@ Coravel provides you with an easy to use API for caching in your .NET Core appli
 
 By default, it uses an in-memory cache.
 
-Coravel also provides some [database drivers](#database-drivers/) for more robust scenarios.
+Coravel also provides some [database drivers](#database-drivers) for more robust scenarios.
 
 ## Config 
 
