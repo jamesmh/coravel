@@ -20,7 +20,6 @@ namespace UnitTests.Scheduling.IntervalTests
             void DummyTask()
             {
                 successfulTaskCount++;
-                Console.Write("dummy");
             };
 
             void ThrowsErrorTask()
@@ -53,7 +52,6 @@ namespace UnitTests.Scheduling.IntervalTests
             void DummyTask()
             {
                 successfulTaskCount++;
-                Console.Write("dummy");
             };
 
             void ThrowsErrorTask()
