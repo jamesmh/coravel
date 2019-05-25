@@ -7,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using UnitTests.Events.EventsAndListeners;
 using Xunit;
 
-[assembly: CollectionBehavior(MaxParallelThreads = 2)]
 namespace UnitTests.Events
 {
     public class EventTests
