@@ -7,4 +7,5 @@ jobs:
     steps:
       - checkout
       - run: 'dotnet build ./Src/All.sln'
-      - run: 'dotnet test ./Src/All.sln'
+      - run: 'dotnet test ./Src/UnitTests/UnitTests.csproj'
+      - run: 'dotnet test ./Src/IntegrationTests/Tests/Tests.csproj'
