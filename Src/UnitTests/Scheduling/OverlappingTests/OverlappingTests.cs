@@ -24,7 +24,7 @@ namespace UnitTests.Scheduling.OverlappingTests
             {
                 while (keepRunning)
                 {
-                    await Task.Delay(1);
+                    await Task.Delay(20);
                 } // Simulate that this event takes a really long time.
                 taskCount++;
             })
