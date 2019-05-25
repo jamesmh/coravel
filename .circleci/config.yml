@@ -6,5 +6,6 @@ jobs:
       - image: microsoft/dotnet:2.2-sdk
     steps:
       - checkout
+      - run: 'dotnet build ./Src/All.sln'
       - run: 'dotnet test ./Src/UnitTests/UnitTests.csproj'
       - run: 'dotnet test ./Src/IntegrationTests/Tests/Tests.csproj'
