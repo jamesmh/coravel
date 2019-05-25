@@ -117,7 +117,7 @@ This allows multiple servers or application instances (e.g. load-balancing, etc.
 
 Install the NuGet package `Coravel.Cache.SQLServer`.
 
-Next, in `Startup.cs` in the `Configure()` method:
+Next, in `Startup.cs` in the `ConfigureServices()` method:
 
 ```csharp
 services.AddSQLServerCache(connectionString);
@@ -129,7 +129,7 @@ The driver will automatically create the table `dbo.CoravelCacheStore` to be use
 
 Install the NuGet package `Coravel.Cache.PostgreSQL`.
 
-Next, in `Startup.cs` in the `Configure()` method:
+Next, in `Startup.cs` in the `ConfigureServices()` method:
 
 ```csharp
 services.AddPostgreSQLCache(connectionString);
