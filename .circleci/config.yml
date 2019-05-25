@@ -1,11 +1,10 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/coravel
+    working_directory: ~/coravel/Src
     docker: 
       - image: microsoft/dotnet:2.2-sdk
     steps:
       - checkout
-      - run: 'dotnet build ./Src/All.sln'
-      - run: 'dotnet test ./Src/UnitTests/UnitTests.csproj'
-      - run: 'dotnet test ./Src/IntegrationTests/Tests/Tests.csproj'
+      - run: 'dotnet build ./All.sln'
+      - run: 'dotnet test ./All.sln'
