@@ -105,9 +105,11 @@ namespace Demo
                 // scheduler.Schedule(() => Console.WriteLine($"Every five minutes (ran at ${DateTime.UtcNow}) on thread {Thread.CurrentThread.ManagedThreadId}"))
                 //     .EveryFiveMinutes();
 
-                // scheduler.Schedule<SendNightlyReportsEmailJob>()
-                //     .Cron("* * * * *")
-                //     .PreventOverlapping("SendNightlyReportsEmailJob");
+                scheduler
+                    .Schedule<SendPendingNotifications>().EveryMinute();
+                                    scheduler.Schedule<SendNightlyReportsEmailJob>()
+                    .EverySecond()
+                    .PreventOverlapping("SendNightlyReportsEmailJob");
 
                 //     scheduler.ScheduleAsync(async () => {
                 //         var dispatcher = app.ApplicationServices.GetRequiredService<IDispatcher>();
@@ -115,10 +117,7 @@ namespace Demo
                 //     }).EveryMinute();
 
                 scheduler.OnWorker("EmailTasks");
-                scheduler
-                    .Schedule<SendNightlyReportsEmailJob>().Daily();
-                scheduler
-                    .Schedule<SendPendingNotifications>().EveryMinute();
+
 
                 scheduler.OnWorker("CPUIntensiveTasks");
                 scheduler

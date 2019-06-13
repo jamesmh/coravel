@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Coravel.Scheduling.Schedule.Cron;
@@ -50,19 +48,27 @@ namespace Coravel.Scheduling.Schedule.Event
         private static readonly int _OneMinuteAsSeconds = 60;
         public bool IsDue(DateTime utcNow)
         {
-            if(this._isScheduledPerSecond)
+            if (this._isScheduledPerSecond)
             {
-              
-                if(utcNow.Second == 0)
-                {
-                    return _OneMinuteAsSeconds % this._secondsInterval == 0;
-                }
-                else {
-                    return utcNow.Second % this._secondsInterval == 0;
-                }
+                var isSecondDue = this.IsSecondsDue(utcNow);
+                var isWeekDayDue = this._expression.IsWeekDayDue(utcNow);
+                return isSecondDue && isWeekDayDue;
             }
-            else {
+            else
+            {
                 return this._expression.IsDue(utcNow);
+            }
+        }
+
+        private bool IsSecondsDue(DateTime utcNow)
+        {
+            if (utcNow.Second == 0)
+            {
+                return _OneMinuteAsSeconds % this._secondsInterval == 0;
+            }
+            else
+            {
+                return utcNow.Second % this._secondsInterval == 0;
             }
         }
 
@@ -258,6 +264,7 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             this._secondsInterval = 1;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
 
@@ -265,6 +272,7 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             this._secondsInterval = 5;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
 
@@ -272,6 +280,7 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             this._secondsInterval = 10;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
 
@@ -279,6 +288,7 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             this._secondsInterval = 15;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
 
@@ -286,18 +296,20 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             this._secondsInterval = 30;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
 
         public IScheduledEventConfiguration EverySeconds(int seconds)
         {
-            if(seconds < 1 || seconds > 59)
+            if (seconds < 1 || seconds > 59)
             {
                 throw new ArgumentException("When calling 'EverySeconds(int seconds)', 'seconds' must be between 0 and 60");
             }
-            
+
             this._secondsInterval = seconds;
             this._isScheduledPerSecond = true;
+            this._expression = new CronExpression("* * * * *");
             return this;
         }
     }

@@ -209,6 +209,16 @@ namespace UnitTests.Scheduling.IntervalTests
             Assert.Equal(expectedRuns, taskRunCount);
         }
 
+        [Theory]
+        [InlineData("1/1/2018 12:00:00 am", true)]
+        [InlineData("1/1/2018 12:00:01 am", true)]
+        [InlineData("1/1/2018 12:00:02 am", true)]
+        [InlineData("1/1/2018 12:00:05 am", true)]
+        public async Task ScheduledEventPerSecond_EveryWeekDay(string dateString, bool shouldRun)
+        {
+            await TestSubMinuteInterval(dateString, shouldRun, e => e.EverySecond().Weekday());
+        }
+
         private static async Task TestSubMinuteInterval(string dateString, bool shouldRun, Action<IScheduleInterval> scheduleIt)
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
