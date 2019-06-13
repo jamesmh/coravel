@@ -42,7 +42,7 @@ _Want to be featured? Open an issue!_
 
 ## Coravel Pro
 
-If you are building a .NET Core application with EF Core, then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET Core back-end tasks a breeze!
+If you are building a .NET Core application with EF Core, then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET Core app a breeze!
 
 - Visual job scheduling & management
 - Scaffold a CRUD UI for managing your EF Core entities
