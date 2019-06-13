@@ -12,9 +12,9 @@
 
 # Coravel
 
-Coravel helps developers get their web applications up-and-running fast - without compromising code quality. 
+Coravel helps developers get their .NET Core applications up-and-running fast without compromising code quality. 
 
-It makes advanced app features accessible and easy-to-use, without needing to install extra 3rd-party infrastructure. Features include: 
+It makes advanced application features accessible and easy-to-use by giving you a simple, expressive and straightforward syntax. Features include: 
 
 - Task Scheduling
 - Queuing
@@ -22,8 +22,6 @@ It makes advanced app features accessible and easy-to-use, without needing to in
 - Mailing
 - Event Broadcasting
 - And more!
-
-Build your .NET Core apps using a simple, expressive and straightforward syntax that lets you focus on **your app - "batteries included!"** 
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
@@ -41,6 +39,16 @@ _Want to be featured? Open an issue!_
 ## Official Documention
 
 [You can view the official docs here.](https://docs.coravel.net/Installation/)
+
+## Coravel Pro
+
+If you are building a .NET Core application with EF Core, then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET Core back-end tasks a breeze!
+
+- Visual job scheduling & management
+- Scaffold a CRUD UI for managing your EF Core entities
+- Easily configure a dashboard to show health metrics (or whatever you want)
+- Build custom tablular reports of your data
+- And more!
 
 ## Contributing
 
