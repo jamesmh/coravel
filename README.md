@@ -28,7 +28,7 @@ It makes advanced application features accessible and easy-to-use by giving you 
 ## Used By
 
 <p align="center">
-  <a href="https://www.builtwithdot.net">
+  <a href="https://builtwithdot.net">
     <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
   </a>
 </p>
