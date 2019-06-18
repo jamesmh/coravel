@@ -31,6 +31,14 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         IScheduleInterval Schedule<T>() where T : IInvocable;
 
         /// <summary>
+        /// Schedule an Invocable job.
+        /// invocableType param must be assignable from and implement the IInvocable interface.
+        /// </summary>
+        /// <param name="invocableType"></param>
+        /// <returns></returns>
+        IScheduleInterval ScheduleInvocableType(Type invocableType);
+
+        /// <summary>
         /// Begin scheduling further tasks on an isolated worker.
         /// A worker will run all scheduled tasks on it's own separate thread.
         /// </summary>
