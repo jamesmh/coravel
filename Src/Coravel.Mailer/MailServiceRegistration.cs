@@ -60,8 +60,8 @@ namespace Coravel
                 renderer,
                 config.GetValue<string>("Coravel:Mail:Host", ""),
                 config.GetValue<int>("Coravel:Mail:Port", 0),
-                config.GetValue<string>("Coravel:Mail:Username", ""),
-                config.GetValue<string>("Coravel:Mail:Password", ""),
+                config.GetValue<string>("Coravel:Mail:Username", null),
+                config.GetValue<string>("Coravel:Mail:Password", null),
                 globalFrom,
                 certCallback
             );
