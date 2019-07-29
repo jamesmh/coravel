@@ -64,6 +64,12 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
+P.s. If needed, you may schedule an invocable using reflection:
+
+```csharp
+scheduler.Schedule(typeof(GrabDataFromApiAndPutInDBInvocable))
+```
+
 ### Async Tasks
 
 Coravel will also handle scheduling `async` methods by using the `ScheduleAsync()` method.
