@@ -76,17 +76,5 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration When(Func<Task<bool>> predicate);
-
-        // TODO: Figure out how to launch long running tasks NOT using Task.Run() - since this causes the task to get killed
-        //       on app stopping. Try to launch it as a new IHostedService that runs this task once?
-        //
-        // /// <summary>
-        // /// When your task is CPU intensive and/or takes an extended period to complete (~ longer than a few minutes),
-        // /// Coravel will fire this task using a separate thread.
-        // /// 
-        // /// Note that using many long running tasks will eat up your app's available threads.
-        // /// </summary>
-        // /// <returns></returns>
-        // IScheduledEventConfiguration AsLongRunning();
     }
 }
