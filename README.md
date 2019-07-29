@@ -28,7 +28,7 @@ It makes advanced application features accessible and easy-to-use by giving you 
 ## Used By
 
 <p align="center">
-  <a href="https://www.builtwithdot.net">
+  <a href="https://builtwithdot.net">
     <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
   </a>
 </p>
@@ -40,6 +40,12 @@ _Want to be featured? Open an issue!_
 
 [You can view the official docs here.](https://docs.coravel.net/Installation/)
 
+## Contributing
+
+If you are fixing a typo in one file / place - issue a PR.
+
+Otherwise, please **always** create an issue first ;)
+
 ## Coravel Pro
 
 If you are building a .NET Core application with EF Core, then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET Core app a breeze!
@@ -49,9 +55,3 @@ If you are building a .NET Core application with EF Core, then you might want to
 - Easily configure a dashboard to show health metrics (or whatever you want)
 - Build custom tablular reports of your data
 - And more!
-
-## Contributing
-
-If you are fixing a typo in one file / place - issue a PR.
-
-Otherwise, please **always** create an issue first ;)

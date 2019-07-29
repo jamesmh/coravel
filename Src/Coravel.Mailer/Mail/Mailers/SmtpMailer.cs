@@ -84,7 +84,10 @@ namespace Coravel.Mailer.Mail.Mailers
                 client.ServerCertificateValidationCallback = this._certCallback;
                 await client.ConnectAsync(this._host, this._port).ConfigureAwait(false);
 
-                if (this._username != null && this._password != null)
+                bool useAuth = string.IsNullOrEmpty(this._username)
+                    && string.IsNullOrEmpty(this._password);
+
+                if (useAuth)
                 {
                     await client.AuthenticateAsync(this._username, this._password);
                 }
