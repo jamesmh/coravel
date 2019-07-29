@@ -29,5 +29,21 @@ namespace UnitTests.Mail
 
             Assert.Equal("<html></html>", message);
         }
+
+
+        [Theory]
+        [InlineData("", "", false)]
+        [InlineData(null, "", false)]
+        [InlineData("", null, false)]
+        [InlineData(null, null, false)]
+        [InlineData("username", null, true)]
+        [InlineData(null, "password", true)]
+        [InlineData("username", "password", true)]
+        public void SmtpMailerUseAuthentication(string username, string password, bool shouldUseAuthentication)
+        {
+            var renderer = RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build());
+            var mailer = new SmtpMailer(renderer, "dummy", 1, username, password);
+            Assert.Equal(mailer.UseSMTPAuthentication(), shouldUseAuthentication);
+        }
     }
 }
