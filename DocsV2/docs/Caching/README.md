@@ -89,6 +89,26 @@ It's `Forever`, but async:
 await this._cache.ForeverAsync("BigDataCacheKey", BigDataLocalFunctionAsync);
 ```
 
+### HasAsync
+
+Will tell you if a (non-expired) key exists in the cache.
+
+```csharp
+bool hasKey = await this._cache.HasAsync("BigDataCacheKey");
+```
+
+### GetAsync
+
+Get a specific value from the cache. 
+
+:::warning
+Will throw an exception if the key has expired. This is usually used in conjunction with `HasAsync`.
+:::
+
+```csharp
+bool hasKey = await this._cache.HasAsync("BigDataCacheKey");
+```
+
 ### Flush
 
 `Flush` will clear your entire cache.

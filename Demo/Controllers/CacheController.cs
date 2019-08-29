@@ -52,7 +52,25 @@ namespace Demo.Controllers
             };
 
             var content = Content(
-                await this._cache.RememberAsync("bigdataasync", bigData, TimeSpan.FromSeconds(10))
+                await this._cache.RememberAsync("bigdataasync", bigData, TimeSpan.FromSeconds(30))
+            );
+
+            return content;
+        }
+
+        public async Task<IActionResult> HasAsync()
+        {
+            var content = Content(
+                (await this._cache.HasAsync("bigdataasync")).ToString()
+            );
+
+            return content;
+        }
+
+        public async Task<IActionResult> GetAsync()
+        {
+            var content = Content(
+                (await this._cache.GetAsync<string>("bigdataasync"))
             );
 
             return content;

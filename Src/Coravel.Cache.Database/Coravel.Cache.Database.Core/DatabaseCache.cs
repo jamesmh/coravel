@@ -54,6 +54,46 @@ namespace Coravel.Cache.Database.Core
             return await this.TryCachingEntryAsync(key, cacheFunc, DateTimeOffset.UtcNow.Add(expiresIn));
         }
 
+                public async Task<bool> HasAsync(string key)
+        {
+            return await this._connectionString.AsDBTransactionAsync<bool>(this._driver, async (con, trans) =>
+            {
+                var cachedItem = await GetCacheItemAsync(key, con, trans);
+                
+                if(cachedItem == null)
+                {
+                    return false;
+                }
+
+                if(cachedItem.IsExpired())
+                {
+                    return false;
+                }
+
+                return true;
+            });
+        }
+
+        public async Task<TResult> GetAsync<TResult>(string key)
+        {
+            return await this._connectionString.AsDBTransactionAsync<TResult>(this._driver, async (con, trans) =>
+            {
+                var cachedItem = await GetCacheItemAsync(key, con, trans);
+
+                if(cachedItem == null)
+                {
+                    throw new NoCacheEntryException("Cache entry for key \"" + key + "\" does not exist.");
+                }
+
+                if(cachedItem.IsExpired())
+                {
+                    throw new NoCacheEntryException("Cache entry for key \"" + key + "\" has expired.");
+                }
+
+                return JsonConvert.DeserializeObject<TResult>(cachedItem.Value);
+            });
+        }
+
         private T TryCachingEntry<T>(string key, Func<T> cacheFunc, DateTimeOffset expiresAt)
         {
             return this._connectionString.AsDBTransaction<T>(this._driver, (con, trans) =>
@@ -96,7 +136,7 @@ namespace Coravel.Cache.Database.Core
 
                 if (cachedItem != null)
                 {
-                    bool expired = cachedItem.ExpiresAt.UtcDateTime <= DateTimeOffset.UtcNow;
+                    bool expired = cachedItem.IsExpired();
                     if (expired)
                     {
                         await con.ExecuteAsync(this._driver.DeleteByKeySQL, new { Key = key }, trans);                        
@@ -144,6 +184,6 @@ namespace Coravel.Cache.Database.Core
                 con.Execute(this._driver.CreateTablesSQL, null, trans);
                 _TableCreated = true;
             });
-        }       
+        }
     }
 }
