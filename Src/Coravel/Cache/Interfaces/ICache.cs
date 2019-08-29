@@ -12,6 +12,10 @@ namespace Coravel.Cache.Interfaces
         TResult Forever<TResult>(string key, Func<TResult> cacheFunc);
         Task<TResult> ForeverAsync<TResult>(string key, Func<Task<TResult>> cacheFunc);
 
+        Task<bool> HasAsync(string key);
+
+        Task<TResult> GetAsync<TResult>(string key);
+
         void Flush();
 
         void Forget(string key);

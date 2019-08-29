@@ -40,7 +40,7 @@ namespace TestMvcApp.Controllers
             {
                 wasCached = true;
                 await Task.Delay(0);
-                 return "Was Cached:";
+                return "Was Cached:";
             };
 
             var content = Content(
@@ -89,12 +89,31 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
-        public IActionResult Forget(string key) {
+        public async Task<IActionResult> HasAsync()
+        {
+            var content = Content(
+                (await this._cache.HasAsync("Remember")).ToString()
+            );
+            return content;
+        }
+
+        public async Task<IActionResult> GetAsync()
+        {
+            var content = Content(
+                (await this._cache.GetAsync<string>("Remember")).ToString()
+            );
+            content.Content += "True";
+            return content;
+        }
+
+        public IActionResult Forget(string key)
+        {
             this._cache.Forget(key);
             return Ok();
         }
 
-        public IActionResult Flush() {
+        public IActionResult Flush()
+        {
             this._cache.Flush();
             return Ok();
         }

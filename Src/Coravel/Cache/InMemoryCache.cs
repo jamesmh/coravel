@@ -63,6 +63,22 @@ namespace Coravel.Cache
             });
         }
 
+        public Task<bool> HasAsync(string key)
+        {
+            bool hasValue = this._cache.TryGetValue(key, out var dummy);
+            return Task.FromResult(hasValue);
+        }
+
+        public Task<TResult> GetAsync<TResult>(string key)
+        {
+            bool hasValue = this._cache.TryGetValue(key, out TResult value);
+            if(!hasValue)
+            {
+                throw new NoCacheEntryException("Cache entry for key \"" + key + "\" does not exist.");
+            }
+            return Task.FromResult(value);
+        }
+
         public void Forget(string key)
         {
             this._cache.Remove(key);
