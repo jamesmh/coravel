@@ -106,7 +106,7 @@ Will throw an exception if the key has expired. This is usually used in conjunct
 :::
 
 ```csharp
-bool hasKey = await this._cache.HasAsync("BigDataCacheKey");
+string bigDataValue = await this._cache.GetAsync<string>("BigDataCacheKey");
 ```
 
 ### Flush
