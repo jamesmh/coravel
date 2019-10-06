@@ -14,14 +14,7 @@
 
 Coravel helps developers get their .NET Core applications up-and-running fast without compromising code quality. 
 
-It makes advanced application features accessible and easy-to-use by giving you a simple, expressive and straightforward syntax. Features include: 
-
-- Task Scheduling
-- Queuing
-- Caching
-- Mailing
-- Event Broadcasting
-- And more!
+It makes advanced application features accessible and easy-to-use by giving you a simple, expressive and straightforward syntax.
 
 ![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
 
@@ -35,6 +28,43 @@ It makes advanced application features accessible and easy-to-use by giving you 
 <p align="center"><b>BuiltWithDot.Net</b></p>
 
 _Want to be featured? Open an issue!_
+
+## Features:
+
+### Task Scheduling
+
+Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run.
+
+With Coravel, you can setup all your scheduled tasks in one place using a simple, elegant, fluent syntax - in code!
+
+### Queuing
+
+Coravel gives you a zero-configuration queue that runs in-memory.
+
+This is useful to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish!
+
+### Caching
+
+Coravel provides you with an easy to use API for caching in your .NET Core applications.
+
+By default, it uses an in-memory cache, but also has database drivers for more robust scenarios!
+
+### Event Broadcasting
+
+Coravel's event broadcasting allows listeners to subscribe to events that occur in your .NET Core application.
+
+This is a great way to build maintainable applications who's parts are loosely coupled!
+
+### Mailing
+
+E-mails are not as easy as they should be. Luckily for you, Coravel solves this by offering:
+
+- Built-in e-mail friendly razor templates
+- Simple and flexible mailing API
+- Render your e-mails for visual testing
+- Drivers supporting SMTP, local log file or BYOM ("bring your own mailer") driver
+- Quick and simple configuration via `appsettings.json`
+- And more!
 
 ## Official Documention
 
