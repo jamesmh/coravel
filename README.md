@@ -39,9 +39,7 @@ With Coravel, you can setup all your scheduled tasks in one place using a simple
 
 ### Queuing
 
-Coravel gives you a zero-configuration queue that runs in-memory.
-
-This is useful to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish!
+Coravel gives you a zero-configuration queue that runs in-memory to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish!
 
 ### Caching
 
@@ -51,9 +49,7 @@ By default, it uses an in-memory cache, but also has database drivers for more r
 
 ### Event Broadcasting
 
-Coravel's event broadcasting allows listeners to subscribe to events that occur in your .NET Core application.
-
-This is a great way to build maintainable applications who's parts are loosely coupled!
+Coravel's event broadcasting helps you to build maintainable applications who's parts are loosely coupled!
 
 ### Mailing
 
@@ -69,6 +65,12 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 ## Official Documention
 
 [You can view the official docs here.](https://docs.coravel.net/Installation/)
+
+## Samples
+
+- [Using Coravel With EF Core](https://github.com/jamesmh/coravel/tree/master/Samples/EFCoreSample)
+- [.NET Core Worker Service using Coravel's Task Scheduling (3.0+)](https://github.com/jamesmh/coravel/tree/master/Samples/WorkerServiceScheduler)
+- [.NET Core Console app using the Host Builder and Coravel (< 3.0)](https://github.com/jamesmh/coravel/tree/master/Samples/HostBuilderConsole)
 
 ## Contributing
 
