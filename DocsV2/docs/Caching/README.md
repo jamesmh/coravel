@@ -80,7 +80,7 @@ async SomeType BigDataLocalFunctionAsync()
 await this._cache.RememberAsync("BigDataCacheKey", BigDataLocalFunctionAsync, TimeSpan.FromMinutes(10));
 ```
 
-_[Note about cache invalidation applies.](#Multiple-Calls-Does-Not-Invalidate-Cache)_
+_Note about cache invalidation from `Remember` applies._
 
 ### Forever
 
@@ -90,7 +90,7 @@ Similar to `Remember`, but your item will be cached indefinitely.
 this._cache.Forever("BigDataCacheKey", BigDataLocalFunction);
 ```
 
-_[Note about cache invalidation applies.](#Multiple-Calls-Does-Not-Invalidate-Cache)_
+_Note about cache invalidation from `Remember` applies._
 
 ### ForeverAsync
 
@@ -100,7 +100,7 @@ It's `Forever`, but async:
 await this._cache.ForeverAsync("BigDataCacheKey", BigDataLocalFunctionAsync);
 ```
 
-_[Note about cache invalidation applies.](#Multiple-Calls-Does-Not-Invalidate-Cache)_
+_Note about cache invalidation from `Remember` applies._
 
 ### HasAsync
 
