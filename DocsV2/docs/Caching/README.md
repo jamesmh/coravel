@@ -61,7 +61,7 @@ this._cache.Remember("BigDataCacheKey", BigDataLocalFunction, TimeSpan.FromMinut
 
 ::: tip
 
-## Multiple Calls Does Not Invalidate Cache
+**Multiple Calls Does Not Invalidate Cache**
 
 Calling `Remember` a second (or more times) will _not_ invalidate the cache. The cached items will last as long as your code specified when using this method. This enables the usage of the method to be simple and easy.
 :::
