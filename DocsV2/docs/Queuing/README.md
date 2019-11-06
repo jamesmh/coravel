@@ -51,6 +51,35 @@ Queuing invocables is the recommended way to use Coravel's queuing.
 To learn about creating and using invocables [see here.](/Invocables/)
 :::
 
+### Queuing An Invocable That Can Be Cancelled
+
+Sometimes you have a long-running invocable that needs the ability to be cancelled (manually by you or by the system when the application is being shutdown).
+
+By using `QueueCancellableInvocable` you can build invocables that will have this ability!
+
+First, add the `Coravel.Queuing.Interfaces.ICancellableTask` to your invocable and implement the property:
+
+`CancellationToken Token { get; set; }`
+
+Now, in your `Invoke` method, you will have access to check if the token has been cancelled.
+
+For example:
+
+```csharp
+while(!this.Token.IsCancellationRequested)
+{
+  await ProcessNextRecord();
+}
+```
+
+:::warning
+Coravel will automatically dispose all `TokenCancellationSource` objects associated with invocables that have been consumed by the queue. 
+
+Also, when the application is being shutdown, Coravel will also cancel _all_ tokens to make sure your invocables can stop their work and allow a graceful shutdown.
+
+If you are manually cancelling/handling tokens then you'll have to code around the potential for your tokens to have been cancelled and even disposed.
+:::
+
 ### Queuing An Async Task
 
 Use the `QueueAsyncTask` to queue up an async task:

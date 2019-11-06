@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Queuing.Interfaces;
@@ -58,8 +56,7 @@ namespace Coravel.Queuing.HostedService
             this._shutdown.Cancel();
             this._timer?.Change(Timeout.Infinite, 0);
 
-            // Consume the queue one last time.
-            await this._queue.ConsumeQueueAsync();
+            await this._queue.ConsumeQueueOnShutdown();
 
             // If a previous queue consummation is still running (due to some long-running queued task)
             // we don't want to shutdown while it is still running.
