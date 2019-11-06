@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Coravel.Invocable;
@@ -27,6 +28,12 @@ namespace Coravel.Queuing.Interfaces
         /// </summary>
         /// <typeparam name="T"></typeparam>
         void QueueInvocable<T>() where T : IInvocable;
+
+        /// <summary>
+        /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask;
 
         /// <summary>
         /// Queue an event to be broadcasted.

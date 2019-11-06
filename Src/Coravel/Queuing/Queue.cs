@@ -17,6 +17,7 @@ namespace Coravel.Queuing
     public class Queue : IQueue, IQueueConfiguration
     {
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
+        private ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
         private Action<Exception> _errorHandler;
         private ILogger<IQueue> _logger;
         private IServiceScopeFactory _scopeFactory;
@@ -36,25 +37,17 @@ namespace Coravel.Queuing
 
         public void QueueInvocable<T>() where T : IInvocable
         {
-            this._tasks.Enqueue(
-                new ActionOrAsyncFunc(async () =>
-                {
-                    Type invocableType = typeof(T);
-                    // This allows us to scope the scheduled IInvocable object
-                    /// and allow DI to inject it's dependencies.
-                    using (var scope = this._scopeFactory.CreateScope())
-                    {
-                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
-                        {
-                            await invocable.Invoke();
-                        }
-                        else {
-                            this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
-                            throw new Exception($"Queued invocable {invocableType} is not a registered service.");
-                        }
-                    }
-                })
-            );
+            EnqueueInvocable<T>();
+        }
+
+        public CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
+        {
+            var tokenSource = new CancellationTokenSource();
+            var func = this.EnqueueInvocable<T>((invocable) => {
+                (invocable as ICancellableTask).Token = tokenSource.Token;
+            });
+            this._tokens.TryAdd(func.Guid, tokenSource);
+            return tokenSource;
         }
 
         public void QueueAsyncTask(Func<Task> asyncTask)
@@ -87,9 +80,14 @@ namespace Coravel.Queuing
 
                 await this.TryDispatchEvent(new QueueConsumationStarted());
 
+                var dequeuedTasks = this.DequeueAllTasks();
+                var dequeuedGuids = dequeuedTasks.Select(t => t.Guid);
+
                 await Task.WhenAll(
-                    this.DequeueAllTasks().Select(t => InvokeTask(t))
+                    dequeuedTasks.Select(t => InvokeTask(t))
                 );
+
+                this.CleanTokens(dequeuedGuids);
 
                 await this.TryDispatchEvent(new QueueConsumationEnded());
             }
@@ -99,7 +97,63 @@ namespace Coravel.Queuing
             }
         }
 
+        public async Task ConsumeQueueOnShutdown() 
+        {
+            this.CancelAllTokens();
+            await this.ConsumeQueueAsync();
+        }
         public bool IsRunning => this._queueIsConsumming > 0;
+
+        private void CancelAllTokens()
+        {
+            foreach(var kv in this._tokens.AsEnumerable())
+            {
+                if(!kv.Value.IsCancellationRequested)
+                {
+                    kv.Value.Cancel();
+                }
+            }
+        }
+
+        private ActionOrAsyncFunc EnqueueInvocable<T>(Action<IInvocable> beforeInvoked = null) where T : IInvocable
+        {
+            var func = new ActionOrAsyncFunc(async () =>
+                {
+                    Type invocableType = typeof(T);
+                    // This allows us to scope the scheduled IInvocable object
+                    /// and allow DI to inject it's dependencies.
+                    using (var scope = this._scopeFactory.CreateScope())
+                    {
+                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
+                        {                            
+                            if(beforeInvoked != null)
+                            {                            
+                                beforeInvoked(invocable);
+                            }
+
+                            await invocable.Invoke();
+                        }
+                        else
+                        {
+                            this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
+                            throw new Exception($"Queued invocable {invocableType} is not a registered service.");
+                        }
+                    }
+                });
+            this._tasks.Enqueue(func);
+            return func;
+        }
+
+        private void CleanTokens(IEnumerable<Guid> guidsForTokensToClean)
+        {
+            foreach(var guid in guidsForTokensToClean)
+            {
+                if(this._tokens.TryRemove(guid, out var token))
+                {
+                    token.Dispose();
+                }
+            }                   
+        }
 
         private IEnumerable<ActionOrAsyncFunc> DequeueAllTasks()
         {
