@@ -31,6 +31,15 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         IScheduleInterval Schedule<T>() where T : IInvocable;
 
         /// <summary>
+        /// Schedule an Invocable job with a list of parameters.
+        /// Provided parameters are injected into the constructor of the invocable, remaining dependecies are resolved with DI.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameters">Parameters to inject.</param>
+        /// <returns></returns>
+        IScheduleInterval ScheduleWithParams<T>(params object[] parameters) where T : IInvocable;
+
+        /// <summary>
         /// Schedule an Invocable job.
         /// invocableType param must be assignable from and implement the IInvocable interface.
         /// </summary>
