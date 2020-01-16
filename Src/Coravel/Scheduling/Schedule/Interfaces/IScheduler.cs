@@ -32,7 +32,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
 
         /// <summary>
         /// Schedule an Invocable job with a list of parameters.
-        /// Provided parameters are injected into the constructor of the invocable while remaining dependecies are resolved from DI.
+        /// Parameters are injected into the constructor of the Invocable while remaining dependencies are resolved from DI.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="parameters">Parameters to inject.</param>
