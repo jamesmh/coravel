@@ -104,6 +104,48 @@ scheduler.Schedule(
 .EveryMinute();
 ```
 
+### Scheduling With Additional Parameters
+
+The `ScheduleWithParams<T>()` method allows you to schedule the same invocable multiple times with different parameters.
+
+```c#
+private class BackupDatabaseTableInvocable : IInvocable
+{
+    private DbContext _dbContext;
+    private string _tableName;
+
+    public BackupDatabaseTableInvocable(DbContext dbContext, string tableName)
+    {
+        this._dbContext = dbContext; // Injected via DI.
+        this._tableName = tableName; // injected via schedule configuration (see next code block).
+    }
+
+    public Task Invoke()
+    {
+        // Do the logic.
+    }
+}
+```
+
+You might configure it like this:
+
+```c#
+// In this case, backing up products 
+// more often than users is required.
+
+scheduler
+    .ScheduleWithParams<BackupDatabaseTableInvocable>("[dbo].[Users]")
+    .Daily();
+
+scheduler
+    .ScheduleWithParams<BackupDatabaseTableInvocable>("[dbo].[Products]")
+    .EveryHour();
+```
+
+:::warning
+Ensure that any parameters to be injected via dependency injection are listed first in your constructor arguments.
+:::
+
 ## Intervals
 
 After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
