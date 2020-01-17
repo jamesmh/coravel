@@ -108,7 +108,7 @@ scheduler.Schedule(
 
 The `ScheduleWithParams<T>()` method allows you to schedule the same invocable multiple times with different parameters.
 
-```c#
+```csharp
 private class BackupDatabaseTableInvocable : IInvocable
 {
     private DbContext _dbContext;
@@ -129,7 +129,7 @@ private class BackupDatabaseTableInvocable : IInvocable
 
 You might configure it like this:
 
-```c#
+```csharp
 // In this case, backing up products 
 // more often than users is required.
 
