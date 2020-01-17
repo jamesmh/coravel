@@ -19,6 +19,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private Func<Task<bool>> _whenPredicate;
         private bool _isScheduledPerSecond = false;
         private int? _secondsInterval = null;
+        private object[] _constructorParameters = null;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -35,6 +36,13 @@ namespace Coravel.Scheduling.Schedule.Event
         public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
             return WithInvocableType(scopeFactory, typeof(T));
+        }
+
+        internal static ScheduledEvent WithInvocableAndParams<T>(IServiceScopeFactory scopeFactory, object[] parameters) where T : IInvocable
+        {
+            var scheduledEvent = WithInvocableType(scopeFactory, typeof(T));
+            scheduledEvent._constructorParameters = parameters;
+            return scheduledEvent;
         }
 
         public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
@@ -89,12 +97,22 @@ namespace Coravel.Scheduling.Schedule.Event
                 /// and allow DI to inject it's dependencies.
                 using (var scope = this._scopeFactory.CreateScope())
                 {
-                    if (scope.ServiceProvider.GetRequiredService(this._invocableType) is IInvocable invocable)
+                    if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
                     {
                         await invocable.Invoke();
                     }
                 }
             }
+        }
+
+        private object GetInvocable(IServiceProvider serviceProvider)
+        {
+            if (this._constructorParameters?.Length > 0)
+            {
+                return ActivatorUtilities.CreateInstance(serviceProvider, this._invocableType, this._constructorParameters);
+            }
+
+            return serviceProvider.GetRequiredService(this._invocableType);
         }
 
         public bool ShouldPreventOverlapping() => this._preventOverlapping;

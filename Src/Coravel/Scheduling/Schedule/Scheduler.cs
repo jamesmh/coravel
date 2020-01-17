@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Coravel.Queuing;
-using Coravel.Queuing.Interfaces;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using Coravel.Scheduling.Schedule.Helpers;
 using Coravel.Scheduling.Schedule.Event;
 using Microsoft.Extensions.DependencyInjection;
 using Coravel.Invocable;
@@ -55,6 +52,13 @@ namespace Coravel.Scheduling.Schedule
         public IScheduleInterval Schedule<T>() where T : IInvocable
         {
             ScheduledEvent scheduled = ScheduledEvent.WithInvocable<T>(this._scopeFactory);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), new ScheduledTask(this._currentWorkerName, scheduled));
+            return scheduled;
+        }
+
+        public IScheduleInterval ScheduleWithParams<T>(params object[] parameters) where T : IInvocable
+        {
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocableAndParams<T>(this._scopeFactory, parameters);
             this._tasks.TryAdd(Guid.NewGuid().ToString(), new ScheduledTask(this._currentWorkerName, scheduled));
             return scheduled;
         }
@@ -185,12 +189,12 @@ namespace Coravel.Scheduling.Schedule
                 // If this task is scheduled as a cron based task (should only be checked if due per min)
                 // but the time is not at the minute mark, we won't include those tasks to be checked if due.
                 // The second based schedules are always checked.
-                if(taskIsPerMinuteCronTask && timerIsNotAtMinute)
+                if (taskIsPerMinuteCronTask && timerIsNotAtMinute)
                 {
                     appendTask = false;
                 }
 
-                if(appendTask)
+                if (appendTask)
                 {
                     scheduledWorkers.Add(keyValue.Value);
                 }
