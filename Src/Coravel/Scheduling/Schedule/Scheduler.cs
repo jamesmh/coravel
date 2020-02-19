@@ -25,6 +25,7 @@ namespace Coravel.Scheduling.Schedule
         private int _schedulerIterationsActiveCount = 0;
         private IDispatcher _dispatcher;
         private string _currentWorkerName;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -33,6 +34,15 @@ namespace Coravel.Scheduling.Schedule
             this._scopeFactory = scopeFactory;
             this._dispatcher = dispatcher;
             this._currentWorkerName = "_default";
+            this._cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        public void CancelAllCancellableTasks()
+        {
+            if(!_cancellationTokenSource.IsCancellationRequested)
+            {
+                this._cancellationTokenSource.Cancel();
+            }
         }
 
         public IScheduleInterval Schedule(Action actionToSchedule)
@@ -130,7 +140,7 @@ namespace Coravel.Scheduling.Schedule
                 async Task Invoke()
                 {
                     this._logger?.LogInformation("Scheduled task started...");
-                    await scheduledEvent.InvokeScheduledEvent();
+                    await scheduledEvent.InvokeScheduledEvent(this._cancellationTokenSource.Token);
                     this._logger?.LogInformation("Scheduled task finished...");
                 };
 
