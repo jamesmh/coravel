@@ -53,7 +53,7 @@ namespace CoravelUnitTests.Scheduling.Invocable
             public async Task Invoke()
             {
                 await Task.Delay(500, CancellationToken)
-                    .ContinueWith(task => _func(), TaskContinuationOptions.OnlyOnCanceled);
+                    .ContinueWith(task => this._func(), TaskContinuationOptions.OnlyOnCanceled);
             }
         }
     }
