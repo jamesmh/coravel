@@ -52,12 +52,8 @@ namespace CoravelUnitTests.Scheduling.Invocable
 
             public async Task Invoke()
             {
-                while(!CancellationToken.IsCancellationRequested)
-                {
-                    await Task.Delay(50);
-                }
-
-                _func();
+                await Task.Delay(500, CancellationToken)
+                    .ContinueWith(task => _func(), TaskContinuationOptions.OnlyOnCanceled);
             }
         }
     }
