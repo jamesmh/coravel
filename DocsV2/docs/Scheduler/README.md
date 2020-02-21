@@ -67,7 +67,7 @@ What a simple, terse and expressive syntax! Easy Peasy!
 :::tip Cancel Long-Running Invocables
 Make your long-running invocable classes implement `Coravel.Invocable.ICancellableInvocable` to enable it to gracefully abort on application shutdown.
 
-The interface include a property `CancellationToken` that you can check using `CancellationToken.IsCancellationRequested`, etc.
+The interface includes a property `CancellationToken` that you can check using `CancellationToken.IsCancellationRequested`, etc.
 :::
 
 ### Async Tasks
