@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Coravel.Scheduling.Schedule.Cron;
@@ -80,7 +81,7 @@ namespace Coravel.Scheduling.Schedule.Event
             }
         }
 
-        public async Task InvokeScheduledEvent()
+        public async Task InvokeScheduledEvent(CancellationToken cancellationToken)
         {
             if (await WhenPredicateFails())
             {
@@ -99,6 +100,11 @@ namespace Coravel.Scheduling.Schedule.Event
                 {
                     if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
                     {
+                        if (invocable is ICancellableInvocable cancellableInvokable)
+                        {
+                            cancellableInvokable.CancellationToken = cancellationToken;
+                        }
+
                         await invocable.Invoke();
                     }
                 }

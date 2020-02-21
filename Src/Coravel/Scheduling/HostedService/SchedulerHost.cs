@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -43,6 +41,8 @@ namespace Coravel.Scheduling.HostedService
         {
             this._schedulerEnabled = false; // Prevents changing the timer from firing scheduled tasks.
             this._timer?.Change(Timeout.Infinite, 0);
+
+            this._scheduler.CancelAllCancellableTasks();
 
             // If a previous scheduler execution is still running (due to some long-running scheduled task[s])
             // we don't want to shutdown while they are still running.
