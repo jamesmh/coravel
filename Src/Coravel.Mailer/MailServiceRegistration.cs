@@ -5,7 +5,6 @@ using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Mailers;
 using Coravel.Mailer.Mail.Renderers;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
