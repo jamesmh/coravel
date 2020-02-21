@@ -18,15 +18,18 @@ namespace CoravelUnitTests.Scheduling.Invocable
         [Fact]
         public async Task TestInvocableCanBeCancelled()
         {
-            bool invocableCancelled = false;
+            int cancelledCount = 0;
 
             var services = new ServiceCollection();
-            services.AddScoped<Action>(p => () => invocableCancelled = true);
-            services.AddScoped<CancellableInvocable>();
+            services.AddTransient<Action>(p => () => Interlocked.Increment(ref cancelledCount));
+            services.AddTransient<CancellableInvocable>();
             var provider = services.BuildServiceProvider();
 
             var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
-            
+
+            scheduler.Schedule<CancellableInvocable>().EveryMinute();
+            scheduler.Schedule<CancellableInvocable>().EveryMinute();
+            scheduler.Schedule<CancellableInvocable>().EveryMinute();
             scheduler.Schedule<CancellableInvocable>().EveryMinute();
 
             var schedulerTask = scheduler.RunAtAsync(new DateTime(2019, 1, 1));
@@ -35,7 +38,7 @@ namespace CoravelUnitTests.Scheduling.Invocable
 
             await schedulerTask;
 
-            Assert.True(invocableCancelled);
+            Assert.True(cancelledCount == 4);
         }
 
 

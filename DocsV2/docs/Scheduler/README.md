@@ -64,11 +64,11 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
-P.s. If needed, you may schedule an invocable using reflection:
+:::tip Cancel Long-Running Invocables
+Make your long-running invocable classes implement `Coravel.Invocable.ICancellableInvocable` to enable it to gracefully abort on application shutdown.
 
-```csharp
-scheduler.Schedule(typeof(GrabDataFromApiAndPutInDBInvocable))
-```
+The interface include a property `CancellationToken` that you can check using `CancellationToken.IsCancellationRequested`, etc.
+:::
 
 ### Async Tasks
 
