@@ -31,10 +31,26 @@ namespace Coravel.Queuing.Interfaces
 
         /// <summary>
         /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
+        /// Parameters are injected into the constructor of the Invocable while remaining dependencies are resolved from DI.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameters">Parameters to inject.</param>
+        void QueueInvocableWithParams<T>(params object[] parameters) where T : IInvocable;
+        
+        /// <summary>
+        /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask;
 
+        /// <summary>
+        /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
+        /// Parameters are injected into the constructor of the Invocable while remaining dependencies are resolved from DI.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parameters">Parameters to inject.</param>
+        CancellationTokenSource QueueCancellableInvocableWithParams<T>(params object[] parameters) where T : IInvocable, ICancellableTask;
+        
         /// <summary>
         /// Queue an event to be broadcasted.
         /// </summary>

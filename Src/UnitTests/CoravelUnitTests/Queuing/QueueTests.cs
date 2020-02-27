@@ -77,6 +77,40 @@ namespace UnitTests.Queuing
 
             Assert.Equal(1, successfulTasks);
         }
+        
+        [Fact]
+        public async Task TestQueueInvocableWithParamsRuns()
+        {
+            int successfulTasks = 0;
+            var services = new ServiceCollection();
+            services.AddScoped<Action>(p => () => successfulTasks++);
+            services.AddScoped<TestInvocableWithParams>();
+            var provider = services.BuildServiceProvider();
+
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            queue.QueueInvocableWithParams<TestInvocableWithParams>("stringParam", 1);
+            await queue.ConsumeQueueAsync();
+            await queue.ConsumeQueueAsync();
+
+            Assert.Equal(1, successfulTasks);
+        }
+        
+        [Fact]
+        public async Task TestQueueInvocableWithMissingParamsDoesNotRun()
+        {
+            int successfulTasks = 0;
+            var services = new ServiceCollection();
+            services.AddScoped<Action>(p => () => successfulTasks++);
+            services.AddScoped<TestInvocableWithParams>();
+            var provider = services.BuildServiceProvider();
+
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            queue.QueueInvocableWithParams<TestInvocableWithParams>("stringParam");
+            await queue.ConsumeQueueAsync();
+            await queue.ConsumeQueueAsync();
+
+            Assert.Equal(0, successfulTasks);
+        }
 
         [Fact]
         public async Task<int> DoesNotThrowOnNullDispatcher()
@@ -131,6 +165,22 @@ namespace UnitTests.Queuing
             private Action _func;
 
             public TestInvocable(Action func) => this._func = func;
+            public Task Invoke()
+            {
+                this._func();
+                return Task.CompletedTask;
+            }
+        }
+
+        private class TestInvocableWithParams : IInvocable
+        {
+            private Action _func;
+
+            public TestInvocableWithParams(Action func, string stringParam, int intParam)
+            {
+                this._func = func;
+            }
+
             public Task Invoke()
             {
                 this._func();

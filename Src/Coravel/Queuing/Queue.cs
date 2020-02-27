@@ -37,15 +37,26 @@ namespace Coravel.Queuing
 
         public void QueueInvocable<T>() where T : IInvocable
         {
-            EnqueueInvocable<T>();
+            QueueInvocableWithParams<T>();
+        }
+
+        public void QueueInvocableWithParams<T>(params object[] parameters) where T: IInvocable
+        {
+            EnqueueInvocable<T>(null, parameters);
         }
 
         public CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
         {
+            return QueueCancellableInvocableWithParams<T>();
+        }
+        
+        public CancellationTokenSource QueueCancellableInvocableWithParams<T>(params object[] parameters) 
+            where T : IInvocable, ICancellableTask
+        {
             var tokenSource = new CancellationTokenSource();
             var func = this.EnqueueInvocable<T>((invocable) => {
                 (invocable as ICancellableTask).Token = tokenSource.Token;
-            });
+            }, parameters);
             this._tokens.TryAdd(func.Guid, tokenSource);
             return tokenSource;
         }
@@ -115,7 +126,8 @@ namespace Coravel.Queuing
             }
         }
 
-        private ActionOrAsyncFunc EnqueueInvocable<T>(Action<IInvocable> beforeInvoked = null) where T : IInvocable
+        private ActionOrAsyncFunc EnqueueInvocable<T>(Action<IInvocable> beforeInvoked, 
+            params object[] parameters) where T : IInvocable
         {
             var func = new ActionOrAsyncFunc(async () =>
                 {
@@ -124,7 +136,7 @@ namespace Coravel.Queuing
                     /// and allow DI to inject it's dependencies.
                     using (var scope = this._scopeFactory.CreateScope())
                     {
-                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
+                        if (GetInvocable(scope.ServiceProvider, invocableType, parameters) is IInvocable invocable)
                         {                            
                             if(beforeInvoked != null)
                             {                            
@@ -142,6 +154,16 @@ namespace Coravel.Queuing
                 });
             this._tasks.Enqueue(func);
             return func;
+        }
+        
+        private object GetInvocable(IServiceProvider serviceProvider, Type invocableType, params object[] parameters)
+        {
+            if (parameters?.Length > 0)
+            {
+                return ActivatorUtilities.CreateInstance(serviceProvider, invocableType, parameters);
+            }
+
+            return serviceProvider.GetRequiredService(invocableType);
         }
 
         private void CleanTokens(IEnumerable<Guid> guidsForTokensToClean)
