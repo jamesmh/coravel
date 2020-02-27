@@ -10,8 +10,9 @@ namespace Coravel.Scheduling.Schedule.Cron
         private string _days;
         private string _months;
         private string _weekdays;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
-        public CronExpression(string expression)
+        public CronExpression(string expression, TimeZoneInfo timeZoneInfo = null)
         {
             var values = expression.Split(' ');
             if (values.Length != 5)
@@ -24,6 +25,7 @@ namespace Coravel.Scheduling.Schedule.Cron
             this._days = values[2];
             this._months = values[3];
             this._weekdays = values[4];
+            this._timeZoneInfo = timeZoneInfo;
         }
 
         public CronExpression AppendWeekDay(DayOfWeek day)
@@ -44,6 +46,11 @@ namespace Coravel.Scheduling.Schedule.Cron
 
         public bool IsDue(DateTime time)
         {
+            if (_timeZoneInfo != null)
+            {
+                time = TimeZoneInfo.ConvertTimeFromUtc(time, _timeZoneInfo);
+            }
+            
             return this.IsMinuteDue(time)
                 && this.IsHoursDue(time)
                 && this.IsDayDue(time)
@@ -53,6 +60,11 @@ namespace Coravel.Scheduling.Schedule.Cron
 
         public bool IsWeekDayDue(DateTime time)
         {
+            if (_timeZoneInfo != null)
+            {
+                time = TimeZoneInfo.ConvertTimeFromUtc(time, _timeZoneInfo);
+            }
+            
             return new CronExpressionPart(this._weekdays, 7).IsDue((int)time.DayOfWeek);
         }
 

@@ -194,9 +194,9 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration Cron(string cronExpression)
+        public IScheduledEventConfiguration Cron(string cronExpression, TimeZoneInfo timeZoneInfo = null)
         {
-            this._expression = new CronExpression(cronExpression);
+            this._expression = new CronExpression(cronExpression, timeZoneInfo);
             return this;
         }
 

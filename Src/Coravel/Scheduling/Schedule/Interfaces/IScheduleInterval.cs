@@ -1,3 +1,5 @@
+using System;
+
 namespace Coravel.Scheduling.Schedule.Interfaces
 {
     /// <summary>
@@ -98,8 +100,9 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// For example "* * * * 0" would schedule an event to run every minute on Sundays.
         /// </summary>
         /// <param name="cronExpression"></param>
+        /// <param name="timeZoneInfo"></param>
         /// <returns></returns>
-        IScheduledEventConfiguration Cron(string cronExpression);
+        IScheduledEventConfiguration Cron(string cronExpression, TimeZoneInfo timeZoneInfo = null);
 
         /// <summary>
         /// Scheduled task runs once a second.
