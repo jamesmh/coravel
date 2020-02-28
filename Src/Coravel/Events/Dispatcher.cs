@@ -71,6 +71,11 @@ namespace Coravel.Events
                 }
             }
         }
+
+        public void RegisterListenersForEvent(Type eventType, List<Type> listenerTypes)
+        {
+            this._events.Add(eventType, listenerTypes);
+        }
     }
 
     /// <summary>
