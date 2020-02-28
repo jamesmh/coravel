@@ -45,10 +45,10 @@ namespace Coravel.Scheduling.Schedule.Cron
         public bool IsDue(DateTime time)
         {
             return this.IsMinuteDue(time)
-                   && this.IsHoursDue(time)
-                   && this.IsDayDue(time)
-                   && this.IsMonthDue(time)
-                   && this.IsWeekDayDue(time);
+                && this.IsHoursDue(time)
+                && this.IsDayDue(time)
+                && this.IsMonthDue(time)
+                && this.IsWeekDayDue(time);
         }
 
         public bool IsWeekDayDue(DateTime time)
