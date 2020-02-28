@@ -53,8 +53,7 @@ namespace UnitTests.Scheduling.IntervalTests
 
             scheduler.Schedule(() => taskRan = true).CronWithTimeZone(cronExpression, GetTimeZone(offset));
 
-            await scheduler.RunAtAsync(
-                DateTime.ParseExact(dateString, "M/d/yyyy h:mm tt", CultureInfo.InvariantCulture));
+            await scheduler.RunAtAsync(DateTime.ParseExact(dateString, "M/d/yyyy h:mm tt", CultureInfo.InvariantCulture));
 
             Assert.Equal(shouldRun, taskRan);
         }

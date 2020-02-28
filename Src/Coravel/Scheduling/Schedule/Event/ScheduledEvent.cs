@@ -200,7 +200,6 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-
         public IScheduledEventConfiguration CronWithTimeZone(string cronExpression, TimeZoneInfo timeZoneInfo)
         {
             this._expression = new TimeZonedCronExpression(new CronExpression(cronExpression), timeZoneInfo);
