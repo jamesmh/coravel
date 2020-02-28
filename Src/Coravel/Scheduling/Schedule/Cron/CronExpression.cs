@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
-    public class CronExpression
+    public class CronExpression : ICronExpression
     {
         private string _minutes;
         private string _hours;
@@ -12,7 +12,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         private string _weekdays;
         private readonly TimeZoneInfo _timeZoneInfo;
 
-        public CronExpression(string expression, TimeZoneInfo timeZoneInfo = null)
+        public CronExpression(string expression)
         {
             var values = expression.Split(' ');
             if (values.Length != 5)
@@ -25,10 +25,9 @@ namespace Coravel.Scheduling.Schedule.Cron
             this._days = values[2];
             this._months = values[3];
             this._weekdays = values[4];
-            this._timeZoneInfo = timeZoneInfo;
         }
 
-        public CronExpression AppendWeekDay(DayOfWeek day)
+        public ICronExpression AppendWeekDay(DayOfWeek day)
         {
             int intDay = (int)day;
 
@@ -50,12 +49,12 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 time = TimeZoneInfo.ConvertTimeFromUtc(time, _timeZoneInfo);
             }
-            
+
             return this.IsMinuteDue(time)
-                && this.IsHoursDue(time)
-                && this.IsDayDue(time)
-                && this.IsMonthDue(time)
-                && this.IsWeekDayDue(time);
+                   && this.IsHoursDue(time)
+                   && this.IsDayDue(time)
+                   && this.IsMonthDue(time)
+                   && this.IsWeekDayDue(time);
         }
 
         public bool IsWeekDayDue(DateTime time)
@@ -64,8 +63,8 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 time = TimeZoneInfo.ConvertTimeFromUtc(time, _timeZoneInfo);
             }
-            
-            return new CronExpressionPart(this._weekdays, 7).IsDue((int)time.DayOfWeek);
+
+            return IsWeekDayDueInternal(time);
         }
 
         private bool IsMinuteDue(DateTime time)
@@ -86,6 +85,11 @@ namespace Coravel.Scheduling.Schedule.Cron
         private bool IsMonthDue(DateTime time)
         {
             return new CronExpressionPart(this._months, 12).IsDue(time.Month);
+        }
+
+        private bool IsWeekDayDueInternal(DateTime time)
+        {
+            return new CronExpressionPart(this._weekdays, 7).IsDue((int)time.DayOfWeek);
         }
     }
 }

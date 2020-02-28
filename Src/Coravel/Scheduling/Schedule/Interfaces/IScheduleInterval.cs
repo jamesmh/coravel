@@ -100,9 +100,24 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// For example "* * * * 0" would schedule an event to run every minute on Sundays.
         /// </summary>
         /// <param name="cronExpression"></param>
+        /// <returns></returns>
+        IScheduledEventConfiguration Cron(string cronExpression);
+
+        /// <summary>
+        /// Schedule an event from a basic cron expression.
+        /// Supported values for expression parts are:
+        /// - "*"
+        /// - "5"
+        /// - "5,6,7"
+        /// - "5-10"
+        /// - "*/10"
+        /// 
+        /// For example "* * * * 0" would schedule an event to run every minute on Sundays.
+        /// </summary>
+        /// <param name="cronExpression"></param>
         /// <param name="timeZoneInfo"></param>
         /// <returns></returns>
-        IScheduledEventConfiguration Cron(string cronExpression, TimeZoneInfo timeZoneInfo = null);
+        IScheduledEventConfiguration CronWithTimeZone(string cronExpression, TimeZoneInfo timeZoneInfo);
 
         /// <summary>
         /// Scheduled task runs once a second.

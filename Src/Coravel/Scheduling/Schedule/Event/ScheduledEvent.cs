@@ -11,7 +11,7 @@ namespace Coravel.Scheduling.Schedule.Event
 {
     public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration
     {
-        private CronExpression _expression;
+        private ICronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;
         private Type _invocableType = null;
         private bool _preventOverlapping = false;
@@ -194,9 +194,16 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
-        public IScheduledEventConfiguration Cron(string cronExpression, TimeZoneInfo timeZoneInfo = null)
+        public IScheduledEventConfiguration Cron(string cronExpression)
         {
-            this._expression = new CronExpression(cronExpression, timeZoneInfo);
+            this._expression = new CronExpression(cronExpression);
+            return this;
+        }
+
+
+        public IScheduledEventConfiguration CronWithTimeZone(string cronExpression, TimeZoneInfo timeZoneInfo)
+        {
+            this._expression = new TimeZonedCronExpression(new CronExpression(cronExpression), timeZoneInfo);
             return this;
         }
 
