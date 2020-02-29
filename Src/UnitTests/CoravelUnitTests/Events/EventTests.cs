@@ -170,12 +170,9 @@ namespace UnitTests.Events
         }
 
         [Fact]
-        public void TestNotAddingAssemblyEventsShouldThrow()
+        public void TestUseCoravelEventsWithoutAssemblyEventsShouldThrow()
         {
-            int listenersExecutedCount = 0;
-
             var services = new ServiceCollection() as IServiceCollection;
-            services.AddTransient<Action>(p => () => listenersExecutedCount++);
             services.AddEvents();
 
             var provider = services.BuildServiceProvider() as IServiceProvider;
