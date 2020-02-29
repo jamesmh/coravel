@@ -10,8 +10,6 @@ namespace Coravel
 {
     public static class EventServiceRegistration
     {
-        private static Dictionary<Type, List<Type>> eventTypes;
-
         public static IServiceCollection AddEvents(this IServiceCollection services)
         {
             services.AddSingleton<IDispatcher>(p =>
@@ -34,45 +32,24 @@ namespace Coravel
             return services.AddEventsFromAssembly(typeof(T).Assembly);
         }
 
-        public static IServiceCollection AddEventsFromAssemblies(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection AddEventsFromAssembly(this IServiceCollection services, Assembly assembly)
         {
-            foreach (var assembly in assemblies)
-            {
-                services.AddEventsFromAssembly(assembly);
-            }
+            var assemblyScanner = new AssemblyScanner(services);
+            services.AddSingleton(assemblyScanner);
+
+            assemblyScanner.AddEventsFromAssembly(assembly);
 
             return services;
         }
 
-        public static IServiceCollection AddEventsFromAssembly(this IServiceCollection services, Assembly assembly)
+        public static IServiceCollection AddEventsFromAssemblies(this IServiceCollection services, params Assembly[] assemblies)
         {
-            if(eventTypes == null)
+            var assemblyScanner = new AssemblyScanner(services);
+            services.AddSingleton(assemblyScanner);
+
+            foreach (var assembly in assemblies)
             {
-                eventTypes = new Dictionary<Type, List<Type>>();
-                services.AddEvents();
-            }
-
-            foreach (var type in assembly.GetTypes())
-            {
-                var listenerInterfaces = type
-                    .GetInterfaces()
-                    .Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IListener<>));
-
-                foreach (var listenerInterface in listenerInterfaces)
-                {
-                    // IListener always has a single generic argument
-                    var eventTypeArgument = listenerInterface.GetGenericArguments().First();
-
-                    if (!eventTypes.TryGetValue(eventTypeArgument, out var listeners))
-                    {
-                        services.AddTransient(typeof(IEvent), eventTypeArgument);
-                        listeners = new List<Type>();
-                        eventTypes.Add(eventTypeArgument, listeners);
-                    }
-
-                    listeners.Add(type);
-                    services.AddTransient(type);
-                }
+                assemblyScanner.AddEventsFromAssembly(assembly);
             }
 
             return services;
@@ -86,12 +63,13 @@ namespace Coravel
                 throw new Exception("Coravel.ConfigureEvents has been mis-configured.");
             }
 
-            if (eventTypes == null)
+            var assemblyScanner = provider.GetService<AssemblyScanner>();
+            if (assemblyScanner == null)
             {
                 throw new Exception("Coravel.AddEventsFromAssembly has not been called.");
             }
 
-            foreach (var eventListenerPair in eventTypes)
+            foreach (var eventListenerPair in assemblyScanner.GetAllEvents())
             {
                 ((Dispatcher)dispatcher).RegisterListenersForEvent(eventListenerPair.Key, eventListenerPair.Value);
             }
