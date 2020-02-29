@@ -49,6 +49,7 @@ namespace Coravel
             if(eventTypes == null)
             {
                 eventTypes = new Dictionary<Type, List<Type>>();
+                services.AddEvents();
             }
 
             foreach (var type in assembly.GetTypes())
