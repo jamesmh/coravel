@@ -25,9 +25,6 @@ namespace UnitTests.Events
             services.AddTransient<TestListenerForEvent2>();
             var provider = services.BuildServiceProvider();
 
-            var isListenerType = typeof(TestListener1ForEvent1).GetInterfaces().Any(x => x.IsGenericType && x == typeof(IListener<>));
-
-
             var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
 
             dispatcher.Register<TestEvent1>()
