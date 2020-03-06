@@ -84,7 +84,7 @@ namespace Coravel.Queuing
                 var dequeuedGuids = dequeuedTasks.Select(t => t.Guid);
 
                 await Task.WhenAll(
-                    dequeuedTasks.Select(t => InvokeTask(t))
+                    dequeuedTasks.Select(InvokeTask).ToArray()
                 );
 
                 this.CleanTokens(dequeuedGuids);
@@ -155,13 +155,15 @@ namespace Coravel.Queuing
             }                   
         }
 
-        private IEnumerable<ActionOrAsyncFunc> DequeueAllTasks()
+        private List<ActionOrAsyncFunc> DequeueAllTasks()
         {
+            List<ActionOrAsyncFunc> dequeuedTasks = new List<ActionOrAsyncFunc>(this._tasks.Count());
             while (this._tasks.TryPeek(out var dummy))
             {
-                this._tasks.TryDequeue(out var queuedTask);
-                yield return queuedTask;
+                this._tasks.TryDequeue(out var dequeuedTask);
+                dequeuedTasks.Add(dequeuedTask);
             }
+            return dequeuedTasks;
         }
 
         private async Task TryDispatchEvent(IEvent toBroadcast)
