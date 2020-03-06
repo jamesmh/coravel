@@ -1,8 +1,7 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Queuing;
-using Coravel.Queuing.Interfaces;
-using Coravel.Scheduling.Schedule;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
 
@@ -46,6 +45,39 @@ namespace UnitTests.Queuing
 
             Assert.True(errorsHandled == 2);
             Assert.True(successfulTasks == 4);
+        }
+
+        [Fact]
+        public async Task TryEnqueueWhileRunnningLongRunningAsync()
+        {
+            int successfulTasks = 0;
+            var semaphor = new SemaphoreSlim(0);
+
+            Queue queue = new Queue(null, new DispatcherStub());
+
+            queue.QueueAsyncTask(async () =>
+            {
+                await Task.Delay(10);
+                successfulTasks++;
+                semaphor.Release();
+            });
+
+            var runningTask = queue.ConsumeQueueAsync();
+
+            await Task.Delay(10); // Make sure the queue is consuming.
+
+            // Try to enqueue new tasks while queue is currently consuming.
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+            queue.QueueTask(() => successfulTasks++);
+
+            // Wait until the queue is done processing.
+            await runningTask;
+            // Start processing any tasks that were enqeued while it was running previously.
+            await queue.ConsumeQueueAsync();
+
+            Assert.True(successfulTasks == 5);
         }
     }
 }
