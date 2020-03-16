@@ -1,14 +1,14 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Internal;
-using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.ObjectPool;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Coravel.Mailer.Mail.Renderers
 {
@@ -30,34 +30,42 @@ namespace Coravel.Mailer.Mail.Renderers
         public static RazorRenderer MakeInstance(IConfiguration config)
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IConfiguration>(config);
-            var applicationEnvironment = PlatformServices.Default.Application;
-            services.AddSingleton(applicationEnvironment);
+            string appDirectoryPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string appDirectory2 = Directory.GetCurrentDirectory();
 
-            var appDirectory = Directory.GetCurrentDirectory();
+            Console.WriteLine(appDirectoryPath);
+            Console.WriteLine(appDirectory2);
 
-            var environment = new HostingEnvironment
+            var webhostBuilder = new WebHostBuilder().ConfigureServices(services =>
             {
-                ApplicationName = Assembly.GetEntryAssembly().GetName().Name
-            };
-            services.AddSingleton<IHostingEnvironment>(environment);
+                services.AddSingleton(config);
 
-            services.Configure<RazorViewEngineOptions>(options =>
+                services.Configure<MvcRazorRuntimeCompilationOptions>(options =>
+                {
+                    options.FileProviders.Clear();
+                    options.FileProviders.Add(new PhysicalFileProvider(appDirectoryPath));
+                });
+
+                services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+
+                var diagnosticSource = new DiagnosticListener("Microsoft.AspNetCore");
+                services.AddSingleton(diagnosticSource);
+                services.AddSingleton<DiagnosticSource>(diagnosticSource);
+
+                services.AddLogging();
+                services.AddMvc();
+                services.AddSingleton<RazorRenderer>();
+            }).UseStartup<DummyStartup>().Build();
+
+            return webhostBuilder.Services.GetRequiredService<RazorRenderer>();
+        }
+
+        public class DummyStartup
+        {
+            public void Configure()
             {
-                options.FileProviders.Clear();
-                options.FileProviders.Add(new PhysicalFileProvider(appDirectory));
-            });
 
-            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-
-            var diagnosticSource = new DiagnosticListener("Microsoft.AspNetCore");
-            services.AddSingleton<DiagnosticSource>(diagnosticSource);
-
-            services.AddLogging();
-            services.AddMvc();
-            services.AddSingleton<RazorRenderer>();
-            var provider = services.BuildServiceProvider();
-            return provider.GetRequiredService<RazorRenderer>();
+            }
         }
     }
 }
