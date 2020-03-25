@@ -1,1 +1,0 @@
-[Visit official docs for Queuing](https://docs.coravel.net/Queuing/)

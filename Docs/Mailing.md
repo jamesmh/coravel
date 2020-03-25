@@ -1,1 +1,0 @@
-[Visit official docs for Mailing](https://docs.coravel.net/Mailing/)

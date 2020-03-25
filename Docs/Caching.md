@@ -1,1 +1,0 @@
-[Visit official docs for Caching](https://docs.coravel.net/Caching/)

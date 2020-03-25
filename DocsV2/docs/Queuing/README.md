@@ -34,7 +34,8 @@ Inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into you
 IQueue _queue;
 
 public HomeController(IQueue queue) {
-    this._queue = queue;}
+    this._queue = queue;
+}
 ```
 
 ### Queuing Invocables

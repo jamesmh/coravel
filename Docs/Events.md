@@ -1,1 +1,0 @@
-[Visit official docs for Event Broadcasting](https://docs.coravel.net/Events/)

@@ -1,1 +1,0 @@
-[Visit official docs for Coravel CLI](https://docs.coravel.net/Cli/)

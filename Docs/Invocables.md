@@ -1,1 +1,0 @@
-[Visit official docs for Invocables](https://docs.coravel.net/Invocables/)

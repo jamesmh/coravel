@@ -1,1 +1,0 @@
-[Visit official docs for Scheduler](https://docs.coravel.net/Scheduler/)
