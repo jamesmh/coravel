@@ -10,9 +10,9 @@ meta:
 
 [[toc]]
 
-Invocables are classes that some of Coravel's features leverage to make your code much easier to write, compose and maintain.
+Invocables represent a self-contained job within your system. 
 
-Each invocable represents a self-contained job within your system. 
+Coravel leverages them to make your code much easier to write, compose and maintain.
 
 Here's an example of scheduling an invocable:
 
@@ -21,10 +21,6 @@ Here's an example of scheduling an invocable:
       .DailyAtHour(01)
       .Weekday();
 ```
-
-:::tip
-It's handy to know about invocables up-front so you can use Coravel's features as intended!
-:::
 
 ## Creating An Invocable
 
