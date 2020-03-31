@@ -54,13 +54,13 @@ To learn about creating and using invocables [see here.](/Invocables/)
 
 ### Queue An Invocable With A Payload
 
-Many times you want to queue some type of background job but also pass in some parameters or a payload to the job.
+Many times you want to queue a background job and also supply a payload/parameters.
 
 For example, you might have an invocable `SendWelcomeUserEmailInvocable`. However, you need supply a specific user's information so that the correct user will receive the email!
 
 First, add the `IInvocableWithPayload<T>` interface to your existing invocable:
 
-```c#
+```csharp
                                                          // This one 👇
 public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<UserModel>
 {
@@ -78,7 +78,7 @@ public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<U
 
 To queue this invocable, use the `QueueInvocableWithPayload` method:
 
-```c#
+```csharp
 var userModel = await _userService.Get(userId);
 queue.QueueInvocableWithPayload<SendWelcomeUserEmailInvocable, UserModel>(userModel);
 ```
