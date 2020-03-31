@@ -65,7 +65,7 @@ First, add the `IInvocableWithPayload<T>` interface to your existing invocable:
 public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<UserModel>
 {
   // This is the implementation of the interface 👇
-  public UserModel Parameters { get; set; }
+  public UserModel Payload { get; set; }
 
   /* Constructor, etc. */
 

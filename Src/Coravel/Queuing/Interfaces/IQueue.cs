@@ -41,6 +41,6 @@ namespace Coravel.Queuing.Interfaces
         /// <typeparam name="TEvent"></typeparam>
         void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
 
-        void QueueInvocableWithPayload<T, TParams>(TParams parameters) where T : IInvocable, IInvocableWithPayload<TParams>;
+        void QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>;
     }
 }

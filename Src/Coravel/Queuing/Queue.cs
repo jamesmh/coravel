@@ -40,11 +40,11 @@ namespace Coravel.Queuing
             EnqueueInvocable<T>();
         }
 
-        public void QueueInvocableWithPayload<T, TParams>(TParams parameters) where T : IInvocable, IInvocableWithPayload<TParams>
+        public void QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
             this.EnqueueInvocable<T>(invocable => {
                 IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
-                invocableWithParams.Parameters = parameters;
+                invocableWithParams.Payload = payload;
             });
         }
 

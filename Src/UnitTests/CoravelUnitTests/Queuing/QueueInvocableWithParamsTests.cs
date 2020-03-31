@@ -67,21 +67,21 @@ namespace CoravelUnitTests.Queuing
 
     public class TestInvocable : IInvocable, IInvocableWithPayload<TestParams>
     {
-        public TestParams Parameters { get; set; }
+        public TestParams Payload { get; set; }
         private Action<string, int> _func;
 
         public TestInvocable(Action<string, int> func) => this._func = func;
 
         public Task Invoke()
         {
-            this._func(this.Parameters.Name, this.Parameters.Number);
+            this._func(this.Payload.Name, this.Payload.Number);
             return Task.CompletedTask;
         }
     }
 
         public class TestInvocableWithStringParam : IInvocable, IInvocableWithPayload<string>
     {
-        public string Parameters { get; set; }
+        public string Payload { get; set; }
 
         private Action<string> _func;
 
@@ -89,7 +89,7 @@ namespace CoravelUnitTests.Queuing
 
         public Task Invoke()
         {
-            this._func(this.Parameters);
+            this._func(this.Payload);
             return Task.CompletedTask;
         }
     }
