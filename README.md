@@ -7,7 +7,7 @@
 
 
 <div align="center">
-  <img src="./Docs/img/logo.png" style="max-width:200px" />
+  <img src="./img/logo.png" style="max-width:200px" />
 </div>
 
 # Coravel
@@ -16,13 +16,13 @@ Coravel helps developers get their .NET Core applications up-and-running fast wi
 
 It makes advanced application features accessible and easy-to-use by giving you a simple, expressive and straightforward syntax.
 
-![Coravel Scheduler](./Docs/img/scheduledailyreport.png)
+![Coravel Scheduler](./img/scheduledailyreport.png)
 
 ## Used By
 
 <p align="center">
   <a href="https://builtwithdot.net">
-    <img src="./Docs/img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
+    <img src="./img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
   </a>
 </p>
 <p align="center"><b>BuiltWithDot.Net</b></p>
