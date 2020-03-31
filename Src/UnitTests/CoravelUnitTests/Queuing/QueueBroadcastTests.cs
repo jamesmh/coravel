@@ -3,13 +3,9 @@ using System.Threading.Tasks;
 using Coravel;
 using Coravel.Events;
 using Coravel.Events.Interfaces;
-using Coravel.Invocable;
 using Coravel.Queuing;
-using Coravel.Queuing.Broadcast;
-using Coravel.Queuing.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using UnitTests.Events.EventsAndListeners;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
 namespace UnitTests.Queuing

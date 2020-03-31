@@ -52,6 +52,39 @@ Queuing invocables is the recommended way to use Coravel's queuing.
 To learn about creating and using invocables [see here.](/Invocables/)
 :::
 
+### Queue An Invocable With A Payload
+
+Many times you want to queue some type of background job but also pass in some parameters or a payload to the job.
+
+For example, you might have an invocable `SendWelcomeUserEmailInvocable`. However, you need supply a specific user's information so that the correct user will receive the email!
+
+First, add the `IInvocableWithPayload<T>` interface to your existing invocable:
+
+```c#
+                                                         // This one 👇
+public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<UserModel>
+{
+  // This is the implementation of the interface 👇
+  public UserModel Parameters { get; set; }
+
+  /* Constructor, etc. */
+
+  public async Task Invoke()
+  {
+    // `this.Parameters` will be available to use now.
+  }
+}
+```
+
+To queue this invocable, use the `QueueInvocableWithPayload` method:
+
+```c#
+var userModel = await _userService.Get(userId);
+queue.QueueInvocableWithPayload<SendWelcomeUserEmailInvocable, UserModel>(userModel);
+```
+
+Now your job will be queued to execute in the background with the specific data it needs to run!
+
 ### Queuing An Async Task
 
 Use the `QueueAsyncTask` to queue up an async task:
