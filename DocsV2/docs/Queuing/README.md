@@ -71,7 +71,7 @@ public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<U
 
   public async Task Invoke()
   {
-    // `this.Parameters` will be available to use now.
+    // `this.Payload` will be available to use now.
   }
 }
 ```
