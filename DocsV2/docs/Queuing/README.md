@@ -60,7 +60,7 @@ For example, you might have an invocable `SendWelcomeUserEmailInvocable`. Howeve
 
 First, add the `IInvocableWithPayload<T>` interface to your existing invocable:
 
-```c#
+```csharp
                                                          // This one 👇
 public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<UserModel>
 {
@@ -78,7 +78,7 @@ public class SendWelcomeUserEmailInvocable : IInvocable, IInvocableWithPayload<U
 
 To queue this invocable, use the `QueueInvocableWithPayload` method:
 
-```c#
+```csharp
 var userModel = await _userService.Get(userId);
 queue.QueueInvocableWithPayload<SendWelcomeUserEmailInvocable, UserModel>(userModel);
 ```
