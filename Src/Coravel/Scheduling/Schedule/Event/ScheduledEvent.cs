@@ -5,6 +5,7 @@ using Coravel.Invocable;
 using Coravel.Scheduling.Schedule.Cron;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Tasks;
+using Coravel.Scheduling.Schedule.Zoned;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule.Event
@@ -21,6 +22,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private bool _isScheduledPerSecond = false;
         private int? _secondsInterval = null;
         private object[] _constructorParameters = null;
+        private ZonedTime _zonedTime = ZonedTime.AsUTC();
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -57,15 +59,17 @@ namespace Coravel.Scheduling.Schedule.Event
         private static readonly int _OneMinuteAsSeconds = 60;
         public bool IsDue(DateTime utcNow)
         {
+            var zonedNow = this._zonedTime.Convert(utcNow);
+
             if (this._isScheduledPerSecond)
             {
-                var isSecondDue = this.IsSecondsDue(utcNow);
-                var isWeekDayDue = this._expression.IsWeekDayDue(utcNow);
+                var isSecondDue = this.IsSecondsDue(zonedNow);
+                var isWeekDayDue = this._expression.IsWeekDayDue(zonedNow);
                 return isSecondDue && isWeekDayDue;
             }
             else
             {
-                return this._expression.IsDue(utcNow);
+                return this._expression.IsDue(zonedNow);
             }
         }
 
@@ -334,6 +338,12 @@ namespace Coravel.Scheduling.Schedule.Event
             this._secondsInterval = seconds;
             this._isScheduledPerSecond = true;
             this._expression = new CronExpression("* * * * *");
+            return this;
+        }
+
+        public IScheduledEventConfiguration Zoned(TimeZoneInfo timeZoneInfo)
+        {
+            this._zonedTime = new ZonedTime(timeZoneInfo);
             return this;
         }
     }

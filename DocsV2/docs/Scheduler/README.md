@@ -172,7 +172,7 @@ After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule int
 | `Cron("* * * * *")`               | Run the task using a Cron expression |
 
 :::tip
-Please note that the scheduler is using UTC time.
+The scheduler uses UTC time by default.
 :::
 
 ### Cron Expressions
@@ -206,6 +206,25 @@ Be careful since you could do something like `.Weekend().Weekday()`, which means
 :::
 
 ## Extras
+
+### Zoned Schedules
+
+Sometimes you do want to run your schedules against a particular time zone. For these scenarios, use the `Zoned` method:
+
+```csharp
+scheduler
+    .Schedule<SendWelcomeUserEmail>()
+    .DailyAt(13, 30)
+    .Zoned(TimeZoneInfo.Local);
+```
+
+You'll need to supply an instance of `TimeZoneInfo` to the `Zoned` method. 
+
+:::warning
+Creating a valid `TimeZoneInfo` differs depending on whether you're on Windows, Linux or OSX. 
+
+Also, you may get unexpected behavior due to daylight savings time. Be careful!
+:::
 
 ### Custom Boolean Constraint
 
