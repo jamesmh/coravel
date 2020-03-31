@@ -54,7 +54,7 @@ To learn about creating and using invocables [see here.](/Invocables/)
 
 ### Queue An Invocable With A Payload
 
-Many times you want to queue some type of background job but also pass in some parameters or a payload to the job.
+Many times you want to queue a background job and also supply a payload/parameters.
 
 For example, you might have an invocable `SendWelcomeUserEmailInvocable`. However, you need supply a specific user's information so that the correct user will receive the email!
 
