@@ -76,5 +76,6 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration When(Func<Task<bool>> predicate);
+        IScheduledEventConfiguration Zoned(TimeZoneInfo timeZoneInfo);
     }
 }
