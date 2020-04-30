@@ -39,7 +39,7 @@ namespace Coravel.Scheduling.Schedule
 
         public void CancelAllCancellableTasks()
         {
-            if(!_cancellationTokenSource.IsCancellationRequested)
+            if (!_cancellationTokenSource.IsCancellationRequested)
             {
                 this._cancellationTokenSource.Cancel();
             }
@@ -131,6 +131,16 @@ namespace Coravel.Scheduling.Schedule
             return true; // Nothing to remove - was successful.
         }
 
+        private async Task InvokeEventWithLoggerScope(ScheduledEvent scheduledEvent)
+        {
+            var eventInvocableTypeName = scheduledEvent.InvocableType()?.Name;
+            using (_logger != null && eventInvocableTypeName != null ?
+                _logger.BeginScope($"Invocable Type : {eventInvocableTypeName}") : null)
+            {
+                await InvokeEvent(scheduledEvent);
+            }
+        }
+
         private async Task InvokeEvent(ScheduledEvent scheduledEvent)
         {
             try
@@ -139,9 +149,9 @@ namespace Coravel.Scheduling.Schedule
 
                 async Task Invoke()
                 {
-                    this._logger?.LogInformation("Scheduled task started...");
+                    this._logger?.LogDebug("Scheduled task started...");
                     await scheduledEvent.InvokeScheduledEvent(this._cancellationTokenSource.Token);
-                    this._logger?.LogInformation("Scheduled task finished...");
+                    this._logger?.LogDebug("Scheduled task finished...");
                 };
 
                 if (scheduledEvent.ShouldPreventOverlapping())
@@ -169,12 +179,9 @@ namespace Coravel.Scheduling.Schedule
             {
                 await this.TryDispatchEvent(new ScheduledEventFailed(scheduledEvent, e));
 
-                this._logger?.LogError("A scheduled task threw an Exception: " + e.Message);
+                this._logger?.LogError(e, "A scheduled task threw an Exception: ");
 
-                if (this._errorHandler != null)
-                {
-                    this._errorHandler(e);
-                }
+                this._errorHandler?.Invoke(e);
             }
         }
 
@@ -227,7 +234,7 @@ namespace Coravel.Scheduling.Schedule
                     foreach (var workerTask in workerWithTasks)
                     {
                         var scheduledEvent = workerTask.ScheduledEvent;
-                        await InvokeEvent(scheduledEvent);
+                        await InvokeEventWithLoggerScope(scheduledEvent);
                     }
                 });
             });
