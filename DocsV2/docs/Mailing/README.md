@@ -329,7 +329,7 @@ Assigned a value to `ViewBag.Preview` will display as a "preview" on some email 
 
 ### Footer
 
-The footer will grab values from your `appsettings.json` file, if they are set (see [Global Template Configuration](Mailing/#global-template-configuration)).
+The footer will grab values from your `appsettings.json` file, if they are set (see [Global Template Configuration](#global-template-configuration)).
 
 ### Template Sections
 
