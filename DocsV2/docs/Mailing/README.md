@@ -361,7 +361,7 @@ Override the entire footer with custom content.
 
 ### Basic
 
-Inject an instance of `Coravel.Mailer.Mail.IMailer` and pass a [Mailable](#mailable-basics) to the `SendAsync` method:
+Inject an instance of `Coravel.Mailer.Mail.IMailer` and pass a [Mailable](#mailables) to the `SendAsync` method:
 
 ```csharp
 private readonly IMailer _mailer;
