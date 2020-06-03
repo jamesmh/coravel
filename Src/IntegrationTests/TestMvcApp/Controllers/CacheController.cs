@@ -1,11 +1,11 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Cache.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace TestMvcApp.Controllers
 {
+    [Route("Cache")]
     public class CacheController : Controller
     {
         private ICache _cache;
@@ -15,6 +15,7 @@ namespace TestMvcApp.Controllers
             this._cache = cache;
         }
 
+        [Route("Remember")]
         public IActionResult Remember()
         {
             bool wasCached = false;
@@ -33,6 +34,7 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("RememberAsync")]
         public async Task<IActionResult> RememberAsync()
         {
             bool wasCached = false;
@@ -52,6 +54,7 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("Forever")]
         public IActionResult Forever()
         {
             bool wasCached = false;
@@ -70,6 +73,7 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("ForeverAsync")]
         public async Task<IActionResult> ForeverAsync()
         {
             bool wasCached = false;
@@ -89,6 +93,7 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("HasAsync")]
         public async Task<IActionResult> HasAsync()
         {
             var content = Content(
@@ -97,6 +102,7 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("GetAsync")]
         public async Task<IActionResult> GetAsync()
         {
             var content = Content(
@@ -106,12 +112,14 @@ namespace TestMvcApp.Controllers
             return content;
         }
 
+        [Route("Forget")]
         public IActionResult Forget(string key)
         {
             this._cache.Forget(key);
             return Ok();
         }
 
+        [Route("Flush")]
         public IActionResult Flush()
         {
             this._cache.Flush();

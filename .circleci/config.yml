@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/coravel
     docker: 
-      - image: microsoft/dotnet:2.2-sdk
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
       - run: 'dotnet build ./Src/All.sln'

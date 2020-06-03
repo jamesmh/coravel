@@ -7,6 +7,7 @@ using TestMvcApp.Models;
 
 namespace TestMvcApp.Controllers
 {
+    [Route("Mail")]
     public class MailController : Controller
     {
         private IMailer _mailer;
@@ -16,6 +17,7 @@ namespace TestMvcApp.Controllers
             this._mailer = mailer;
         }
 
+        [Route("WithHtml")]
         public async Task<IActionResult> WithHtml()
         {
 
@@ -30,6 +32,7 @@ namespace TestMvcApp.Controllers
             return Ok();
         }
 
+        [Route("RenderHtml")]
         public async Task<IActionResult> RenderHtml()
         {
 
@@ -44,6 +47,7 @@ namespace TestMvcApp.Controllers
             return Content(message, "text/html");
         }
 
+        [Route("WithView")]
         public async Task<IActionResult> WithView()
         {
 
@@ -58,6 +62,7 @@ namespace TestMvcApp.Controllers
             return Ok();
         }
 
+        [Route("RenderView")]
         public async Task<IActionResult> RenderView()
         {
 
