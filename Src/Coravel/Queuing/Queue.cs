@@ -19,10 +19,12 @@ namespace Coravel.Queuing
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
         private ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
         private Action<Exception> _errorHandler;
+
         private ILogger<IQueue> _logger;
         private IServiceScopeFactory _scopeFactory;
         private IDispatcher _dispatcher;
         private int _queueIsConsumming = 0;
+        private int _tasksRunningCount = 0;
 
         public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -30,37 +32,43 @@ namespace Coravel.Queuing
             this._dispatcher = dispatcher;
         }
 
-        public void QueueTask(Action task)
+        public Guid QueueTask(Action task)
         {
-            this._tasks.Enqueue(new ActionOrAsyncFunc(task));
+            var job = new ActionOrAsyncFunc(task);
+            this._tasks.Enqueue(job);
+            return job.Guid;
         }
 
-        public void QueueInvocable<T>() where T : IInvocable
+        public Guid QueueInvocable<T>() where T : IInvocable
         {
-            EnqueueInvocable<T>();
+            var job = EnqueueInvocable<T>();
+            return job.Guid;
         }
 
-        public void QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
+        public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
-            this.EnqueueInvocable<T>(invocable => {
+            var job = this.EnqueueInvocable<T>(invocable => {
                 IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
                 invocableWithParams.Payload = payload;
             });
+            return job.Guid;
         }
 
-        public CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
+        public (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
         {
             var tokenSource = new CancellationTokenSource();
             var func = this.EnqueueInvocable<T>((invocable) => {
                 (invocable as ICancellableTask).Token = tokenSource.Token;
             });
             this._tokens.TryAdd(func.Guid, tokenSource);
-            return tokenSource;
+            return (func.Guid, tokenSource);
         }
 
-        public void QueueAsyncTask(Func<Task> asyncTask)
+        public Guid QueueAsyncTask(Func<Task> asyncTask)
         {
-            this._tasks.Enqueue(new ActionOrAsyncFunc(asyncTask));
+            var job = new ActionOrAsyncFunc(asyncTask);
+            this._tasks.Enqueue(job);
+            return job.Guid;
         }
 
         public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
@@ -92,7 +100,9 @@ namespace Coravel.Queuing
                 var dequeuedGuids = dequeuedTasks.Select(t => t.Guid);
 
                 await Task.WhenAll(
-                    dequeuedTasks.Select(InvokeTask).ToArray()
+                    dequeuedTasks
+                        .Select(InvokeTask)
+                        .ToArray()
                 );
 
                 this.CleanTokens(dequeuedGuids);
@@ -111,6 +121,12 @@ namespace Coravel.Queuing
             await this.ConsumeQueueAsync();
         }
         public bool IsRunning => this._queueIsConsumming > 0;
+
+        public QueueMetrics GetMetrics()
+        {
+            int runningCount = this._tasks.Count();
+            return new QueueMetrics(this._tasksRunningCount, runningCount);
+        }
 
         private void CancelAllTokens()
         {
@@ -186,9 +202,15 @@ namespace Coravel.Queuing
         {
             try
             {
+                Interlocked.Increment(ref this._tasksRunningCount);
                 this._logger?.LogInformation("Queued task started...");
+                await this.TryDispatchEvent(new QueueTaskStarted(task.Guid));
+
                 await task.Invoke();
+
+                Interlocked.Decrement(ref this._tasksRunningCount);
                 this._logger?.LogInformation("Queued task finished...");
+                await this.TryDispatchEvent(new QueueTaskCompleted(task.Guid));
             }
             catch (Exception e)
             {

@@ -15,25 +15,25 @@ namespace Coravel.Queuing.Interfaces
         /// Queue a new synchronous task.
         /// </summary>
         /// <param name="workItem">The task to be invoke by Coravel.</param>
-        void QueueTask(Action workItem);
+        Guid QueueTask(Action workItem);
 
         /// <summary>
         /// Queue a new async task.
         /// </summary>
         /// <param name="asyncItem">The async task to be invoke by Coravel.</param>
-        void QueueAsyncTask(Func<Task> asyncItem);
+        Guid QueueAsyncTask(Func<Task> asyncItem);
 
         /// <summary>
         /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        void QueueInvocable<T>() where T : IInvocable;
+        Guid QueueInvocable<T>() where T : IInvocable;
 
         /// <summary>
         /// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        CancellationTokenSource QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask;
+        (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask;
 
         /// <summary>
         /// Queue an event to be broadcasted.
@@ -41,6 +41,15 @@ namespace Coravel.Queuing.Interfaces
         /// <typeparam name="TEvent"></typeparam>
         void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
 
-        void QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>;
+        /// <summary>
+        /// Queue an invocable that will be given the payload supplied to this method.
+        /// </summary>
+        Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>;
+
+        /// <summary>
+        /// View metrics given the queue's current executing state.
+        /// </summary>
+        /// <returns></returns>
+        QueueMetrics GetMetrics();
     }
 }
