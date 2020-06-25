@@ -72,11 +72,9 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 - [.NET Core Worker Service using Coravel's Task Scheduling (3.0+)](https://github.com/jamesmh/coravel/tree/master/Samples/WorkerServiceScheduler)
 - [.NET Core Console app using the Host Builder and Coravel (< 3.0)](https://github.com/jamesmh/coravel/tree/master/Samples/HostBuilderConsole)
 
-## Contributing
+## Support Me
 
-If you are fixing a typo in one file / place - issue a PR.
-
-Otherwise, please **always** create an issue first ;)
+You can support my ongoing work on [BuyMeACoffee](https://www.buymeacoffee.com/gIPOyBD5N).
 
 ## Coravel Pro
 

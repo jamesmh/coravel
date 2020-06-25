@@ -14,7 +14,7 @@ Coravel gives you a zero-configuration queue that runs in-memory.
 
 This is useful to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish.
 
-## Config
+## Setup
 
 In your `Startup` file, in the `ConfigureServices()`:
 
@@ -22,13 +22,7 @@ In your `Startup` file, in the `ConfigureServices()`:
 services.AddQueue();
 ```
 
-That's it!
-
-## Essentials
-
-### Setup
-
-Inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
+The, you inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
 
 ```csharp
 IQueue _queue;
@@ -38,6 +32,7 @@ public HomeController(IQueue queue) {
 }
 ```
 
+## Queuing Jobs
 ### Queuing Invocables
 
 To queue an invocable, use `QueueInvocable`:
@@ -52,7 +47,7 @@ Queuing invocables is the recommended way to use Coravel's queuing.
 To learn about creating and using invocables [see here.](/Invocables/)
 :::
 
-### Queue An Invocable With A Payload
+### Queue With A Payload
 
 Many times you want to queue a background job and also supply a payload/parameters.
 
@@ -85,7 +80,7 @@ queue.QueueInvocableWithPayload<SendWelcomeUserEmailInvocable, UserModel>(userMo
 
 Now your job will be queued to execute in the background with the specific data it needs to run!
 
-### Queuing An Async Task
+### Queuing Async
 
 Use the `QueueAsyncTask` to queue up an async task:
 
@@ -96,7 +91,7 @@ Use the `QueueAsyncTask` to queue up an async task:
  });
 ```
 
-### Queuing A Synchronous Task
+### Queuing Synchronously
 
 You use the `QueueTask()` method to add a  task to the queue.
 
@@ -107,7 +102,7 @@ public IActionResult QueueTask() {
 }
 ```
 
-### Queuing An Event Broadcast
+### Queue Event Broadcast
 
 Event broadcasting is great - but what if your event listeners are doing some heavy / long-winded tasks? You don't want that to happen on the same thread as your HTTP request!
 
@@ -115,79 +110,6 @@ By using `QueueBroadcast`, you can queue an event to be broadcasted in the backg
 
 ```csharp
 this._queue.QueueBroadcast(new OrderCreated(orderId)); 
-```
-
-## Extras
-
-### Metrics
-
-You can gain some insight into how the queue is doing at a given moment in time.
-
-```csharp
-var metrics = _queue.GetMetrics();
-```
-
-Available methods:
-
-- `WaitingCount()`: The number of tasks waiting to be executed.
-- `RunningCount()`: The number of tasks currently running.
-
-### Tracking Task Completion / Progress
-
-Coravel's queue exposes some internal events that you can hook into. Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue.
-
-You can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time.
-
-A basic listener that notifies some user interface of task progress might look something like this:
-
-```csharp
-public class TaskStartedListener : IListener<QueueTaskStarted>
-{
-    // Constructor etc.
-
-    public async Task HandleAsync(QueueTaskStarted broadcasted)
-    {
-        await this._uiNotifications.NotifyTaskStarted(broadcasted.Guid);
-    }
-}
-```
-
-### Global Error Handling
-
-In the `Configure` method of your `Startup` file:
-
-```csharp
-var provider = app.ApplicationServices;
-provider
-    .ConfigureQueue()
-    .OnError(e =>
-    {
-        //... handle the error
-    });
-```
-
-### Adjusting The Consummation Delay
-
-Normally, the queue will consume all of it's queued tasks every 30 seconds.
-You can adjust this delay in the `appsettings.json` file.
-
-```json
-"Coravel": {
-  "Queue": {
-    "ConsummationDelay": 1
-  }
-}
-```
-
-### Logging Executed Task Progress
-
-Coravel uses the `ILogger` .NET Core interface to allow logging task progress:
-
-```csharp
-var provider = app.ApplicationServices;
-provider
-    .ConfigureQueue()
-    .LogQueuedTaskProgress(provider.GetService<ILogger<IQueue>>());
 ```
 
 ### Queuing Cancellable Invocables
@@ -216,9 +138,73 @@ while(!this.Token.IsCancellationRequested)
   await ProcessNextRecord();
 }
 ```
+## Metrics
 
-## On App Closing
+You can gain some insight into how the queue is doing at a given moment in time.
 
-When your app is stopped, Coravel will immediately begin consuming any remaining tasks and wait until they are completed. 
+```csharp
+var metrics = _queue.GetMetrics();
+```
 
-This will keep your app running in the background - as long as the parent process is not killed.
+Available methods:
+
+- `WaitingCount()`: The number of tasks waiting to be executed.
+- `RunningCount()`: The number of tasks currently running.
+
+## Tracking Task Progress
+
+Coravel's queue exposes some internal events that you can hook into. Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue.
+
+You can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time.
+
+A basic listener that notifies some user interface of task progress might look something like this:
+
+```csharp
+public class TaskStartedListener : IListener<QueueTaskStarted>
+{
+    // Constructor etc.
+
+    public async Task HandleAsync(QueueTaskStarted broadcasted)
+    {
+        await this._uiNotifications.NotifyTaskStarted(broadcasted.Guid);
+    }
+}
+```
+
+## Global Error Handling
+
+In the `Configure` method of your `Startup` file:
+
+```csharp
+var provider = app.ApplicationServices;
+provider
+    .ConfigureQueue()
+    .OnError(e =>
+    {
+        //... handle the error
+    });
+```
+
+## Adjusting Consummation Delay
+
+Normally, the queue will consume all of it's queued tasks every 30 seconds.
+You can adjust this delay in the `appsettings.json` file.
+
+```json
+"Coravel": {
+  "Queue": {
+    "ConsummationDelay": 1
+  }
+}
+```
+
+## Logging Task Progress
+
+Coravel uses the `ILogger` .NET Core interface to allow logging task progress:
+
+```csharp
+var provider = app.ApplicationServices;
+provider
+    .ConfigureQueue()
+    .LogQueuedTaskProgress(provider.GetService<ILogger<IQueue>>());
+```
