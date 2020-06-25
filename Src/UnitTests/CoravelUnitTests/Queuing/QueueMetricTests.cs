@@ -1,6 +1,10 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Coravel.Invocable;
 using Coravel.Queuing;
+using Coravel.Queuing.Interfaces;
+using CoravelUnitTests.Queuing;
 using UnitTests.Scheduling.Stubs;
 using Xunit;
 
@@ -41,6 +45,44 @@ namespace UnitTests.Queuing
             Assert.Equal(3, metrics.RunningCount());
 
             await consumingTask;
-        }       
+        }   
+
+        [Fact]
+        public async Task TestAllGuidMethods()
+        {
+            Queue queue = new Queue(null, new DispatcherStub());
+
+            var guid1 = queue.QueueTask(() => Task.Delay(1));
+            var guid2 = queue.QueueAsyncTask(() => Task.Delay(200));
+            var (guid3, _) = queue.QueueCancellableInvocable<DummyInvocable>();
+            var guid4 = queue.QueueInvocable<DummyInvocable>();
+            var guid5 = queue.QueueInvocableWithPayload<DummyInvocable, TestParams>(new TestParams());
+
+            Assert.False(string.IsNullOrWhiteSpace(guid1.ToString()));
+            Assert.False(string.IsNullOrWhiteSpace(guid2.ToString()));
+            Assert.False(string.IsNullOrWhiteSpace(guid3.ToString()));
+            Assert.False(string.IsNullOrWhiteSpace(guid5.ToString()));
+            Assert.False(string.IsNullOrWhiteSpace(guid5.ToString()));
+
+            await queue.ConsumeQueueAsync();
+        }  
+
+        public class TestParams
+        {
+        }
+
+        public class DummyInvocable : IInvocable, ICancellableTask, IInvocableWithPayload<TestParams>
+        {
+            public DummyInvocable() {}
+
+            public TestParams Payload { get; set; }
+
+            CancellationToken ICancellableTask.Token { get; set; }
+
+           public Task Invoke()
+            {
+                return Task.CompletedTask;
+            }
+        }   
     }
 }
