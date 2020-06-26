@@ -153,9 +153,9 @@ Available methods:
 
 ## Tracking Task Progress
 
-Coravel's queue exposes some internal events that you can hook into. Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue.
+Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue. Also, Coravel's queue exposes some internal events that you can hook into. 
 
-You can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time.
+Combining these: you can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time.
 
 A basic listener that notifies some user interface of task progress might look something like this:
 
