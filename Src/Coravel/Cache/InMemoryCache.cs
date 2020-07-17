@@ -10,16 +10,23 @@ namespace Coravel.Cache
     {
         private readonly IMemoryCache _cache;
         private readonly HashSet<string> _keys;
-
+        // I could create a new type for a thread safe hashset.
+        // But, the Flush() method needs to be safe in it's entire operation.
+        private readonly object _setLock;
+        
         public InMemoryCache(IMemoryCache cache)
         {
             this._cache = cache;
             this._keys = new HashSet<string>();
+            this._setLock = new object();
         }
 
         public TResult Remember<TResult>(string key, Func<TResult> cacheFunc, TimeSpan expiresIn)
         {
-            this._keys.Add(key);
+            lock (this._setLock)
+            {
+                this._keys.Add(key);
+            }
 
             return this._cache.GetOrCreate(key, entry =>
             {
@@ -31,7 +38,10 @@ namespace Coravel.Cache
 
         public async Task<TResult> RememberAsync<TResult>(string key, Func<Task<TResult>> cacheFunc, TimeSpan expiresIn)
         {
-            this._keys.Add(key);
+            lock (this._setLock)
+            {
+                this._keys.Add(key);
+            }
 
             return await this._cache.GetOrCreateAsync(key, async entry =>
             {
@@ -43,7 +53,10 @@ namespace Coravel.Cache
 
         public TResult Forever<TResult>(string key, Func<TResult> cacheFunc)
         {
-            this._keys.Add(key);
+            lock (this._setLock)
+            {
+                this._keys.Add(key);
+            }
 
             return this._cache.GetOrCreate(key, entry =>
             {
@@ -54,7 +67,10 @@ namespace Coravel.Cache
 
         public async Task<TResult> ForeverAsync<TResult>(string key, Func<Task<TResult>> cacheFunc)
         {
-            this._keys.Add(key);
+            lock (this._setLock)
+            {
+                this._keys.Add(key);
+            }
 
             return await this._cache.GetOrCreateAsync(key, async entry =>
             {
@@ -82,24 +98,38 @@ namespace Coravel.Cache
         public void Forget(string key)
         {
             this._cache.Remove(key);
-            this._keys.Remove(key);
+
+            lock (this._setLock)
+            {
+                this._keys.Remove(key);
+            }
         }
 
         public void Flush()
         {
-            foreach (string key in this._keys)
+            // This is the main reason we need a lock vs. creating a thread-safe "hash set".
+            // While iterating through these keys, it's possible (without a lock around this section)
+            // that some other thread adds, removes, etc. a key concurrently. That would cause issues in the 
+            // loop - index out of bound exceptions, fail to "really" flush all the keys, etc.
+            lock (this._setLock)
             {
-                this._cache.Remove(key);
-            }
+                foreach (string key in this._keys)
+                {
+                    this._cache.Remove(key);
+                }
 
-            this._keys.Clear();
+                this._keys.Clear();
+            }
         }
 
         private void EvictionCallback(object key, object value, EvictionReason reason, object state)
         {
             if (reason == EvictionReason.Expired || reason == EvictionReason.Capacity || reason == EvictionReason.Removed)
             {
-                this._keys.Remove(key.ToString());
+                lock (this._setLock)
+                {
+                    this._keys.Remove(key.ToString());
+                }
             }
         }
     }
