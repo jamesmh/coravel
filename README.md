@@ -2,8 +2,8 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5f511f8d-d256-4e4f-a21f-b7a444b4d4f9/deploy-status)](https://app.netlify.com/sites/coravel-docs/deploys)
 
 [![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
-![Nuget](https://img.shields.io/nuget/v/Coravel.svg)
-![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)
+[![Nuget](https://img.shields.io/nuget/v/Coravel.svg)](https://www.nuget.org/packages/Coravel)
+[![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)](https://www.nuget.org/packages/Coravel)
 
 
 <div align="center">
@@ -74,7 +74,7 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 
 ## Support Me
 
-You can support my ongoing work on [BuyMeACoffee](https://www.buymeacoffee.com/gIPOyBD5N).
+You can support my ongoing open-source work on [BuyMeACoffee](https://www.buymeacoffee.com/gIPOyBD5N).
 
 ## Coravel Pro
 
@@ -85,3 +85,11 @@ If you are building a .NET Core application with EF Core, then you might want to
 - Easily configure a dashboard to show health metrics (or whatever you want)
 - Build custom tablular reports of your data
 - And more!
+
+## Need More Help?
+
+Do you find Coravel useful, but need help with your software's architecture and design? 
+
+Or, you need someone that can help guide your team to become more effective? 
+
+Check out [my web site](https://www.jamesmichaelhickey.com) for more about working together.

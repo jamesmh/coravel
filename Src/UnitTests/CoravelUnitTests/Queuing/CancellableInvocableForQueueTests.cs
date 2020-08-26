@@ -21,9 +21,9 @@ namespace UnitTests.Queuing
 
             Queue queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
 
-            var token1 = queue.QueueCancellableInvocable<TestCancellableInvocable>();
-            var token2 = queue.QueueCancellableInvocable<TestCancellableInvocable>();
-            var token3 = queue.QueueCancellableInvocable<TestCancellableInvocable>();
+            var (_, token1) = queue.QueueCancellableInvocable<TestCancellableInvocable>();
+            var (_, token2) = queue.QueueCancellableInvocable<TestCancellableInvocable>();
+            var (_, token3) = queue.QueueCancellableInvocable<TestCancellableInvocable>();
 
             token1.Cancel();
             token3.Cancel();

@@ -112,19 +112,25 @@ By using `QueueBroadcast`, you can queue an event to be broadcasted in the backg
 this._queue.QueueBroadcast(new OrderCreated(orderId)); 
 ```
 
-## Queuing Cancellable Invocables
+### Queuing Cancellable Invocables
 
 Sometimes you have a long-running invocable that needs the ability to be cancelled (manually by you or by the system when the application is being shutdown).
 
-By using `QueueCancellableInvocable` you can build invocables that will have this ability!
+By using `QueueCancellableInvocable` you can build invocables that can be cancelled:
 
-**First**, add the `Coravel.Queuing.Interfaces.ICancellableTask` to your invocable and implement the property:
+```csharp
+ var (taskGuid, token) = queue.QueueCancellableInvocable<CancellableInvocable>();
+ 
+ // Somewhere else....
+
+ token.Cancel();
+```
+
+Add the `Coravel.Queuing.Interfaces.ICancellableTask` to your invocable and implement the property:
 
 `CancellationToken Token { get; set; }`
 
-**Next**, in your `Invoke` method, you will have access to check if the token has been cancelled.
-
-For example:
+In your `Invoke` method, you will have access to check if the token has been cancelled.
 
 ```csharp
 while(!this.Token.IsCancellationRequested)
@@ -132,21 +138,38 @@ while(!this.Token.IsCancellationRequested)
   await ProcessNextRecord();
 }
 ```
+## Metrics
 
-**Then**, to capture a token:
+You can gain some insight into how the queue is doing at a given moment in time.
 
 ```csharp
- var token = queue.QueueCancellableInvocable<MyCancellableInvocable>();
- // Do something with the token.
+var metrics = _queue.GetMetrics();
 ```
 
-:::warning
-Coravel will automatically dispose all `TokenCancellationSource` objects associated with invocables that have been consumed by the queue. 
+Available methods:
 
-Also, when the application is being shutdown, Coravel will also cancel _all_ tokens to make sure your invocables can stop their work and allow a graceful shutdown.
+- `WaitingCount()`: The number of tasks waiting to be executed.
+- `RunningCount()`: The number of tasks currently running.
 
-If you are manually cancelling/handling tokens then you'll have to code around the potential for your tokens to have been cancelled and even disposed.
-:::
+## Tracking Task Progress
+
+Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue. Also, Coravel's queue exposes some internal events that you can hook into. 
+
+Combining these: you can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time. When a task/job crashes, then the event `DequeuedTaskFailed` will be emitted. Creating a listener for this one might be helpful too.
+
+A basic listener that notifies some user interface of task progress might look something like this:
+
+```csharp
+public class TaskStartedListener : IListener<QueueTaskStarted>
+{
+    // Constructor etc.
+
+    public async Task HandleAsync(QueueTaskStarted broadcasted)
+    {
+        await this._uiNotifications.NotifyTaskStarted(broadcasted.Guid);
+    }
+}
+```
 
 ## Global Error Handling
 
@@ -185,9 +208,3 @@ provider
     .ConfigureQueue()
     .LogQueuedTaskProgress(provider.GetService<ILogger<IQueue>>());
 ```
-
-## On App Shutdown
-
-When your app is stopped, Coravel will immediately begin consuming any remaining tasks and wait until they are completed. 
-
-This will keep your app running in the background - as long as the parent process is not killed.
