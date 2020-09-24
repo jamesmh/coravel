@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MimeKit;
-using MimeKit.Text;
 using MailKit.Net.Smtp;
-using System;
 using System.Net.Security;
 using System.Linq;
 using Coravel.Mailer.Mail.Interfaces;
@@ -52,7 +50,7 @@ namespace Coravel.Mailer.Mail.Mailers
             await mailable.SendAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
         {
             var mail = new MimeMessage();
             mail.From.Add(AsMailboxAddress(this._globalFrom ?? from));
@@ -74,10 +72,13 @@ namespace Coravel.Mailer.Mail.Mailers
 
             mail.Subject = subject;
 
-            mail.Body = new TextPart(TextFormat.Html)
+            var bodyBuilder = new BodyBuilder { HtmlBody = message };            
+            foreach(var attachment in attachments)
             {
-                Text = message
-            };
+                bodyBuilder.Attachments.Add(attachment.Name, attachment.Bytes);
+            }
+
+            mail.Body = bodyBuilder.ToMessageBody();
 
             using (var client = new SmtpClient())
             {
