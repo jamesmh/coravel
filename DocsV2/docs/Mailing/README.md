@@ -223,6 +223,10 @@ Pass an instance of `MailRecipient` to the `To()` method.
 
 Pass an `IEnumerable<MailRecipient>` to the `To()` method.
 
+#### Attachments
+
+Attach multiple files by passing an `Attachment` to the `Attach()` method.
+
 #### Auto-Detect Email Address And Name
 
 Using an `object` that has a `public` field or property `Email` and `Name`, you can pass it to the `To()` method.

@@ -1,13 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Mailer.Mail.Helpers;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Renderers;
-using Microsoft.Extensions.Configuration;
 
 namespace Coravel.Mailer.Mail.Mailers
 {
@@ -30,9 +27,8 @@ namespace Coravel.Mailer.Mail.Mailers
             return await mailable.RenderAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null)
         {
-
             from = this._globalFrom ?? from;
 
             using (var writer = File.CreateText(FilePath))
@@ -45,6 +41,7 @@ From: {DisplayAddress(from)}
 ReplyTo: {DisplayAddress(replyTo)}
 Cc: {CommaSeparated(cc)}
 Bcc: {CommaSeparated(bcc)}
+Attachment: { (attachments is null ? "N/A" : string.Join(";", attachments.Select(a => a.Name))) }
 ---------------------------------------------
 
 {message}
