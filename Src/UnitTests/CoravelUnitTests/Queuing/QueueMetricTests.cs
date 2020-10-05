@@ -32,7 +32,11 @@ namespace UnitTests.Queuing
             Queue queue = new Queue(null, new DispatcherStub());
 
             queue.QueueAsyncTask(() => Task.Delay(200));
-            queue.QueueAsyncTask(() => Task.Delay(200));
+            queue.QueueAsyncTask(async () =>
+            {
+                await Task.Delay(200);
+                throw new Exception("Test exception");
+            });
             queue.QueueAsyncTask(() => Task.Delay(200));
 
             Assert.Equal(3, queue.GetMetrics().WaitingCount());
@@ -45,7 +49,10 @@ namespace UnitTests.Queuing
             Assert.Equal(3, metrics.RunningCount());
 
             await consumingTask;
-        }   
+
+            metrics = queue.GetMetrics();
+            Assert.Equal(0, metrics.RunningCount());
+        }
 
         [Fact]
         public async Task TestAllGuidMethods()
