@@ -5,7 +5,7 @@
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
 
     <PackageId>Coravel.Mailer</PackageId>
-    <Version>4.0.0-preview2</Version>
+    <Version>4.0.0</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel.Mailer</Title>
