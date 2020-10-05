@@ -208,7 +208,6 @@ namespace Coravel.Queuing
 
                 await task.Invoke();
 
-                Interlocked.Decrement(ref this._tasksRunningCount);
                 this._logger?.LogInformation("Queued task finished...");
                 await this.TryDispatchEvent(new QueueTaskCompleted(task.Guid));
             }
@@ -216,10 +215,11 @@ namespace Coravel.Queuing
             {
                 await this.TryDispatchEvent(new DequeuedTaskFailed(task));
 
-                if (this._errorHandler != null)
-                {
-                    this._errorHandler(e);
-                }
+                _errorHandler?.Invoke(e);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref this._tasksRunningCount);
             }
         }
     }

@@ -141,7 +141,7 @@ In your `appsettings.json`, you may add the following global values that will po
         /* If set, displayed in the footer. */
         "CompanyAddress": "1111 My Company's Address",
 
-        /* If set, displayed in the footer inside the copywrite statement. */
+        /* If set, displayed in the footer inside the copyright statement. */
         "CompanyName": "My Company's Name",
 
         /* If set, is used to color the header (when using Template.cshtml) */
