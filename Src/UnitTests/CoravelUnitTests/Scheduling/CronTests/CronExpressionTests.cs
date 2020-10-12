@@ -121,6 +121,9 @@ namespace UnitTests.Scheduling.CronTests
         [InlineData("00 00 */2 * *", "8/12/2018 12:00 am", true)]
         [InlineData("00 00 */2 * *", "8/3/2018 12:00 am", false)]
         [InlineData("00 00 */2 * *", "8/13/2018 12:00 am", false)]
+        [InlineData("0 17-23/2 * * 1-5", "10/19/2020 07:00 pm", true)]
+        [InlineData("0 17-23/2 * * 1-5", "10/11/2020 07:00 pm", false)]
+        [InlineData("0 17-23/2 * * 1-5", "10/19/2020 04:00 pm", false)]
         public void InvokeCron(string cronExpression, string dateString, bool shouldBeDue)
         {
             var expression = new CronExpression(cronExpression);

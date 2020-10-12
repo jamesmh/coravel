@@ -150,13 +150,21 @@ namespace Coravel.Scheduling.Schedule.Cron
             var range = expression.Split('-');
             bool firstParsed = int.TryParse(range[0], out var first);
             bool secondParsed = int.TryParse(range[1], out var second);
+            var step = 1;
+
+            if (!secondParsed)
+            {
+                var stepRange = range[1].Split('/');
+                secondParsed = int.TryParse(stepRange[0], out second);
+                int.TryParse(stepRange[1], out step);
+            }
 
             if (!(firstParsed && secondParsed))
             {
-                throw new Exception($"Cron expression ${expression} is malformed.");
+                throw new Exception($"Cron expression {expression} is malformed.");
             }
 
-            return this.Between(first, second);
+            return this.Between(first, second, step);
         }
 
         /// <summary>
@@ -165,9 +173,9 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <param name="first"></param>
         /// <param name="second"></param>
         /// <returns></returns>
-        private IEnumerable<int> Between(int first, int second)
+        private IEnumerable<int> Between(int first, int second, int step)
         {
-            for (int i = first; i <= second; i++)
+            for (int i = first; i <= second; i+=step)
             {
                 yield return i;
             }
