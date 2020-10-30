@@ -264,10 +264,10 @@ In .NET Core 3.1 there were some breaking changes to the way razor views are han
 
 Which ever project(s) you have razor views inside, you'll need to make sure .NET compiles them at build time.
 
-Here's what you'll need to change:
+Here's what you'll need to change within your `.csproj` file to enable this:
 
 ```xml
-<Project Sdk="Microsoft.NET.Sdk.Razor">  👈 Make sure SDK is correct.
+<Project Sdk="Microsoft.NET.Sdk.Razor">  👈 Make sure it's this SDK.
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
