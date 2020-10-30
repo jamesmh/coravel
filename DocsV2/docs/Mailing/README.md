@@ -5,7 +5,7 @@ meta:
   - name: keywords
     content: dotnet dotnetcore ".NET Core task scheduling" ".NET Core scheduler" ".NET Core framework" ".NET Core Queue" ".NET Core Queuing" ".NET Core Caching" Coravel ".NET Core Mailing" ".NET Core Mailer"
 ---
-
+`
 # Mailing
 
 [[toc]]
@@ -39,6 +39,7 @@ This will install the Nuget package `Coravel.Mailer`, along with scaffolding som
 - `~/Views/Mail/_ViewImports.cshtml` - Allows you use Coravel's view components
 - `~/Views/Mail/Example.cshtml` - A sample mail view
 - `~/Mailables/Example.cs` - A sample Mailable
+
 
 ## Config
 
@@ -256,6 +257,26 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 ### Specifying Mail Templates
 
 #### Razor Templates
+
+##### .NET Core 3.1+
+
+In .NET Core 3.1 there were some breaking changes to the way razor views are handled.
+
+Which ever project(s) you have razor views inside, you'll need to make sure .NET compiles them at build time.
+
+Here's what you'll need to change:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk.Razor">  👈 Make sure SDK is correct.
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AddRazorSupportForMvc>True</AddRazorSupportForMvc> 👈 Add this too.
+  </PropertyGroup>
+```
+
+##### Razor Views
 
 Using a razor view to send e-mails is done using the `View(string viewPath, T viewModel)` method.
 
