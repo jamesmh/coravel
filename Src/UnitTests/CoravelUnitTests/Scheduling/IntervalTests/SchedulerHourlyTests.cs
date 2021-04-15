@@ -10,7 +10,6 @@ namespace UnitTests.Scheduling.IntervalTests
 {
     public class SchedulerHourlyTests
     {
-        [Theory]
         // Should run
         [InlineData(0, 0, 0, true)]
         [InlineData(1, 4, 0, true)]

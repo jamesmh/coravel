@@ -136,6 +136,17 @@ namespace Coravel.Scheduling.Schedule.Event
             this._expression = new CronExpression("00 00 * * *");
             return this;
         }
+        
+        public IScheduledEventConfiguration DailyAtRandomTime()
+        {
+            var hour = new Random();
+            var minute = new Random();
+
+            var randomMinute = minute.Next(0,59);
+            var randomHour = hour.Next(0,23);
+            _expression = new CronExpression($"{randomMinute:##} {randomHour:##} * * *");
+            return this;
+        }        
 
         public IScheduledEventConfiguration DailyAtHour(int hour)
         {

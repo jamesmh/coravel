@@ -60,6 +60,12 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         IScheduledEventConfiguration Daily();
 
         /// <summary>
+        /// Scheduled task runs once a day at a random time.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration DailyAtRandomTime();        
+        
+        /// <summary>
         /// Scheduled task runs once a day at the hour specified.
         /// </summary>
         /// <example>
