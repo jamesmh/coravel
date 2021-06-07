@@ -48,6 +48,13 @@ namespace Coravel.Scheduling.Schedule.Event
             return scheduledEvent;
         }
 
+        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory, object[ ] parameters)
+        {
+            var scheduledEvent = WithInvocableType(scopeFactory, invocableType);
+            scheduledEvent._constructorParameters = parameters;
+            return scheduledEvent;
+        }
+
         public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
         {
             var scheduledEvent = new ScheduledEvent();
