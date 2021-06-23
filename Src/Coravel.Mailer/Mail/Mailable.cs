@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Coravel.Mailer.Mail.Exceptions;
 using Coravel.Mailer.Mail.Helpers;
@@ -59,6 +56,8 @@ namespace Coravel.Mailer.Mail
         /// Model that we want to mail to.
         /// </summary>
         private object _mailToModel;
+
+        private List<Attachment> _attachments;
 
         /// <summary>
         /// View data to pass to the view to render.
@@ -131,6 +130,16 @@ namespace Coravel.Mailer.Mail
             return this;
         }
 
+        public Mailable<T> Attach(Attachment attachment)
+        {
+            if(this._attachments is null)
+            {
+                this._attachments = new List<Attachment>();
+            }
+            this._attachments.Add(attachment);
+            return this;
+        }
+
         public Mailable<T> Html(string html)
         {
             this._html = html;
@@ -165,7 +174,8 @@ namespace Coravel.Mailer.Mail
                 this._from,
                 this._replyTo,
                 this._cc,
-                this._bcc
+                this._bcc,
+                this._attachments
             ).ConfigureAwait(false);
         }
 

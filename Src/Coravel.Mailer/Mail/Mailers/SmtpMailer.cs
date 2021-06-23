@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MimeKit;
-using MimeKit.Text;
 using MailKit.Net.Smtp;
-using System;
 using System.Net.Security;
 using System.Linq;
 using Coravel.Mailer.Mail.Interfaces;
@@ -52,32 +50,16 @@ namespace Coravel.Mailer.Mail.Mailers
             await mailable.SendAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null)
         {
             var mail = new MimeMessage();
-            mail.From.Add(AsMailboxAddress(this._globalFrom ?? from));
-
-            foreach (var recipientAddress in to ?? Enumerable.Empty<MailRecipient>())
-            {
-                mail.To.Add(AsMailboxAddress(recipientAddress));
-            }
-
-            foreach (var ccReciepient in cc ?? Enumerable.Empty<MailRecipient>())
-            {
-                mail.Cc.Add(AsMailboxAddress(ccReciepient));
-            }
-
-            foreach (var bccReciepient in bcc ?? Enumerable.Empty<MailRecipient>())
-            {
-                mail.Bcc.Add(AsMailboxAddress(bccReciepient));
-            }
-
+            
+            this.SetFrom(@from, mail);
+            SetRecipients(to, mail);
+            SetCc(cc, mail);
+            SetBcc(bcc, mail);
             mail.Subject = subject;
-
-            mail.Body = new TextPart(TextFormat.Html)
-            {
-                Text = message
-            };
+            SetMailBody(message, attachments, mail);
 
             using (var client = new SmtpClient())
             {
@@ -92,6 +74,49 @@ namespace Coravel.Mailer.Mail.Mailers
                 await client.SendAsync(mail).ConfigureAwait(false);
                 await client.DisconnectAsync(true).ConfigureAwait(false);
             }
+        }
+
+        private static void SetMailBody(string message, IEnumerable<Attachment> attachments, MimeMessage mail)
+        {
+            var bodyBuilder = new BodyBuilder { HtmlBody = message };
+            if (attachments != null)
+            {
+                foreach (var attachment in attachments)
+                {
+                    bodyBuilder.Attachments.Add(attachment.Name, attachment.Bytes);
+                }
+            }
+
+            mail.Body = bodyBuilder.ToMessageBody();
+        }
+
+        private static void SetBcc(IEnumerable<MailRecipient> bcc, MimeMessage mail)
+        {
+            foreach (var bccRecipient in bcc ?? Enumerable.Empty<MailRecipient>())
+            {
+                mail.Bcc.Add(AsMailboxAddress(bccRecipient));
+            }
+        }
+
+        private static void SetCc(IEnumerable<MailRecipient> cc, MimeMessage mail)
+        {
+            foreach (var ccRecipient in cc ?? Enumerable.Empty<MailRecipient>())
+            {
+                mail.Cc.Add(AsMailboxAddress(ccRecipient));
+            }
+        }
+
+        private static void SetRecipients(IEnumerable<MailRecipient> to, MimeMessage mail)
+        {
+            foreach (var recipientAddress in to ?? Enumerable.Empty<MailRecipient>())
+            {
+                mail.To.Add(AsMailboxAddress(recipientAddress));
+            }
+        }
+
+        private void SetFrom(MailRecipient @from, MimeMessage mail)
+        {
+            mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
         }
 
         private static MailboxAddress AsMailboxAddress(MailRecipient recipient) =>

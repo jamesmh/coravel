@@ -15,7 +15,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailerSucessful()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 Assert.Equal("test", subject);
                 Assert.Equal("from@test.com", from.Email);
@@ -41,7 +41,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailer_GlobalFrom()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 Assert.Equal("global@test.com", from.Email);
                 Assert.Equal("Global", from.Name);
@@ -66,7 +66,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailer_Render()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 await Task.CompletedTask;
             };
@@ -81,12 +81,47 @@ namespace UnitTests.Mail
             var htmlMessage = await mailer.RenderAsync(
                 new GenericHtmlMailable()
                     .Subject("test")
-                    .From("from@test.com") // Shoudl be ignored due to global "from"
+                    .From("from@test.com") // Should be ignored due to global "from"
                     .To("to@test.com")
                     .Html("<html></html>")
             );
 
             Assert.Equal("<html></html>", htmlMessage);
+        }
+        
+        [Fact]
+        public async Task CustomMailerHasAttachments()
+        {
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+            {
+                Assert.Equal(2, attachments.Count());
+                Assert.Equal("Attachment 2", attachments.Skip(1).Single().Name);
+                await Task.CompletedTask;
+            };
+
+            var mailer = new CustomMailer(
+                null, // We aren't rendering anything, so it's null.
+                SendMailCustom,
+                null
+            );
+
+            await mailer.SendAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .To("to@test.com")
+                    .Html("test")
+                    .Attach(new Attachment
+                    {
+                        Bytes = new byte[] { },
+                        Name =  "Attachment 1"
+                    })
+                    .Attach(new Attachment
+                    {
+                        Bytes = new byte[] { },
+                        Name =  "Attachment 2"
+                    })
+            );
         }
     }
 }
