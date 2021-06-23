@@ -267,7 +267,7 @@ namespace UnitTests.Mail
         }
 
         [Fact]
-        public async Task MailableHaBccField_FromMailRecipients()
+        public async Task MailableHasBccField_FromMailRecipients()
         {
             void AssertMail(AssertMailer.Data data)
             {
@@ -282,6 +282,39 @@ namespace UnitTests.Mail
                     new MailRecipient("one@test.com"),
                     new MailRecipient("two@test.com"),
                     new MailRecipient("three@test.com")
+                })
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+        
+        [Fact]
+        public async Task MailableHasAttachments()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal(2, data.attachments.Count());
+                Assert.True(data.attachments.Skip(1).Single().Name == "Attachment 2");
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Bcc(new MailRecipient[] {
+                    new MailRecipient("one@test.com"),
+                    new MailRecipient("two@test.com"),
+                    new MailRecipient("three@test.com")
+                })
+                .Attach(new Attachment
+                {
+                    Bytes = new byte[] { },
+                    Name =  "Attachment 1"
+                })
+                .Attach(new Attachment
+                {
+                    Bytes = new byte[] { },
+                    Name =  "Attachment 2"
                 })
                 .Html("<test></test>");
 
