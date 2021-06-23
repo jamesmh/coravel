@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./Src/All.sln
     - name: Build
       run: dotnet build ./Src/All.sln
     - name: Mailer Tests
