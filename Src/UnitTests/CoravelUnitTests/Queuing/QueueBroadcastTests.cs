@@ -66,14 +66,14 @@ namespace UnitTests.Queuing
             var id2 = queue.QueueAsyncTask(() => Task.Delay(100));
             var id3 = queue.QueueAsyncTask(() => Task.Delay(0));
 
-            Assert.Equal(0, TaskStartedListener.StartedJobs.Count());
-            Assert.Equal(0, TaskCompletedListener.CompletedJobs.Count());
+            Assert.Empty( TaskStartedListener.StartedJobs);
+            Assert.Empty(TaskCompletedListener.CompletedJobs);
 
             var consumingTask = queue.ConsumeQueueAsync();
             await Task.Delay(10);
 
             Assert.Equal(3, TaskStartedListener.StartedJobs.Count());
-            Assert.Equal(1, TaskCompletedListener.CompletedJobs.Count());
+            Assert.Single(TaskCompletedListener.CompletedJobs);
             Assert.Equal(id3, TaskCompletedListener.CompletedJobs.First());
 
             await consumingTask;
