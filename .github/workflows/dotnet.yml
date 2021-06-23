@@ -7,10 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  build_dotnet_5:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -21,9 +19,18 @@ jobs:
       run: dotnet restore ./Src/All.sln
     - name: Build
       run: dotnet build ./Src/All.sln
+      
+  tests_on_dotnet_3_1:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
     - name: Mailer Tests
-      run: dotnet test --no-build ./Src/UnitTests/MailerUnitTests/MailerUnitTests.csproj
+      run: dotnet test ./Src/UnitTests/MailerUnitTests/MailerUnitTests.csproj
     - name: Unit Tests
-      run: dotnet test --no-build ./Src/UnitTests/CoravelUnitTests/CoravelUnitTests.csproj
+      run: dotnet test ./Src/UnitTests/CoravelUnitTests/CoravelUnitTests.csproj
     - name: Integration Tests
-      run: dotnet test --no-build ./Src/IntegrationTests/Tests/Tests.csproj
+      run: dotnet test ./Src/IntegrationTests/Tests/Tests.csproj
