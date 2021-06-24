@@ -18,17 +18,6 @@ It makes advanced application features accessible and easy-to-use by giving you 
 
 ![Coravel Scheduler](./img/scheduledailyreport.png)
 
-## Used By
-
-<p align="center">
-  <a href="https://builtwithdot.net">
-    <img src="./img/used-by/builtwithdotnet.jpg" alt="BuiltWithDotNet" style="width:60%;" />
-  </a>
-</p>
-<p align="center"><b>BuiltWithDot.Net</b></p>
-
-_Want to be featured? Open an issue!_
-
 ## Features:
 
 ### Task Scheduling
