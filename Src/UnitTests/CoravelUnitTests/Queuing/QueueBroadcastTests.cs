@@ -62,11 +62,14 @@ namespace UnitTests.Queuing
 
             Queue queue = new Queue(null, dispatcher);
 
-            var id1 = queue.QueueAsyncTask(() => Task.Delay(100));
-            var id2 = queue.QueueAsyncTask(() => Task.Delay(100));
-            var id3 = queue.QueueAsyncTask(() => Task.Delay(0));
+            // Note: Depending on where the tests are run from (local pc vs. GitHub actions runner for example),
+            // the delay here may not be enough for the test to pass. GitHub actions runners were failing this
+            // test often so I increased the delay here to 200ms.
+            var id1 = queue.QueueAsyncTask(() => Task.Delay(200));
+            var id2 = queue.QueueAsyncTask(() => Task.Delay(200));
+            var id3 = queue.QueueAsyncTask(() => Task.CompletedTask);
 
-            Assert.Empty( TaskStartedListener.StartedJobs);
+            Assert.Empty(TaskStartedListener.StartedJobs);
             Assert.Empty(TaskCompletedListener.CompletedJobs);
 
             var consumingTask = queue.ConsumeQueueAsync();
