@@ -45,7 +45,8 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <param name="invocableType">Type of the invocable.</param>
         /// <param name="parameters">Parameters to inject.</param>
-        IScheduleInterval ScheduleWithParams(Type invocableType, params object[ ] parameters);
+        /// <exception cref="ArgumentException">If the <paramref name="invocableType"/> does not implements or inherits from <see cref="IInvocable"/>.</exception>
+        IScheduleInterval ScheduleWithParams(Type invocableType, params object[] parameters);
 
         /// <summary>
         /// Schedule an Invocable job.

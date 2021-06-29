@@ -68,14 +68,14 @@ namespace UnitTests.Scheduling.Invocable
         {
             bool invocableRan = false;
             var services = new ServiceCollection();
-            services.AddScoped<Action> (p => () => invocableRan = true);
-            services.AddScoped<TestInvocableWithParams> ();
+            services.AddScoped<Action>(p => () => invocableRan = true);
+            services.AddScoped<TestInvocableWithParams>();
             var provider = services.BuildServiceProvider();
 
             var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
-            scheduler.ScheduleWithParams(typeof(TestInvocableWithParams), "stringParam", 1).EveryMinute ();
+            scheduler.ScheduleWithParams(typeof(TestInvocableWithParams), "stringParam", 1).EveryMinute();
 
-            await scheduler.RunAtAsync (new DateTime (2019, 1, 1));
+            await scheduler.RunAtAsync(new DateTime (2019, 1, 1));
 
             Assert.True (invocableRan);
         }
@@ -85,16 +85,32 @@ namespace UnitTests.Scheduling.Invocable
         {
             bool invocableRan = false;
             var services = new ServiceCollection();
-            services.AddScoped<Action> (p => () => invocableRan = true);
-            services.AddScoped<TestInvocableWithParams> ();
+            services.AddScoped<Action>(p => () => invocableRan = true);
+            services.AddScoped<TestInvocableWithParams>();
             var provider = services.BuildServiceProvider();
 
             var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
-            scheduler.ScheduleWithParams (typeof(TestInvocableWithParams), "stringParam").EveryMinute ();
+            scheduler.ScheduleWithParams(typeof(TestInvocableWithParams), "stringParam").EveryMinute();
             
-            await scheduler.RunAtAsync (new DateTime (2019, 1, 1));
+            await scheduler.RunAtAsync(new DateTime (2019, 1, 1));
 
             Assert.False (invocableRan);
+        }
+
+        [Fact]
+        public async Task TestScheduledInvocableWithParamsType_Throws()
+        {
+            await Assert.ThrowsAsync<ArgumentException>("invocableType", async () =>
+            {
+                var services = new ServiceCollection();
+                services.AddScoped<TestNotInvocableWithParams>();
+                var provider = services.BuildServiceProvider();
+
+                var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+                scheduler.ScheduleWithParams(typeof(TestNotInvocableWithParams)).EveryMinute();
+
+                await scheduler.RunAtAsync(new DateTime(2019, 1, 1));
+            });
         }
 
         [Fact]
@@ -173,6 +189,11 @@ namespace UnitTests.Scheduling.Invocable
                 this._func();
                 return Task.CompletedTask;
             }
+        }
+
+        private class TestNotInvocableWithParams
+        {
+            // This is just a marker class.
         }
     }
 }
