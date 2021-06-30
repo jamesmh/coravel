@@ -60,20 +60,24 @@ namespace UnitTests.Queuing
             dispatcher.Register<QueueTaskStarted>().Subscribe<TaskStartedListener>();
             dispatcher.Register<QueueTaskCompleted>().Subscribe<TaskCompletedListener>();
 
-            Queue queue = new Queue(null, dispatcher);
+            var queue = new Queue(null, dispatcher);
 
-            var id1 = queue.QueueAsyncTask(() => Task.Delay(100));
-            var id2 = queue.QueueAsyncTask(() => Task.Delay(100));
-            var id3 = queue.QueueAsyncTask(() => Task.Delay(0));
+            // Note: Depending on where the tests are run from (local pc vs. GitHub actions runner for example),
+            // the delay here may not be enough for the test to pass. GitHub actions runners were failing this
+            // test often so I gradually increased the delay here until I have a value that seems like
+            // it doesn't fail on the runners.
+            var id1 = queue.QueueAsyncTask(() => Task.Delay(350));
+            var id2 = queue.QueueAsyncTask(() => Task.Delay(350));
+            var id3 = queue.QueueAsyncTask(() => Task.CompletedTask);
 
-            Assert.Equal(0, TaskStartedListener.StartedJobs.Count());
-            Assert.Equal(0, TaskCompletedListener.CompletedJobs.Count());
+            Assert.Empty(TaskStartedListener.StartedJobs);
+            Assert.Empty(TaskCompletedListener.CompletedJobs);
 
             var consumingTask = queue.ConsumeQueueAsync();
-            await Task.Delay(10);
+            await Task.Delay(1);
 
             Assert.Equal(3, TaskStartedListener.StartedJobs.Count());
-            Assert.Equal(1, TaskCompletedListener.CompletedJobs.Count());
+            Assert.Single(TaskCompletedListener.CompletedJobs);
             Assert.Equal(id3, TaskCompletedListener.CompletedJobs.First());
 
             await consumingTask;
