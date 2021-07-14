@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,6 +69,11 @@ namespace Coravel.Events
                     }
                 }
             }
+        }
+
+        public void RegisterListenersForEvent(Type eventType, List<Type> listenerTypes)
+        {
+            this._events.Add(eventType, listenerTypes);
         }
     }
 
