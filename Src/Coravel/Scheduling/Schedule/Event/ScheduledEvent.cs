@@ -346,5 +346,11 @@ namespace Coravel.Scheduling.Schedule.Event
             this._zonedTime = new ZonedTime(timeZoneInfo);
             return this;
         }
+
+        public IScheduledEventConfiguration RuntAt(DateTime dateTime)
+        {
+            this._expression = new CronExpression($"{dateTime.Minute} {dateTime.Hour} {dateTime.Day} {dateTime.Month} {(int)dateTime.DayOfWeek}");
+            return this;
+        }
     }
 }

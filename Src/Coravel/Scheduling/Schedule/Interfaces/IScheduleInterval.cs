@@ -1,3 +1,5 @@
+using System;
+
 namespace Coravel.Scheduling.Schedule.Interfaces
 {
     /// <summary>
@@ -136,5 +138,13 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration EverySeconds(int seconds);
+
+        /// <summary>
+        /// Scheduled task runs at specified DateTime.
+        /// Seconds are ignored.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        IScheduledEventConfiguration RuntAt(DateTime dateTime);
     }
 }
