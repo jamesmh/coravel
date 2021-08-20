@@ -35,6 +35,32 @@ namespace UnitTests.Events
         }
 
         [Fact]
+        public async Task TestRegisterTwoListenerWithDifferentRegisterCall()
+        {
+            int listenersExecutedCount = 0;
+
+            var services = new ServiceCollection();
+            services.AddTransient<Action>(p => () => listenersExecutedCount++); // This is injected into the listeners via DI
+            services.AddEvents();
+            services.AddTransient<TestListener1ForEvent1>();
+            services.AddTransient<TestListener2ForEvent1>();
+            services.AddTransient<TestListenerForEvent2>();
+            var provider = services.BuildServiceProvider();
+
+            var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener1ForEvent1>();
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener2ForEvent1>();
+
+            await dispatcher.Broadcast(new TestEvent1());
+
+            Assert.Equal(2, listenersExecutedCount);
+        }
+
+        [Fact]
         public async Task TestRegisterAllListeners()
         {
             int listenersExecutedCount = 0;
