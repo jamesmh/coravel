@@ -35,16 +35,15 @@ namespace UnitTests.Events
         }
 
         [Fact]
-        public async Task TestRegisterTwoListenerWithDifferentRegisterCall()
+        public async Task TestRegisterTwoListenerWithDifferentRegisterCallSameCounter()
         {
             int listenersExecutedCount = 0;
 
             var services = new ServiceCollection();
-            services.AddTransient<Action>(p => () => listenersExecutedCount++); // This is injected into the listeners via DI
-            services.AddEvents();
+            services.AddTransient<Action>(p => () => listenersExecutedCount++);            
             services.AddTransient<TestListener1ForEvent1>();
             services.AddTransient<TestListener2ForEvent1>();
-            services.AddTransient<TestListenerForEvent2>();
+            services.AddEvents();
             var provider = services.BuildServiceProvider();
 
             var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
@@ -58,6 +57,32 @@ namespace UnitTests.Events
             await dispatcher.Broadcast(new TestEvent1());
 
             Assert.Equal(2, listenersExecutedCount);
+        }
+
+        [Fact]
+        public async Task TestRegisterTwoListenerWithDifferentRegisterCallDifferentCounters()
+        {
+            int listener1ExecutedCount = 0;
+            int listener2ExecutedCount = 0;
+
+            var services = new ServiceCollection();
+            services.AddTransient(s => new TestListener1ForEvent1(() => listener1ExecutedCount++));
+            services.AddTransient(s => new TestListener2ForEvent1(() => listener2ExecutedCount++));
+            services.AddEvents();
+            var provider = services.BuildServiceProvider();
+
+            var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener1ForEvent1>();
+
+            dispatcher.Register<TestEvent1>()
+                .Subscribe<TestListener2ForEvent1>();
+
+            await dispatcher.Broadcast(new TestEvent1());
+
+            Assert.Equal(1, listener1ExecutedCount);
+            Assert.Equal(1, listener2ExecutedCount);
         }
 
         [Fact]
