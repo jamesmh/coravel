@@ -32,7 +32,11 @@ namespace Coravel.Events
             var listeners = new List<Type>();
             var eventType = typeof(TEvent);
 
-            if(!this._events.ContainsKey(eventType))
+            if (this._events.ContainsKey(eventType))
+            {
+                listeners = this._events[eventType];
+            }
+            else
             {
                 this._events.Add(eventType, listeners);
             }
