@@ -26,4 +26,5 @@ jobs:
       run: |
         cd ./DocsV2
         npm install yarn -g
+        yarn
         yarn run docs:build
