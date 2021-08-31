@@ -23,7 +23,7 @@ namespace Coravel.Queuing
         private ILogger<IQueue> _logger;
         private IServiceScopeFactory _scopeFactory;
         private IDispatcher _dispatcher;
-        private int _queueIsConsumming = 0;
+        private int _queueIsConsuming = 0;
         private int _tasksRunningCount = 0;
 
         public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
@@ -92,7 +92,7 @@ namespace Coravel.Queuing
         {
             try
             {
-                Interlocked.Increment(ref this._queueIsConsumming);
+                Interlocked.Increment(ref this._queueIsConsuming);
 
                 await this.TryDispatchEvent(new QueueConsumationStarted());
 
@@ -111,7 +111,7 @@ namespace Coravel.Queuing
             }
             finally
             {
-                Interlocked.Decrement(ref this._queueIsConsumming);
+                Interlocked.Decrement(ref this._queueIsConsuming);
             }
         }
 
@@ -120,12 +120,16 @@ namespace Coravel.Queuing
             this.CancelAllTokens();
             await this.ConsumeQueueAsync();
         }
-        public bool IsRunning => this._queueIsConsumming > 0;
+        public bool IsRunning => this._queueIsConsuming > 0;
 
         public QueueMetrics GetMetrics()
         {
-            int runningCount = this._tasks.Count();
-            return new QueueMetrics(this._tasksRunningCount, runningCount);
+            // See https://docs.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentqueue-1.count?view=net-5.0#remarks
+            var waitingCount = this._tasks.IsEmpty
+                ? 0
+                : this._tasks.Count;
+
+            return new QueueMetrics(this._tasksRunningCount, waitingCount);
         }
 
         private void CancelAllTokens()
