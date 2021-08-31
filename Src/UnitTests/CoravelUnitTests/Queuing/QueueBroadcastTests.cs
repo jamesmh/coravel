@@ -66,8 +66,8 @@ namespace UnitTests.Queuing
             // the delay here may not be enough for the test to pass. GitHub actions runners were failing this
             // test often so I gradually increased the delay here until I have a value that seems like
             // it doesn't fail on the runners.
-            var id1 = queue.QueueAsyncTask(() => Task.Delay(350));
-            var id2 = queue.QueueAsyncTask(() => Task.Delay(350));
+            var id1 = queue.QueueAsyncTask(() => Task.Delay(600));
+            var id2 = queue.QueueAsyncTask(() => Task.Delay(600));
             var id3 = queue.QueueAsyncTask(() => Task.CompletedTask);
 
             Assert.Empty(TaskStartedListener.StartedJobs);
@@ -76,8 +76,8 @@ namespace UnitTests.Queuing
             var consumingTask = queue.ConsumeQueueAsync();
             await Task.Delay(1);
 
-            Assert.Equal(3, TaskStartedListener.StartedJobs.Count());
             Assert.Single(TaskCompletedListener.CompletedJobs);
+            Assert.Equal(3, TaskStartedListener.StartedJobs.Count());
             Assert.Equal(id3, TaskCompletedListener.CompletedJobs.First());
 
             await consumingTask;
