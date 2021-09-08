@@ -74,7 +74,7 @@ namespace UnitTests.Queuing
             Assert.Empty(TaskCompletedListener.CompletedJobs);
 
             var consumingTask = queue.ConsumeQueueAsync();
-            await Task.Delay(1);
+            await Task.Delay(50);
 
             Assert.Single(TaskCompletedListener.CompletedJobs);
             Assert.Equal(3, TaskStartedListener.StartedJobs.Count());
