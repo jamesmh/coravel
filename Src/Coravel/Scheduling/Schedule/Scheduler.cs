@@ -26,6 +26,7 @@ namespace Coravel.Scheduling.Schedule
         private IDispatcher _dispatcher;
         private string _currentWorkerName;
         private CancellationTokenSource _cancellationTokenSource;
+        private bool _isFirstTick = true;
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -100,7 +101,9 @@ namespace Coravel.Scheduling.Schedule
         public async Task RunAtAsync(DateTime utcDate)
         {
             Interlocked.Increment(ref this._schedulerIterationsActiveCount);
-            await RunWorkersAt(utcDate);
+            bool isFirstTick = this._isFirstTick;
+            this._isFirstTick = false;
+            await RunWorkersAt(utcDate, isFirstTick);
             Interlocked.Decrement(ref this._schedulerIterationsActiveCount);
         }
 
@@ -191,11 +194,12 @@ namespace Coravel.Scheduling.Schedule
         /// This method return a list of active tasks (one per worker - which needs to be awaited).
         /// </summary>
         /// <param name="utcDate"></param>
+        /// <param name="isFirstTick"></param>
         /// <returns></returns>
-        private async Task RunWorkersAt(DateTime utcDate)
+        private async Task RunWorkersAt(DateTime utcDate, bool isFirstTick)
         {
             // Grab all the scheduled tasks so we can re-arrange them etc.
-            List<ScheduledTask> scheduledWorkers = new List<ScheduledTask>();
+            var scheduledWorkers = new List<ScheduledTask>();
 
             foreach (var keyValue in this._tasks)
             {
@@ -221,7 +225,7 @@ namespace Coravel.Scheduling.Schedule
             // So we'll group all the "due" scheduled events (the actual work the user wants to perform) into
             // buckets for each "worker".
             var groupedScheduledEvents = scheduledWorkers
-                .Where(worker => worker.ScheduledEvent.IsDue(utcDate))
+                .Where(worker => worker.ScheduledEvent.IsDue(utcDate) || (isFirstTick && worker.ScheduledEvent.ShouldRunOnceAtStart()))
                 .GroupBy(worker => worker.WorkerName);
 
             var activeTasks = groupedScheduledEvents.Select(workerWithTasks =>
