@@ -23,6 +23,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private int? _secondsInterval = null;
         private object[] _constructorParameters = null;
         private ZonedTime _zonedTime = ZonedTime.AsUTC();
+        private bool _runOnceAtStart = false;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -346,5 +347,13 @@ namespace Coravel.Scheduling.Schedule.Event
             this._zonedTime = new ZonedTime(timeZoneInfo);
             return this;
         }
+
+        public IScheduledEventConfiguration RunOnceAtStart()
+        {
+            this._runOnceAtStart = true;
+            return this;
+        }
+
+        internal bool ShouldRunOnceAtStart() => this._runOnceAtStart;
     }
 }
