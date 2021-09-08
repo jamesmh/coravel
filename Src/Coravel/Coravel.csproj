@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel</PackageId>
-    <Version>4.0.3</Version>
+    <Version>4.0.4</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
