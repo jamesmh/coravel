@@ -77,7 +77,7 @@ namespace UnitTests.Scheduling.Invocable
 
             await scheduler.RunAtAsync(new DateTime (2019, 1, 1));
 
-            Assert.True (invocableRan);
+            Assert.True(invocableRan);
         }
 
         [Fact]
@@ -94,23 +94,19 @@ namespace UnitTests.Scheduling.Invocable
             
             await scheduler.RunAtAsync(new DateTime (2019, 1, 1));
 
-            Assert.False (invocableRan);
+            Assert.False(invocableRan);
         }
 
         [Fact]
-        public async Task TestScheduledInvocableWithParamsType_Throws()
+        public void TestScheduledInvocableWithParamsType_Throws()
         {
-            await Assert.ThrowsAsync<ArgumentException>("invocableType", async () =>
-            {
-                var services = new ServiceCollection();
-                services.AddScoped<TestNotInvocableWithParams>();
-                var provider = services.BuildServiceProvider();
+            var services = new ServiceCollection();
+            services.AddScoped<TestNotInvocableWithParams>();
+            var provider = services.BuildServiceProvider();
 
-                var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
-                scheduler.ScheduleWithParams(typeof(TestNotInvocableWithParams)).EveryMinute();
-
-                await scheduler.RunAtAsync(new DateTime(2019, 1, 1));
-            });
+            var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            
+            Assert.Throws<ArgumentException>("invocableType", () => scheduler.ScheduleWithParams(typeof(TestNotInvocableWithParams)).EveryMinute());
         }
 
         [Fact]
