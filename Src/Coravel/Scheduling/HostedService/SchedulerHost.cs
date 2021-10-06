@@ -14,19 +14,30 @@ namespace Coravel.Scheduling.HostedService
         private Timer _timer;
         private bool _schedulerEnabled = true;
         private ILogger<SchedulerHost> _logger;
+        private IHostApplicationLifetime _lifetime;
         private readonly string ScheduledTasksRunningMessage = "Coravel's Scheduling service is attempting to close but there are tasks still running." +
                                                                " App closing (in background) will be prevented until all tasks are completed.";
 
-        public SchedulerHost(IScheduler scheduler, ILogger<SchedulerHost> logger)
+        public SchedulerHost(IScheduler scheduler, ILogger<SchedulerHost> logger, IHostApplicationLifetime lifetime)
         {
             this._scheduler = scheduler as Scheduler;
             this._logger = logger;
+            this._lifetime = lifetime;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            this._timer = new Timer(this.RunSchedulerPerSecondAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            // Certain features rely on the first run of the scheduler having access to all the registered
+            // container services. These are only available after the full application has started. Normally, background
+            // services like `IHostedService` start running before the app has fully started and therefore won't have
+            // access to all the registered services right away.
+            this._lifetime.ApplicationStarted.Register(InitializeAfterAppStarted);
             return Task.CompletedTask;
+        }
+
+        private void InitializeAfterAppStarted()
+        {
+            this._timer = new Timer(this.RunSchedulerPerSecondAsync, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
         private async void RunSchedulerPerSecondAsync(object state)
