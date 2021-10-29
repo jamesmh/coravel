@@ -205,9 +205,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 Be careful since you could do something like `.Weekend().Weekday()`, which means there are no constraints (it runs on any day).
 :::
 
-## Extras
-
-### Zoned Schedules
+## Zoned Schedules
 
 Sometimes you do want to run your schedules against a particular time zone. For these scenarios, use the `Zoned` method:
 
@@ -226,7 +224,7 @@ Creating a valid `TimeZoneInfo` differs depending on whether you're on Windows, 
 Also, you may get unexpected behavior due to daylight savings time. Be careful!
 :::
 
-### Custom Boolean Constraint
+## Custom Boolean Constraint
 
 Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
 
@@ -239,7 +237,7 @@ scheduler
 
 If you require access to dependencies that are registered with the service provider, it is recommended that you [schedule your tasks by using an invocable](#scheduling-invocables) and perform any further restriction logic there.
 
-### Global Error Handling
+## Global Error Handling
 
 Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
 
@@ -256,7 +254,7 @@ provider.UseScheduler(scheduler =>
 
 You can, of course, add error handling inside your specific tasks too.
 
-### Logging Executed Task Progress
+## Logging Executed Task Progress
 
 Coravel uses the `ILogger` .Net Core interface to allow logging scheduled task progress.
 
@@ -286,6 +284,24 @@ provider.UseScheduler(scheduler =>
 ```
 
 The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
+
+## Force Run A Task At App Startup
+
+At times, you may want to run a task immediately at your application's startup. This could be for debugging, setting up a cache, etc.
+
+For these scenarios, you can use `RunOnceAtStart()`.
+
+This will **not** override the assigned schedule of a task or invocable. Take the following:
+
+```csharp
+scheduler.Schedule<CacheSomeStuff>()
+    .RunOnceAtStart()
+    .Hourly()
+    .Weekday();
+```
+
+This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.
+
 
 ## Prevent Overlapping Tasks
 
