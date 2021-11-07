@@ -31,7 +31,7 @@ namespace Coravel.Queuing.HostedService
             int consummationDelay = GetConsummationDelay();
 
             this._timer = new Timer((state) => this._signal.Release(), null, TimeSpan.Zero, TimeSpan.FromSeconds(consummationDelay));
-            Task.Run(ConsumeQueueAsync);
+            Task.Factory.StartNew(ConsumeQueueAsync, TaskCreationOptions.LongRunning);
             return Task.CompletedTask;
         }
 
