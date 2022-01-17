@@ -13,6 +13,25 @@ namespace UnitTests.Queuing
     public class CancellableInvocableForQueueTests
     {
         [Fact]
+        public async Task CanCancelInvocableWithPayload()
+        {
+            var services = new ServiceCollection();
+            services.AddTransient<TestCancellableInvocable>();
+            services.AddTransient<TestCancellableInvocableWithPayload>();
+            var provider = services.BuildServiceProvider();
+
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            var payload = new TestPayload()
+            {
+                Code = "test"
+            };
+            queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            TestCancellableInvocable.TokensCancelled = 0;
+            await queue.ConsumeQueueOnShutdown();
+            Assert.Equal(1, TestCancellableInvocableWithPayload.TokensCancelled);
+        }
+        
+        [Fact]
         public async Task CanCancelInvocable()
         {
             var services = new ServiceCollection();
@@ -82,9 +101,37 @@ namespace UnitTests.Queuing
                 {
                     Interlocked.Increment(ref TokensCancelled);
                 }
+                return Task.CompletedTask;
+            }
+        }
+        
+        private class TestCancellableInvocableWithPayload : IInvocable, IInvocableWithPayload<TestPayload>, ICancellableTask
+        {
+            /// <summary>
+            /// Static fields keeps track of all cancelled tokens count.
+            /// </summary>
+            public static int TokensCancelled = 0;
+            public TestPayload Payload { get; set; }
+            public TestCancellableInvocableWithPayload() {}
+
+            public CancellationToken Token { get; set; }
+
+            public Task Invoke()
+            {
+                if(this.Token.IsCancellationRequested)
+                {
+                    Interlocked.Increment(ref TokensCancelled);
+                }
+                Thread.Sleep(10000);
 
                 return Task.CompletedTask;
             }
+
+        }
+
+        private class TestPayload
+        {
+            public string Code { get; set; }
         }
     }
 }
