@@ -47,10 +47,16 @@ namespace Coravel.Queuing
 
         public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
+            var tokenSource = new CancellationTokenSource();
             var job = this.EnqueueInvocable<T>(invocable => {
-                IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
+                var invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
                 invocableWithParams.Payload = payload;
+                if (invocableWithParams is ICancellableTask)
+                {
+                    ((ICancellableTask) invocable).Token = tokenSource.Token;
+                }
             });
+            this._tokens.TryAdd(job.Guid, tokenSource);
             return job.Guid;
         }
 
