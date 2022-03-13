@@ -5,11 +5,12 @@
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
 
     <PackageId>Coravel.Mailer</PackageId>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel.Mailer</Title>
     <Description>Coravel's Mailer feature. Provides a terse yet expressive syntax with tools to send mail in your .NET Core apps.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
