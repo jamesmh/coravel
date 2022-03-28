@@ -7,11 +7,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel.Cache.SQLServer</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel SQL Server Cache Driver</Title>
     <Description>Distributed MS SQL Server cache driver for Coravel</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
