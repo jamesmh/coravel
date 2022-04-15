@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
@@ -15,7 +14,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <summary>
         /// From the cron expression, get all the int values that are valid due times.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
         public bool CheckIfTimeIsDue(int time)
         {
@@ -51,6 +50,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// Get value from a cron expression with a single value.
         /// </summary>
         /// <param name="expression"></param>
+        /// <param name="toCheck"></param>
         /// <returns></returns>
         private static bool CheckIsSpecifiedInt(string expression, int toCheck)
         {

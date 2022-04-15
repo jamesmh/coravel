@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Coravel.Scheduling.Schedule.Helpers;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
@@ -25,7 +22,7 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <summary>
         /// Based on the cron expression, is this DateTime due?
         /// </summary>
-        /// <param name="dateTime"></param>
+        /// <param name="time"></param>
         /// <returns></returns>
         public bool IsDue(int time)
         {
