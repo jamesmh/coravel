@@ -111,8 +111,8 @@ namespace Coravel.Scheduling.Schedule.Event
             }
             else
             {
-                /// This allows us to scope the scheduled IInvocable object
-                /// and allow DI to inject it's dependencies.
+                // This allows us to scope the scheduled IInvocable object
+                // and allow DI to inject it's dependencies.
                 using (var scope = this._scopeFactory.CreateScope())
                 {
                     if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)

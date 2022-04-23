@@ -3,18 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
-
     <PackageId>Coravel.Mailer</PackageId>
-    <Version>4.0.0</Version>
+    <Version>4.0.2</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel.Mailer</Title>
     <Description>Coravel's Mailer feature. Provides a terse yet expressive syntax with tools to send mail in your .NET Core apps.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;coravel;mail;e-mail;email;mailer;mail template;e-mail template; email template</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
