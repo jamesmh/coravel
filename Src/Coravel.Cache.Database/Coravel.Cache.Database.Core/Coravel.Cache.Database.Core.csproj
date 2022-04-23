@@ -3,16 +3,19 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel.Cache.Database.Core</PackageId>
-    <Version>2.0.0</Version>
+    <Version>2.0.2</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel Database Cache Driver Shared Library</Title>
     <Description>Core tools for Coravel database cache drivers</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;coravel;caching;database</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

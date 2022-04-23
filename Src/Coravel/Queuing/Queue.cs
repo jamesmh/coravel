@@ -155,7 +155,7 @@ namespace Coravel.Queuing
                 {
                     Type invocableType = typeof(T);
                     // This allows us to scope the scheduled IInvocable object
-                    /// and allow DI to inject it's dependencies.
+                    // and allow DI to inject it's dependencies.
                     using (var scope = this._scopeFactory.CreateScope())
                     {
                         if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
