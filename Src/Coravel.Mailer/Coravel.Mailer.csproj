@@ -3,9 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
-
     <PackageId>Coravel.Mailer</PackageId>
-    <Version>4.0.1</Version>
+    <Version>4.0.2</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel.Mailer</Title>
@@ -16,6 +15,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;coravel;mail;e-mail;email;mailer;mail template;e-mail template; email template</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

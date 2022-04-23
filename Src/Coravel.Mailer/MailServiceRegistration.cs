@@ -36,6 +36,7 @@ namespace Coravel
         /// Useful for testing.
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="config"></param>
         public static IServiceCollection AddFileLogMailer(this IServiceCollection services, IConfiguration config)
         {
             var globalFrom = GetGlobalFromRecipient(config);
@@ -83,6 +84,7 @@ namespace Coravel
         /// Register Coravel's mailer using the Custom Mailer.
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="config"></param>
         /// <param name="sendMailAsync"></param>
         public static IServiceCollection AddCustomMailer(this IServiceCollection services, IConfiguration config, CustomMailer.SendAsyncFunc sendMailAsync)
         {
