@@ -16,6 +16,7 @@ namespace Coravel.Queuing
 {
     public class Queue : IQueue, IQueueConfiguration
     {
+        public string QueueName { get; private set; }
         private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
         private ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
         private Action<Exception> _errorHandler;
@@ -28,6 +29,12 @@ namespace Coravel.Queuing
 
         public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
+            this._scopeFactory = scopeFactory;
+            this._dispatcher = dispatcher;
+        }
+
+        public Queue(string queueName, IServiceScopeFactory scopeFactory, IDispatcher dispatcher) {
+            this.QueueName = queueName;
             this._scopeFactory = scopeFactory;
             this._dispatcher = dispatcher;
         }
@@ -115,7 +122,7 @@ namespace Coravel.Queuing
             }
         }
 
-        public async Task ConsumeQueueOnShutdown() 
+        public async Task ConsumeQueueOnShutdown()
         {
             this.CancelAllTokens();
             await this.ConsumeQueueAsync();
@@ -153,9 +160,9 @@ namespace Coravel.Queuing
                     using (var scope = this._scopeFactory.CreateScope())
                     {
                         if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
-                        {                            
+                        {
                             if(beforeInvoked != null)
-                            {                            
+                            {
                                 beforeInvoked(invocable);
                             }
 
@@ -180,7 +187,7 @@ namespace Coravel.Queuing
                 {
                     token.Dispose();
                 }
-            }                   
+            }
         }
 
         private List<ActionOrAsyncFunc> DequeueAllTasks()
