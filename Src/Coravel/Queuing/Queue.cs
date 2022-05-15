@@ -51,9 +51,9 @@ namespace Coravel.Queuing
             var job = this.EnqueueInvocable<T>(invocable => {
                 var invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
                 invocableWithParams.Payload = payload;
-                if (invocableWithParams is ICancellableTask)
+                if (invocableWithParams is ICancellableTask task)
                 {
-                    ((ICancellableTask) invocable).Token = tokenSource.Token;
+                    task.Token = tokenSource.Token;
                 }
             });
             this._tokens.TryAdd(job.Guid, tokenSource);
@@ -136,6 +136,14 @@ namespace Coravel.Queuing
                 : this._tasks.Count;
 
             return new QueueMetrics(this._tasksRunningCount, waitingCount);
+        }
+
+        public bool TryCancelInvocable(Guid tokenId)
+        {
+            if (!_tokens.TryGetValue(tokenId, out var tokenNeedCancel)) return false; // token does not exist
+            if (tokenNeedCancel.IsCancellationRequested) return false; // token is already canceled
+            tokenNeedCancel.Cancel();
+            return true;
         }
 
         private void CancelAllTokens()
