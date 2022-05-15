@@ -13,22 +13,58 @@ namespace UnitTests.Queuing
     public class CancellableInvocableForQueueTests
     {
         [Fact]
-        public async Task CanCancelInvocableWithPayload()
+        public async Task CanCancelSpecificInvocableWithPayload()
         {
+            // init
             var services = new ServiceCollection();
             services.AddTransient<TestCancellableInvocable>();
             services.AddTransient<TestCancellableInvocableWithPayload>();
             var provider = services.BuildServiceProvider();
-
             var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            
+            //exec
             var payload = new TestPayload()
             {
                 Code = "test"
             };
-            queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
-            TestCancellableInvocable.TokensCancelled = 0;
+            var firstItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            var secondItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            var thirdItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+
+            var cancelResultFirstItem = queue.TryCancelInvocable(firstItem);
+            var cancelResultThirdItem = queue.TryCancelInvocable(thirdItem);
+            
+            //assert
+            TestCancellableInvocableWithPayload.TokensCancelled = 0;
+            await queue.ConsumeQueueAsync();
+            Assert.True(cancelResultFirstItem);
+            Assert.True(cancelResultThirdItem);
+            Assert.Equal(2, TestCancellableInvocableWithPayload.TokensCancelled);
+        }
+        
+        [Fact]
+        public async Task CanCancelInvocableWithPayloadOnQueueShutdown()
+        {
+            // init
+            var services = new ServiceCollection();
+            services.AddTransient<TestCancellableInvocable>();
+            services.AddTransient<TestCancellableInvocableWithPayload>();
+            var provider = services.BuildServiceProvider();
+            var queue = new Queue(provider.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub());
+            
+            //exec
+            var payload = new TestPayload()
+            {
+                Code = "test"
+            };
+            var firstItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            var secondItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            var thirdItem = queue.QueueInvocableWithPayload<TestCancellableInvocableWithPayload, TestPayload>(payload);
+            
+            // assert
+            TestCancellableInvocableWithPayload.TokensCancelled = 0;
             await queue.ConsumeQueueOnShutdown();
-            Assert.Equal(1, TestCancellableInvocableWithPayload.TokensCancelled);
+            Assert.Equal(3, TestCancellableInvocableWithPayload.TokensCancelled);
         }
         
         [Fact]
