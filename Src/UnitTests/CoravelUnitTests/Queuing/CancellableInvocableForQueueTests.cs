@@ -158,8 +158,6 @@ namespace UnitTests.Queuing
                 {
                     Interlocked.Increment(ref TokensCancelled);
                 }
-                Thread.Sleep(10000);
-
                 return Task.CompletedTask;
             }
 
