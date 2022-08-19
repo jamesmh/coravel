@@ -295,9 +295,9 @@ This will **not** override the assigned schedule of a task or invocable. Take th
 
 ```csharp
 scheduler.Schedule<CacheSomeStuff>()
-    .RunOnceAtStart()
     .Hourly()
-    .Weekday();
+    .Weekday()
+    .RunOnceAtStart();
 ```
 
 This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.
