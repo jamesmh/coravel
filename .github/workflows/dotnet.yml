@@ -7,14 +7,14 @@ on:
     branches: [ master ]
 
 jobs:
-  build_dotnet_5:
+  build_dotnet_6:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore ./Src/All.sln
     - name: Build
