@@ -12,8 +12,8 @@
     <RepositoryUrl>https://github.com/jamesmh/coravel</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>netcore;scheduling;coravel;queuing;scheduler;framework</PackageTags>
-    <PackageIcon>logo.png</PackageIcon>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageIcon>./logo.png</PackageIcon>
+    <PackageReadmeFile>./readme.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IncludeSymbols>true</IncludeSymbols>
