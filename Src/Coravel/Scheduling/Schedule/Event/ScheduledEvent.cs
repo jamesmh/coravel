@@ -211,6 +211,12 @@ namespace Coravel.Scheduling.Schedule.Event
             return this;
         }
 
+        public IScheduledEventConfiguration Monthly()
+        {
+            this._expression = new CronExpression($"00 00 1 * *");
+            return this;
+        }
+
         public IScheduledEventConfiguration Cron(string cronExpression)
         {
             this._expression = new CronExpression(cronExpression);

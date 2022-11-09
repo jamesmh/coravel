@@ -150,26 +150,27 @@ Ensure that any parameters to be injected via dependency injection are listed fi
 
 After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
-| Method | Description |
-|--------|--------------|
-| `EverySecond()`                   | Run the task every second |
-| `EveryFiveSeconds()`              | Run the task every five seconds |
-| `EveryTenSeconds()`               | Run the task every ten seconds |
-| `EveryFifteenSeconds()`           | Run the task every fifteen seconds |
-| `EveryThirtySeconds()`            | Run the task every thirty seconds |
-| `EverySeconds(3)`                 | Run the task every 3 seconds. |
-| `EveryMinute()`                   | Run the task once a minute |
-| `EveryFiveMinutes()`              | Run the task every five minutes |
-| `EveryTenMinutes()`               | Run the task every ten minutes |
-| `EveryFifteenMinutes()`           | Run the task every fifteen minutes |
-| `EveryThirtyMinutes()`            | Run the task every thirty minutes |
-| `Hourly()`                        | Run the task every hour |
-| `HourlyAt(12)`                    | Run the task at 12 minutes past every hour |
-| `Daily()`                         | Run the task once a day at midnight |
-| `DailyAtHour(13)`                 | Run the task once a day at 1 p.m. UTC |
-| `DailyAt(13, 30)`                 | Run the task once a day at 1:30 p.m. UTC |
-| `Weekly()`                        | Run the task once a week |
-| `Cron("* * * * *")`               | Run the task using a Cron expression |
+| Method                  | Description                                                         |
+|-------------------------|---------------------------------------------------------------------|
+| `EverySecond()`         | Run the task every second                                           |
+| `EveryFiveSeconds()`    | Run the task every five seconds                                     |
+| `EveryTenSeconds()`     | Run the task every ten seconds                                      |
+| `EveryFifteenSeconds()` | Run the task every fifteen seconds                                  |
+| `EveryThirtySeconds()`  | Run the task every thirty seconds                                   |
+| `EverySeconds(3)`       | Run the task every 3 seconds.                                       |
+| `EveryMinute()`         | Run the task once a minute                                          |
+| `EveryFiveMinutes()`    | Run the task every five minutes                                     |
+| `EveryTenMinutes()`     | Run the task every ten minutes                                      |
+| `EveryFifteenMinutes()` | Run the task every fifteen minutes                                  |
+| `EveryThirtyMinutes()`  | Run the task every thirty minutes                                   |
+| `Hourly()`              | Run the task every hour                                             |
+| `HourlyAt(12)`          | Run the task at 12 minutes past every hour                          |
+| `Daily()`               | Run the task once a day at midnight                                 |
+| `DailyAtHour(13)`       | Run the task once a day at 1 p.m. UTC                               |
+| `DailyAt(13, 30)`       | Run the task once a day at 1:30 p.m. UTC                            |
+| `Weekly()`              | Run the task once a week                                            |
+| `Monthly()`             | Run the task once a month (at midnight on the 1st day of the month) |
+| `Cron("* * * * *")`     | Run the task using a Cron expression                                |
 
 :::tip
 The scheduler uses UTC time by default.
@@ -295,9 +296,9 @@ This will **not** override the assigned schedule of a task or invocable. Take th
 
 ```csharp
 scheduler.Schedule<CacheSomeStuff>()
-    .RunOnceAtStart()
     .Hourly()
-    .Weekday();
+    .Weekday()
+    .RunOnceAtStart();
 ```
 
 This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.

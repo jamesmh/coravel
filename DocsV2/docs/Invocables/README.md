@@ -38,7 +38,7 @@ You may [use the Coravel Cli to generate a new invocable](/Cli/#invocables).
 
 2. In your invocable's constructor, inject any types that are available from your application's service provider.
 
-3. Make sure that your invocable _itself_ is available in the service container.
+3. Make sure that your invocable _itself_ is available in the service container (usually done in your `Startup.cs` file).
 
 ```csharp
 services.AddTransient<SendDailyStatsReport>();
