@@ -87,6 +87,12 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         IScheduledEventConfiguration Weekly();
 
         /// <summary>
+        /// Scheduled task runs once a month.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration Monthly();
+
+        /// <summary>
         /// Schedule an event from a basic cron expression.
         /// Supported values for expression parts are:
         /// - "*"
