@@ -77,5 +77,11 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <returns></returns>
         IScheduledEventConfiguration When(Func<Task<bool>> predicate);
         IScheduledEventConfiguration Zoned(TimeZoneInfo timeZoneInfo);
+
+        /// <summary>
+        /// Run this scheduled event on the first "tick" at application startup.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration RunOnceAtStart();
     }
 }

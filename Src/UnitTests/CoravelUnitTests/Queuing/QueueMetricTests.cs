@@ -27,6 +27,39 @@ namespace UnitTests.Queuing
         }
 
         [Fact]
+        public async Task TestQueueHasCorrectNumberOfJobsWaitingWhileSomeRunning()
+        {
+            var queue = new Queue(null, new DispatcherStub());
+
+            queue.QueueAsyncTask(() => Task.Delay(200));
+            queue.QueueAsyncTask(() => Task.Delay(200));
+            queue.QueueAsyncTask(() => Task.Delay(200));
+
+            Assert.Equal(3, queue.GetMetrics().WaitingCount());
+
+            var task = queue.ConsumeQueueAsync();
+
+            queue.QueueAsyncTask(() => Task.Delay(200));
+            queue.QueueAsyncTask(() => Task.Delay(200));
+
+            var metrics = queue.GetMetrics();
+
+            Assert.Equal(3, metrics.RunningCount());
+            Assert.Equal(2, metrics.WaitingCount());
+
+            await task;
+
+            task = queue.ConsumeQueueAsync();
+
+            metrics = queue.GetMetrics();
+
+            Assert.Equal(2, metrics.RunningCount());
+            Assert.Equal(0, metrics.WaitingCount());
+
+            await task;
+        }
+
+        [Fact]
         public async Task TestQueueHasCorrectNumberOfJobsRunning()
         {
             Queue queue = new Queue(null, new DispatcherStub());

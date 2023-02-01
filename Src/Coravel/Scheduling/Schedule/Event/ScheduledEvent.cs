@@ -23,6 +23,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private int? _secondsInterval = null;
         private object[] _constructorParameters = null;
         private ZonedTime _zonedTime = ZonedTime.AsUTC();
+        private bool _runOnceAtStart = false;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -98,8 +99,8 @@ namespace Coravel.Scheduling.Schedule.Event
             }
             else
             {
-                /// This allows us to scope the scheduled IInvocable object
-                /// and allow DI to inject it's dependencies.
+                // This allows us to scope the scheduled IInvocable object
+                // and allow DI to inject it's dependencies.
                 using (var scope = this._scopeFactory.CreateScope())
                 {
                     if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
@@ -195,6 +196,12 @@ namespace Coravel.Scheduling.Schedule.Event
         public IScheduledEventConfiguration Weekly()
         {
             this._expression = new CronExpression($"00 00 * * 1");
+            return this;
+        }
+
+        public IScheduledEventConfiguration Monthly()
+        {
+            this._expression = new CronExpression($"00 00 1 * *");
             return this;
         }
 
@@ -346,5 +353,13 @@ namespace Coravel.Scheduling.Schedule.Event
             this._zonedTime = new ZonedTime(timeZoneInfo);
             return this;
         }
+
+        public IScheduledEventConfiguration RunOnceAtStart()
+        {
+            this._runOnceAtStart = true;
+            return this;
+        }
+
+        internal bool ShouldRunOnceAtStart() => this._runOnceAtStart;
     }
 }

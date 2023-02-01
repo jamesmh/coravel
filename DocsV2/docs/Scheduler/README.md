@@ -150,26 +150,27 @@ Ensure that any parameters to be injected via dependency injection are listed fi
 
 After calling `Schedule` or `ScheduleAsync`, methods to specify the schedule interval are available.
 
-| Method | Description |
-|--------|--------------|
-| `EverySecond()`                   | Run the task every second |
-| `EveryFiveSeconds()`              | Run the task every five seconds |
-| `EveryTenSeconds()`               | Run the task every ten seconds |
-| `EveryFifteenSeconds()`           | Run the task every fifteen seconds |
-| `EveryThirtySeconds()`            | Run the task every thirty seconds |
-| `EverySeconds(3)`                 | Run the task every 3 seconds. |
-| `EveryMinute()`                   | Run the task once a minute |
-| `EveryFiveMinutes()`              | Run the task every five minutes |
-| `EveryTenMinutes()`               | Run the task every ten minutes |
-| `EveryFifteenMinutes()`           | Run the task every fifteen minutes |
-| `EveryThirtyMinutes()`            | Run the task every thirty minutes |
-| `Hourly()`                        | Run the task every hour |
-| `HourlyAt(12)`                    | Run the task at 12 minutes past every hour |
-| `Daily()`                         | Run the task once a day at midnight |
-| `DailyAtHour(13)`                 | Run the task once a day at 1 p.m. UTC |
-| `DailyAt(13, 30)`                 | Run the task once a day at 1:30 p.m. UTC |
-| `Weekly()`                        | Run the task once a week |
-| `Cron("* * * * *")`               | Run the task using a Cron expression |
+| Method                  | Description                                                         |
+|-------------------------|---------------------------------------------------------------------|
+| `EverySecond()`         | Run the task every second                                           |
+| `EveryFiveSeconds()`    | Run the task every five seconds                                     |
+| `EveryTenSeconds()`     | Run the task every ten seconds                                      |
+| `EveryFifteenSeconds()` | Run the task every fifteen seconds                                  |
+| `EveryThirtySeconds()`  | Run the task every thirty seconds                                   |
+| `EverySeconds(3)`       | Run the task every 3 seconds.                                       |
+| `EveryMinute()`         | Run the task once a minute                                          |
+| `EveryFiveMinutes()`    | Run the task every five minutes                                     |
+| `EveryTenMinutes()`     | Run the task every ten minutes                                      |
+| `EveryFifteenMinutes()` | Run the task every fifteen minutes                                  |
+| `EveryThirtyMinutes()`  | Run the task every thirty minutes                                   |
+| `Hourly()`              | Run the task every hour                                             |
+| `HourlyAt(12)`          | Run the task at 12 minutes past every hour                          |
+| `Daily()`               | Run the task once a day at midnight                                 |
+| `DailyAtHour(13)`       | Run the task once a day at 1 p.m. UTC                               |
+| `DailyAt(13, 30)`       | Run the task once a day at 1:30 p.m. UTC                            |
+| `Weekly()`              | Run the task once a week                                            |
+| `Monthly()`             | Run the task once a month (at midnight on the 1st day of the month) |
+| `Cron("* * * * *")`     | Run the task using a Cron expression                                |
 
 :::tip
 The scheduler uses UTC time by default.
@@ -205,9 +206,7 @@ All these methods are further chainable - like `Monday().Wednesday()`. This woul
 Be careful since you could do something like `.Weekend().Weekday()`, which means there are no constraints (it runs on any day).
 :::
 
-## Extras
-
-### Zoned Schedules
+## Zoned Schedules
 
 Sometimes you do want to run your schedules against a particular time zone. For these scenarios, use the `Zoned` method:
 
@@ -226,7 +225,7 @@ Creating a valid `TimeZoneInfo` differs depending on whether you're on Windows, 
 Also, you may get unexpected behavior due to daylight savings time. Be careful!
 :::
 
-### Custom Boolean Constraint
+## Custom Boolean Constraint
 
 Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
 
@@ -239,7 +238,7 @@ scheduler
 
 If you require access to dependencies that are registered with the service provider, it is recommended that you [schedule your tasks by using an invocable](#scheduling-invocables) and perform any further restriction logic there.
 
-### Global Error Handling
+## Global Error Handling
 
 Any tasks that throw errors **will just be skipped** and the next task in line will be invoked.
 
@@ -256,7 +255,7 @@ provider.UseScheduler(scheduler =>
 
 You can, of course, add error handling inside your specific tasks too.
 
-### Logging Executed Task Progress
+## Logging Executed Task Progress
 
 Coravel uses the `ILogger` .Net Core interface to allow logging scheduled task progress.
 
@@ -286,6 +285,24 @@ provider.UseScheduler(scheduler =>
 ```
 
 The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
+
+## Force Run A Task At App Startup
+
+At times, you may want to run a task immediately at your application's startup. This could be for debugging, setting up a cache, etc.
+
+For these scenarios, you can use `RunOnceAtStart()`.
+
+This will **not** override the assigned schedule of a task or invocable. Take the following:
+
+```csharp
+scheduler.Schedule<CacheSomeStuff>()
+    .Hourly()
+    .Weekday()
+    .RunOnceAtStart();
+```
+
+This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.
+
 
 ## Prevent Overlapping Tasks
 

@@ -26,6 +26,7 @@ namespace Coravel.Scheduling.Schedule
         private IDispatcher _dispatcher;
         private string _currentWorkerName;
         private CancellationTokenSource _cancellationTokenSource;
+        private bool _isFirstTick = true;
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -100,7 +101,9 @@ namespace Coravel.Scheduling.Schedule
         public async Task RunAtAsync(DateTime utcDate)
         {
             Interlocked.Increment(ref this._schedulerIterationsActiveCount);
-            await RunWorkersAt(utcDate);
+            bool isFirstTick = this._isFirstTick;
+            this._isFirstTick = false;
+            await RunWorkersAt(utcDate, isFirstTick);
             Interlocked.Decrement(ref this._schedulerIterationsActiveCount);
         }
 
@@ -191,27 +194,29 @@ namespace Coravel.Scheduling.Schedule
         /// This method return a list of active tasks (one per worker - which needs to be awaited).
         /// </summary>
         /// <param name="utcDate"></param>
+        /// <param name="isFirstTick"></param>
         /// <returns></returns>
-        private async Task RunWorkersAt(DateTime utcDate)
+        private async Task RunWorkersAt(DateTime utcDate, bool isFirstTick)
         {
             // Grab all the scheduled tasks so we can re-arrange them etc.
-            List<ScheduledTask> scheduledWorkers = new List<ScheduledTask>();
+            var scheduledWorkers = new List<ScheduledTask>();
 
             foreach (var keyValue in this._tasks)
             {
-                bool timerIsNotAtMinute = utcDate.Second != 0;
-                bool taskIsPerMinuteCronTask = keyValue.Value.ScheduledEvent.IsScheduledCronBasedTask();
-                bool appendTask = true;
+                var timerIsAtMinute = utcDate.Second == 0;
+                var taskIsSecondsBased = !keyValue.Value.ScheduledEvent.IsScheduledCronBasedTask();
+                var forceRunAtStart = isFirstTick && keyValue.Value.ScheduledEvent.ShouldRunOnceAtStart();
+                var canRunBasedOnTimeMarker = taskIsSecondsBased || timerIsAtMinute;
 
                 // If this task is scheduled as a cron based task (should only be checked if due per min)
                 // but the time is not at the minute mark, we won't include those tasks to be checked if due.
                 // The second based schedules are always checked.
-                if (taskIsPerMinuteCronTask && timerIsNotAtMinute)
-                {
-                    appendTask = false;
-                }
 
-                if (appendTask)
+                if (canRunBasedOnTimeMarker && keyValue.Value.ScheduledEvent.IsDue(utcDate))
+                {
+                    scheduledWorkers.Add(keyValue.Value);
+                }
+                else if (forceRunAtStart)
                 {
                     scheduledWorkers.Add(keyValue.Value);
                 }
@@ -221,7 +226,6 @@ namespace Coravel.Scheduling.Schedule
             // So we'll group all the "due" scheduled events (the actual work the user wants to perform) into
             // buckets for each "worker".
             var groupedScheduledEvents = scheduledWorkers
-                .Where(worker => worker.ScheduledEvent.IsDue(utcDate))
                 .GroupBy(worker => worker.WorkerName);
 
             var activeTasks = groupedScheduledEvents.Select(workerWithTasks =>

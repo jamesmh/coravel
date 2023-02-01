@@ -101,7 +101,8 @@ async Task SendMailCustomAsync(
     MailRecipient from,
     MailRecipient replyTo,
     IEnumerable<MailRecipient> cc,
-    IEnumerable<MailRecipient> bcc
+    IEnumerable<MailRecipient> bcc,
+    IEnumerable<Attachment> attachments = null
 )
 {
     // Custom logic for sending an email.
