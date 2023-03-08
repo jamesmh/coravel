@@ -49,6 +49,18 @@ namespace Coravel.Scheduling.Schedule.Event
             return scheduledEvent;
         }
 
+        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory, object[] parameters)
+        {
+            if (!typeof(IInvocable).IsAssignableFrom(invocableType))
+            {
+                throw new ArgumentException($"When using {nameof(IScheduler.ScheduleWithParams)}() you must supply a type that inherits from {nameof(IInvocable)}.", nameof(invocableType));
+            }
+
+            var scheduledEvent = WithInvocableType(scopeFactory, invocableType);
+            scheduledEvent._constructorParameters = parameters;
+            return scheduledEvent;
+        }
+
         public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
         {
             var scheduledEvent = new ScheduledEvent();

@@ -74,6 +74,13 @@ namespace Coravel.Scheduling.Schedule
             return scheduled;
         }
 
+        public IScheduleInterval ScheduleWithParams(Type invocableType, params object[] parameters)
+        {
+            ScheduledEvent scheduled = ScheduledEvent.WithInvocableAndParams(invocableType, this._scopeFactory, parameters);
+            this._tasks.TryAdd(Guid.NewGuid().ToString(), new ScheduledTask(this._currentWorkerName, scheduled));
+            return scheduled;
+        }
+
         public IScheduleInterval ScheduleInvocableType(Type invocableType)
         {
             if (!typeof(IInvocable).IsAssignableFrom(invocableType))
