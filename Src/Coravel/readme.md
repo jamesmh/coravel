@@ -33,7 +33,7 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 - Drivers supporting SMTP, local log file or BYOM ("bring your own mailer") driver
 - Quick and simple configuration via `appsettings.json`
 - And more!
-- 
+
 ## Official Documentation
 
 [You can view the official docs here.](https://docs.coravel.net/Installation/)
