@@ -1,10 +1,14 @@
 ---
 meta:
   - name: description
-    content: Coravel is a near-zero config .NET Core library that makes Task Scheduling, Caching, Queuing, Mailing, Event Broadcasting (and more) a breeze!
+    content: Coravel is a near-zero config .NET library that makes Task Scheduling, Caching, Queuing, Mailing, Event Broadcasting (and more) a breeze!
   - name: keywords
-    content: dotnet dotnetcore ".NET Core task scheduling" ".NET Core scheduler" ".NET Core framework" ".NET Core Queue" ".NET Core Queuing" ".NET Core Caching" Coravel
+    content: dotnet ".NET task scheduling" ".NET scheduler" ".NET Queue" ".NET Queuing" ".NET Caching" Coravel
 ---
+
+# GitHub
+
+[https://github.com/jamesmh/coravel](https://github.com/jamesmh/coravel)
 
 # Installation
 
