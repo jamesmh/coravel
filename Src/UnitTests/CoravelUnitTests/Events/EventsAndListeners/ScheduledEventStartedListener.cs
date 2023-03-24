@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Coravel.Scheduling.Schedule.Broadcast;
 
-namespace UnitTests.Events.EventsAndListeners
+namespace CoravelUnitTests.Events.EventsAndListeners
 {
     public class ScheduledEventStartedListener : IListener<ScheduledEventStarted>
     {

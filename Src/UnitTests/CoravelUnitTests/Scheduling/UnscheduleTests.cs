@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling
+namespace CoravelUnitTests.Scheduling
 {
     public class UnscheduleTests
     {

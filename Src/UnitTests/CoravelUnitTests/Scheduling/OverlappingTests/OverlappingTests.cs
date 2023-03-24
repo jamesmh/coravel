@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling.OverlappingTests
+namespace CoravelUnitTests.Scheduling.OverlappingTests
 {
     public class OverlappingTests
     {

@@ -4,11 +4,11 @@ using Coravel.Invocable;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Mutex;
+using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling.Invocable
+namespace CoravelUnitTests.Scheduling.Invocable
 {
     public class InvocableTests
     {

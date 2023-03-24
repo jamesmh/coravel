@@ -1,6 +1,6 @@
 using Coravel.Events.Interfaces;
 
-namespace UnitTests.Events.EventsAndListeners
+namespace CoravelUnitTests.Events.EventsAndListeners
 {
     public class TestEventWithDispatcher : IEvent
     {

@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 
-namespace UnitTests.Events.EventsAndListeners
+namespace CoravelUnitTests.Events.EventsAndListeners
 {
     public class TestListener1ForEvent1 : IListener<TestEvent1>
     {

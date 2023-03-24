@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UnitTests.Scheduling.Stubs
+namespace CoravelUnitTests.Scheduling.Stubs
 {
     public class ServiceScopeFactoryStub : IServiceScopeFactory
     {

@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 
-namespace UnitTests.Scheduling.Stubs
+namespace CoravelUnitTests.Scheduling.Stubs
 {
     public class DispatcherStub : IDispatcher
     {

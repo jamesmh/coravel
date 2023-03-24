@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Coravel.Queuing.Broadcast;
 
-namespace UnitTests.Events.EventsAndListeners
+namespace CoravelUnitTests.Events.EventsAndListeners
 {
     public class QueueConsumationStartedListener : IListener<QueueConsumationStarted>
     {

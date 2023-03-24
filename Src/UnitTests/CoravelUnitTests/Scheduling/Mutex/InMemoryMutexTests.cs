@@ -1,11 +1,10 @@
 using System;
-using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Mutex;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling.Mutex
+namespace CoravelUnitTests.Scheduling.Mutex
 {
     public class InMemoryMutexTests
     {
