@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>.net6.0</TargetFramework>
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc>
+
     <PackageId>Coravel.Mailer</PackageId>
     <Version>4.0.2</Version>
     <Authors>James Hickey</Authors>
@@ -20,8 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="MailKit" Version="2.5.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.0" />
   </ItemGroup>
 </Project>
