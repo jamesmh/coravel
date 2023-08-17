@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Coravel.Scheduling.Schedule.Cron
 {
@@ -16,7 +15,7 @@ namespace Coravel.Scheduling.Schedule.Cron
             var values = expression.Split(' ');
             if (values.Length != 5)
             {
-                throw new Exception($"Cron expression '{expression}' is malformed.");
+                throw new MalformedCronExpressionException($"Cron expression '{expression}' is malformed.");
             }
 
             this._minutes = values[0];
@@ -24,6 +23,8 @@ namespace Coravel.Scheduling.Schedule.Cron
             this._days = values[2];
             this._months = values[3];
             this._weekdays = values[4];
+
+            this.GuardExpressionIsValid();
         }
 
         public CronExpression AppendWeekDay(DayOfWeek day)
@@ -45,10 +46,10 @@ namespace Coravel.Scheduling.Schedule.Cron
         public bool IsDue(DateTime time)
         {
             return this.IsMinuteDue(time)
-                && this.IsHoursDue(time)
-                && this.IsDayDue(time)
-                && this.IsMonthDue(time)
-                && this.IsWeekDayDue(time);
+                   && this.IsHoursDue(time)
+                   && this.IsDayDue(time)
+                   && this.IsMonthDue(time)
+                   && this.IsWeekDayDue(time);
         }
 
         public bool IsWeekDayDue(DateTime time)
@@ -74,6 +75,17 @@ namespace Coravel.Scheduling.Schedule.Cron
         private bool IsMonthDue(DateTime time)
         {
             return new CronExpressionPart(this._months, 12).IsDue(time.Month);
+        }
+
+        private void GuardExpressionIsValid()
+        {
+            // We don't want to check that the expression is due, but just run validation and ignore any results.
+            var time = DateTime.UtcNow;
+            this.IsMinuteDue(time);
+            this.IsHoursDue(time);
+            this.IsDayDue(time);
+            this.IsMonthDue(time);
+            this.IsWeekDayDue(time);
         }
     }
 }
