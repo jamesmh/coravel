@@ -9,4 +9,7 @@
     <ProjectReference Include="../../Coravel.Mailer/Coravel.Mailer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+  </ItemGroup>
+
 </Project>
