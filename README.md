@@ -1,6 +1,5 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5f511f8d-d256-4e4f-a21f-b7a444b4d4f9/deploy-status)](https://app.netlify.com/sites/coravel-docs/deploys)
 
-[![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
 [![Nuget](https://img.shields.io/nuget/v/Coravel.svg)](https://www.nuget.org/packages/Coravel)
 [![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)](https://www.nuget.org/packages/Coravel)
 
