@@ -24,7 +24,7 @@ namespace Coravel.Scheduling.Schedule.Cron
 
             if (isRange && isDelineatedArray)
             {
-                throw new Exception($"Cron expression '{_expression}' has mixed entry type.");
+                throw new MalformedCronExpressionException($"Cron expression '{_expression}' has mixed entry type.");
             }
 
             if (isDivisibleRange)
@@ -58,7 +58,7 @@ namespace Coravel.Scheduling.Schedule.Cron
 
             if (!parsed)
             {
-                throw new Exception($"Cron entry '{expression}' is malformed.");
+                throw new MalformedCronExpressionException($"Cron entry '{expression}' is malformed.");
             }
 
             return parsedValue == toCheck;
@@ -77,7 +77,7 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 if (!int.TryParse(val, out var parsedValue))
                 {
-                    throw new Exception($"Cron entry '{expression}' is malformed.");
+                    throw new MalformedCronExpressionException($"Cron entry '{expression}' is malformed.");
                 }
 
                 if (parsedValue == toCheck)
@@ -104,7 +104,7 @@ namespace Coravel.Scheduling.Schedule.Cron
 
             if (!(firstParsed && secondParsed))
             {
-                throw new Exception($"Cron expression ${expression} is malformed.");
+                throw new MalformedCronExpressionException($"Cron expression ${expression} is malformed.");
             }
 
             return this.IsBetween(first, second, toCheck);
@@ -127,7 +127,7 @@ namespace Coravel.Scheduling.Schedule.Cron
 
             if (!(firstParsed && secondParsed && divisorParsed))
             {
-                throw new Exception($"Cron expression ${expression} is malformed.");
+                throw new MalformedCronExpressionException($"Cron expression ${expression} is malformed.");
             }
 
             return this.IsBetweenSkipping(first, second, divisor, toCheck);
