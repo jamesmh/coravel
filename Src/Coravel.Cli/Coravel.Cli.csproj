@@ -8,7 +8,7 @@
     <TargetFramework>.net6.0</TargetFramework>
     <ToolCommandName>coravel</ToolCommandName>
     <PackageId>coravel-cli</PackageId>
-    <PackageVersion>0.11.2-prerelease</PackageVersion>
+    <PackageVersion>1.0.0</PackageVersion>
     <AssemblyName>Coravel.Cli</AssemblyName>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/jamesmh/coravel</PackageProjectUrl>
