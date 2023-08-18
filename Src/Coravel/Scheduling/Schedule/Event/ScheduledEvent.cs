@@ -27,35 +27,36 @@ namespace Coravel.Scheduling.Schedule.Event
         private bool _runOnce = false;
         private bool _wasPreviouslyRun = false;
 
-        public ScheduledEvent(Action scheduledAction)
+        public ScheduledEvent(Action scheduledAction, IServiceScopeFactory scopeFactory) : this(scopeFactory)
         {
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAction);
         }
 
-        public ScheduledEvent(Func<Task> scheduledAsyncTask)
+        public ScheduledEvent(Func<Task> scheduledAsyncTask, IServiceScopeFactory scopeFactory) : this(scopeFactory)
         {
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
         }
 
-        private ScheduledEvent()
+        private ScheduledEvent(IServiceScopeFactory scopeFactory)
         {
+            this._scopeFactory = scopeFactory;
+            this._eventUniqueId = Guid.NewGuid().ToString();
         }
 
         public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
-            return WithInvocableType(scopeFactory, typeof(T));
+            return WithInvocableType(typeof(T), scopeFactory);
         }
 
         internal static ScheduledEvent WithInvocableAndParams<T>(IServiceScopeFactory scopeFactory, object[] parameters)
             where T : IInvocable
         {
-            var scheduledEvent = WithInvocableType(scopeFactory, typeof(T));
+            var scheduledEvent = WithInvocableType(typeof(T), scopeFactory);
             scheduledEvent._constructorParameters = parameters;
             return scheduledEvent;
         }
 
-        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory,
-            object[] parameters)
+        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory, object[] parameters)
         {
             if (!typeof(IInvocable).IsAssignableFrom(invocableType))
             {
@@ -64,16 +65,15 @@ namespace Coravel.Scheduling.Schedule.Event
                     nameof(invocableType));
             }
 
-            var scheduledEvent = WithInvocableType(scopeFactory, invocableType);
+            var scheduledEvent = WithInvocableType(invocableType, scopeFactory);
             scheduledEvent._constructorParameters = parameters;
             return scheduledEvent;
         }
 
-        public static ScheduledEvent WithInvocableType(IServiceScopeFactory scopeFactory, Type invocableType)
+        public static ScheduledEvent WithInvocableType(Type invocableType, IServiceScopeFactory scopeFactory)
         {
-            var scheduledEvent = new ScheduledEvent();
+            var scheduledEvent = new ScheduledEvent(scopeFactory);
             scheduledEvent._invocableType = invocableType;
-            scheduledEvent._scopeFactory = scopeFactory;
             return scheduledEvent;
         }
 
@@ -97,14 +97,7 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public async Task InvokeScheduledEvent(CancellationToken cancellationToken)
         {
-            GenerateUniqueIdOnFirstRunIfNotSpecified();
-            
             if (await WhenPredicateFails())
-            {
-                return;
-            }
-
-            if (DecidedToUnSchedule())
             {
                 return;
             }
@@ -128,26 +121,7 @@ namespace Coravel.Scheduling.Schedule.Event
             }
 
             MarkedAsExecutedOnce();
-        }
-
-        private bool DecidedToUnSchedule()
-        {
-            if (PreviouslyRanAndMarkedToRunOnlyOnce())
-            {
-                using var scope = this._scopeFactory.CreateScope();
-                var scheduler = scope.ServiceProvider.GetService<IScheduler>() as Scheduler;
-                return scheduler.TryUnschedule(this._eventUniqueId);
-            }
-
-            return false;
-        }
-
-        private void GenerateUniqueIdOnFirstRunIfNotSpecified()
-        {
-            if (!this._wasPreviouslyRun && this._eventUniqueId is null)
-            {
-                this._eventUniqueId = Guid.NewGuid().ToString();
-            }
+            UnScheduleIfWarranted();
         }
 
         public bool ShouldPreventOverlapping() => this._preventOverlapping;
@@ -421,6 +395,16 @@ namespace Coravel.Scheduling.Schedule.Event
         private void MarkedAsExecutedOnce()
         {
             this._wasPreviouslyRun = true;
+        }
+        
+        private void UnScheduleIfWarranted()
+        {
+            if (PreviouslyRanAndMarkedToRunOnlyOnce())
+            {
+                using var scope = this._scopeFactory.CreateScope();
+                var scheduler = scope.ServiceProvider.GetService<IScheduler>() as Scheduler;
+                scheduler.TryUnschedule(this._eventUniqueId);
+            }
         }
     }
 }
