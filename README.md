@@ -60,7 +60,7 @@ You can support my ongoing open-source work on [BuyMeACoffee](https://www.buymea
 
 ## Coravel Pro
 
-If you are building a .NET application with EF (Core), then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET app a breeze!
+If you are building a .NET application with Entity Framework then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET app a breeze!
 
 - Visual job scheduling & management
 - Scaffold a CRUD UI for managing your EF entities
