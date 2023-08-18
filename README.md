@@ -1,6 +1,5 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/5f511f8d-d256-4e4f-a21f-b7a444b4d4f9/deploy-status)](https://app.netlify.com/sites/coravel-docs/deploys)
 
-[![BuiltWithDot.Net shield](https://builtwithdot.net/project/32/coravel/badge)](https://builtwithdot.net/project/32/coravel)
 [![Nuget](https://img.shields.io/nuget/v/Coravel.svg)](https://www.nuget.org/packages/Coravel)
 [![NuGet](https://img.shields.io/nuget/dt/Coravel.svg)](https://www.nuget.org/packages/Coravel)
 
@@ -57,8 +56,7 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 ## Samples
 
 - [Using Coravel With EF Core](https://github.com/jamesmh/coravel/tree/master/Samples/EFCoreSample)
-- [.NET Core Worker Service using Coravel's Task Scheduling (3.0+)](https://github.com/jamesmh/coravel/tree/master/Samples/WorkerServiceScheduler)
-- [.NET Core Console app using the Host Builder and Coravel (< 3.0)](https://github.com/jamesmh/coravel/tree/master/Samples/HostBuilderConsole)
+- [.NET Worker Service using Coravel's Task Scheduling](https://github.com/jamesmh/coravel/tree/master/Samples/WorkerServiceScheduler)
 
 ## Support Me
 
@@ -71,5 +69,62 @@ If you are building a .NET application with EF (Core), then you might want to lo
 - Visual job scheduling & management
 - Scaffold a CRUD UI for managing your EF entities
 - Easily configure a dashboard to show health metrics (or whatever you want)
-- Build custom tablular reports of your data
+- Build custom tabular reports of your data
 - And more!
+
+## FAQ
+
+### How is Coravel different from Hangfire?
+
+Hangfire has been around for a while - before modern .NET (Core). It's a fantastic tool that has tons of features that Coravel doesn't. Notably: persistent queues, retry mechanisms, support for many storage drivers, etc.
+
+However, Hangfire still (as of March 2023) does not natively support true `async/await` ([here](https://github.com/HangfireIO/Hangfire/issues/1658) and [here](https://github.com/HangfireIO/Hangfire/issues/401)). This means that using Hangfire within a web application, for example, won't be as efficient as it could be when using threads that perform I/O operations.
+
+Coravel was created with modern C# and .NET primitives in mind - such as `async/await` and .NET's built-in dependency injection utilities. This means that Coravel can be easier to configure and will be very efficient with / won't hog threads that your web application needs to respond to incoming HTTP requests.
+
+### How is Coravel different from Quartz?
+
+Quartz is an older Java library ported to .NET. It still doesn't hook into the modern .NET dependency injection tooling well. Some think that Coravel's APIs are much more succinct and understandable.
+
+For example, compare [this sample](https://www.quartz-scheduler.net/documentation/quartz-3.x/quick-start.html#starting-a-sample-application) from their documentation with how working with Coravel is (e.g. you don't need to understand how to "start" and "stop" Coravel's scheduler, but you do have to manually work with the Quartz scheduler).
+
+### Does Coravel support persisting queued jobs to storage in case my application goes down?
+
+No. At least, not yet. 
+
+Coravel processes queued items in-memory. When your application goes down it won't allow the application to shutdown until all items are processed.
+
+### Does Coravel support retry mechanisms?
+
+Coravel's philosophy has been to work well with other .NET primitives - which means that using other libraries is easy. 
+
+Coravel doesn't support retry mechanisms internally because I am very careful not to bloat Coravel with things that aren't necessary. I want to keep Coravel focused on what it does best (e.g. "I need job scheduling, queuing, etc. without requiring extra infrastructure and complicated configuration").
+
+For example, you can use [Polly](https://github.com/App-vNext/Polly) within your invocables to do retries. Some people will configure a base class that inherits from `IInvocable` that has retries built-in. 
+
+### Does Coravel support distributed locking?
+
+No. However, this can again be achieved by using a battle tested distributed locking library like [DistributedLock](https://github.com/madelson/DistributedLock). You might create an invocable's `Invoke()` like this:
+
+```csharp
+public class TestInvocable : IInvocable
+{
+  private ApplicationDbContext _context;
+  private IDistributedLockProvider _distributedlock;
+
+  public TestInvocable(ApplicationDbContext context, IDistributedLockProvider distributedlock)
+  {
+    this._context = context;
+    this._distributedlock = distributedlock;
+  }
+
+  public async Task Invoke()
+  {
+    await using (await this._distributedlock.AcquireAsync())
+    {
+      await this._context.Test.AddAsync(new TestModel() { Name = "test name" });
+      await this._context.SaveChangesAsync();
+    }
+  }
+}
+```

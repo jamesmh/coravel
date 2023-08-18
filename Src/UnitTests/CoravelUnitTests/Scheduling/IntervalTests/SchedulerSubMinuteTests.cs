@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Mutex;
-using Coravel.Scheduling.Schedule.UtcTime;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling.IntervalTests
+namespace CoravelUnitTests.Scheduling.IntervalTests
 {
     public class SchedulerSubMinuteTests
     {

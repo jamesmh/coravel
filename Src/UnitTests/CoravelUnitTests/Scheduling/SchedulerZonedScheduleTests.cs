@@ -7,7 +7,7 @@ using Coravel.Scheduling.Schedule.Mutex;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace UnitTests.Scheduling
+namespace CoravelUnitTests.Scheduling
 {
     public class SchedulerZonedScheduleTests
     {

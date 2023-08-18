@@ -5,12 +5,12 @@ using Coravel.Events.Interfaces;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Broadcast;
 using Coravel.Scheduling.Schedule.Mutex;
+using CoravelUnitTests.Events.EventsAndListeners;
+using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Events.EventsAndListeners;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Scheduling
+namespace CoravelUnitTests.Scheduling
 {
     public class SchedulerEventDispatcherTests
     {

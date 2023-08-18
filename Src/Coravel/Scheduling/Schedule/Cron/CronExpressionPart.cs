@@ -49,12 +49,12 @@ namespace Coravel.Scheduling.Schedule.Cron
             {
                 if (!int.TryParse(expression.Remove(0, 2), out var divisor))
                 {
-                    throw new Exception($"Cron entry '{expression}' is malformed.");
+                    throw new MalformedCronExpressionException($"Cron entry '{expression}' is malformed.");
                 }
 
                 if (divisor == 0)
                 {
-                    throw new Exception($"Cron entry ${expression} is attempting division by zero.");
+                    throw new MalformedCronExpressionException($"Cron entry ${expression} is attempting division by zero.");
                 }
 
                 if (time == 0)

@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 using Coravel.Queuing;
+using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
 namespace CoravelUnitTests.Queuing
