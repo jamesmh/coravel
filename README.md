@@ -10,15 +10,15 @@
 
 # Coravel
 
-Coravel helps developers get their .NET applications up-and-running fast without compromising code quality. 
+Coravel helps developers get their .NET applications up and running fast by making advanced application features like _task/job scheduling, queuing, caching, mailing (and more!)_ accessible and easy to use. Comes with simple, expressive and straightforward syntax.
 
-It makes advanced application features accessible and easy-to-use by giving you a simple, expressive and straightforward syntax.
+**[You can view the official docs here.](https://docs.coravel.net/Installation/)**
 
 ![Coravel Scheduler](./img/scheduledailyreport.png)
 
 ## Features:
 
-### Task Scheduling
+### Task/Job Scheduling
 
 Usually, you have to configure a cron job or a task via Windows Task Scheduler to get a single or multiple re-occurring tasks to run.
 
@@ -48,10 +48,6 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 - Drivers supporting SMTP, local log file or BYOM ("bring your own mailer") driver
 - Quick and simple configuration via `appsettings.json`
 - And more!
-
-## Official Documentation
-
-[You can view the official docs here.](https://docs.coravel.net/Installation/)
 
 ## Samples
 
@@ -104,7 +100,7 @@ For example, you can use [Polly](https://github.com/App-vNext/Polly) within your
 
 ### Does Coravel support distributed locking?
 
-No. However, this can again be achieved by using a battle tested distributed locking library like [DistributedLock](https://github.com/madelson/DistributedLock). You might create an invocable's `Invoke()` like this:
+No. However, this can again be achieved by using a battle-tested distributed locking library like [DistributedLock](https://github.com/madelson/DistributedLock). You might create an invocable's `Invoke()` like this:
 
 ```csharp
 public class TestInvocable : IInvocable
