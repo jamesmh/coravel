@@ -128,13 +128,13 @@ namespace Coravel.Scheduling.Schedule
 
         public bool IsRunning => this._schedulerIterationsActiveCount > 0;
 
-        public bool TryUnschedule(string uniqueIndentifier)
+        public bool TryUnschedule(string uniqueIdentifier)
         {
-            var toUnschedule = this._tasks.FirstOrDefault(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIndentifier);
+            var toUnSchedule = this._tasks.FirstOrDefault(scheduledEvent => scheduledEvent.Value.ScheduledEvent.OverlappingUniqueIdentifier() == uniqueIdentifier);
 
-            if (toUnschedule.Value != null)
+            if (toUnSchedule.Value != null)
             {
-                string guid = toUnschedule.Key;
+                var guid = toUnSchedule.Key;
                 return this._tasks.TryRemove(guid, out var dummy); // If failed, caller can try again etc.
             }
 
