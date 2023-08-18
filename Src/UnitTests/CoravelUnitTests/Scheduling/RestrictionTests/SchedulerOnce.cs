@@ -1,8 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using Coravel;
 using Coravel.Scheduling.Schedule;
+using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Scheduling.Schedule.Mutex;
 using CoravelUnitTests.Scheduling.Stubs;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace CoravelUnitTests.Scheduling.RestrictionTests
@@ -12,7 +15,12 @@ namespace CoravelUnitTests.Scheduling.RestrictionTests
         [Fact]
         public async Task ScheduleOnceWithCron()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+            var services = new ServiceCollection();
+            services.AddSingleton<IScheduler>(p => new Scheduler(new InMemoryMutex(),
+                p.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub()));
+            var provider = services.BuildServiceProvider();
+            var scheduler = provider.GetRequiredService<IScheduler>() as Scheduler;
+            
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++)
@@ -36,7 +44,12 @@ namespace CoravelUnitTests.Scheduling.RestrictionTests
         [Fact]
         public async Task ScheduleOnceAtHourly()
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+            var services = new ServiceCollection();
+            services.AddSingleton<IScheduler>(p => new Scheduler(new InMemoryMutex(),
+                p.GetRequiredService<IServiceScopeFactory>(), new DispatcherStub()));
+            var provider = services.BuildServiceProvider();
+            var scheduler = provider.GetRequiredService<IScheduler>() as Scheduler;
+            
             int taskRunCount = 0;
 
             scheduler.Schedule(() => taskRunCount++)
