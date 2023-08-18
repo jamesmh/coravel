@@ -108,7 +108,7 @@ scheduler.Schedule(
 
 The `ScheduleWithParams<T>()` method allows you to schedule the same invocable multiple times with different parameters.
 
-_Note: For these specific invocables to work, **do not register them with the DI services.**._
+_Note: For these specific invocables to work, **do not register them with the DI services.**_
 
 ```csharp
 private class BackupDatabaseTableInvocable : IInvocable
