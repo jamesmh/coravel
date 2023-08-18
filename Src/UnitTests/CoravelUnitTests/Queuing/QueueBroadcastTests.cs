@@ -7,11 +7,11 @@ using Coravel.Events;
 using Coravel.Events.Interfaces;
 using Coravel.Queuing;
 using Coravel.Queuing.Broadcast;
+using CoravelUnitTests.Events.EventsAndListeners;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Events.EventsAndListeners;
 using Xunit;
 
-namespace UnitTests.Queuing
+namespace CoravelUnitTests.Queuing
 {
     public class QueueBroadcastTests
     {

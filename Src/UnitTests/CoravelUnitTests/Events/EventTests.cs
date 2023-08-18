@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Coravel;
 using Coravel.Events;
 using Coravel.Events.Interfaces;
+using CoravelUnitTests.Events.EventsAndListeners;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Events.EventsAndListeners;
 using Xunit;
 
-namespace UnitTests.Events
+namespace CoravelUnitTests.Events
 {
     public class EventTests
     {

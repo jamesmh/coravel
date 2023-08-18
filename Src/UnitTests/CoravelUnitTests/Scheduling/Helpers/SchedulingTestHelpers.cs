@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 
-namespace UnitTests.Scheduling.Helpers
+namespace CoravelUnitTests.Scheduling.Helpers
 {
     public static class SchedulingTestHelpers
     {

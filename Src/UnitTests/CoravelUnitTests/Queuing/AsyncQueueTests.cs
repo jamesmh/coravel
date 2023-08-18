@@ -2,10 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Queuing;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Queuing
+namespace CoravelUnitTests.Queuing
 {
     public class AsyncQueueTests
     {

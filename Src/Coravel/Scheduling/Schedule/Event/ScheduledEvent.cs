@@ -35,25 +35,31 @@ namespace Coravel.Scheduling.Schedule.Event
             this._scheduledAction = new ActionOrAsyncFunc(scheduledAsyncTask);
         }
 
-        private ScheduledEvent() { }
+        private ScheduledEvent()
+        {
+        }
 
         public static ScheduledEvent WithInvocable<T>(IServiceScopeFactory scopeFactory) where T : IInvocable
         {
             return WithInvocableType(scopeFactory, typeof(T));
         }
 
-        internal static ScheduledEvent WithInvocableAndParams<T>(IServiceScopeFactory scopeFactory, object[] parameters) where T : IInvocable
+        internal static ScheduledEvent WithInvocableAndParams<T>(IServiceScopeFactory scopeFactory, object[] parameters)
+            where T : IInvocable
         {
             var scheduledEvent = WithInvocableType(scopeFactory, typeof(T));
             scheduledEvent._constructorParameters = parameters;
             return scheduledEvent;
         }
 
-        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory, object[] parameters)
+        internal static ScheduledEvent WithInvocableAndParams(Type invocableType, IServiceScopeFactory scopeFactory,
+            object[] parameters)
         {
             if (!typeof(IInvocable).IsAssignableFrom(invocableType))
             {
-                throw new ArgumentException($"When using {nameof(IScheduler.ScheduleWithParams)}() you must supply a type that inherits from {nameof(IInvocable)}.", nameof(invocableType));
+                throw new ArgumentException(
+                    $"When using {nameof(IScheduler.ScheduleWithParams)}() you must supply a type that inherits from {nameof(IInvocable)}.",
+                    nameof(invocableType));
             }
 
             var scheduledEvent = WithInvocableType(scopeFactory, invocableType);
@@ -70,6 +76,7 @@ namespace Coravel.Scheduling.Schedule.Event
         }
 
         private static readonly int _OneMinuteAsSeconds = 60;
+
         public bool IsDue(DateTime utcNow)
         {
             var zonedNow = this._zonedTime.Convert(utcNow);
@@ -111,20 +118,17 @@ namespace Coravel.Scheduling.Schedule.Event
             }
             else
             {
-                // This allows us to scope the scheduled IInvocable object
-                // and allow DI to inject it's dependencies.
-                using (var scope = this._scopeFactory.CreateScope())
+                await using AsyncServiceScope scope = new(this._scopeFactory.CreateAsyncScope());
+                if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
                 {
-                    if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
+                    if (invocable is ICancellableInvocable cancellableInvokable)
                     {
-                        if (invocable is ICancellableInvocable cancellableInvokable)
-                        {
-                            cancellableInvokable.CancellationToken = cancellationToken;
-                        }
-
-                        await invocable.Invoke();
+                        cancellableInvokable.CancellationToken = cancellationToken;
                     }
+
+                    await invocable.Invoke();
                 }
+                
             }
         }
 
@@ -132,7 +136,8 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             if (this._constructorParameters?.Length > 0)
             {
-                return ActivatorUtilities.CreateInstance(serviceProvider, this._invocableType, this._constructorParameters);
+                return ActivatorUtilities.CreateInstance(serviceProvider, this._invocableType,
+                    this._constructorParameters);
             }
 
             return serviceProvider.GetRequiredService(this._invocableType);
@@ -351,7 +356,8 @@ namespace Coravel.Scheduling.Schedule.Event
         {
             if (seconds < 1 || seconds > 59)
             {
-                throw new ArgumentException("When calling 'EverySeconds(int seconds)', 'seconds' must be between 0 and 60");
+                throw new ArgumentException(
+                    "When calling 'EverySeconds(int seconds)', 'seconds' must be between 0 and 60");
             }
 
             this._secondsInterval = seconds;

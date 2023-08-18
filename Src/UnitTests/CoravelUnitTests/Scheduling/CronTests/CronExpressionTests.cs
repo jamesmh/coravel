@@ -3,7 +3,7 @@ using System.Globalization;
 using Coravel.Scheduling.Schedule.Cron;
 using Xunit;
 
-namespace UnitTests.Scheduling.CronTests
+namespace CoravelUnitTests.Scheduling.CronTests
 {
     public class CronExpressionTests
     {

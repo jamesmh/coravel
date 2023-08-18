@@ -1,7 +1,7 @@
 using System;
 using Coravel.Scheduling.Schedule.Interfaces;
 
-namespace UnitTests.Scheduling.Stubs
+namespace CoravelUnitTests.Scheduling.Stubs
 {
     public class StaticUtcTimeStub : IUtcTime
     {

@@ -5,12 +5,12 @@ using Coravel.Events.Interfaces;
 using Coravel.Invocable;
 using Coravel.Queuing;
 using Coravel.Queuing.Broadcast;
+using CoravelUnitTests.Events.EventsAndListeners;
+using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Events.EventsAndListeners;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Queuing
+namespace CoravelUnitTests.Queuing
 {
     public class QueueTests
     {

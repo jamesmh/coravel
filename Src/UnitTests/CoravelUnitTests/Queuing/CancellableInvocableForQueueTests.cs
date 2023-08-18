@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Coravel.Invocable;
 using Coravel.Queuing;
 using Coravel.Queuing.Interfaces;
+using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
-using UnitTests.Scheduling.Stubs;
 using Xunit;
 
-namespace UnitTests.Queuing
+namespace CoravelUnitTests.Queuing
 {
     public class CancellableInvocableForQueueTests
     {

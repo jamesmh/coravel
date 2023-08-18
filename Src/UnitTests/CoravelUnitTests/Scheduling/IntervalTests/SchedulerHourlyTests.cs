@@ -1,12 +1,11 @@
-using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
-using UnitTests.Scheduling.Stubs;
+using CoravelUnitTests.Scheduling.Stubs;
 using Xunit;
-using static UnitTests.Scheduling.Helpers.SchedulingTestHelpers;
+using static CoravelUnitTests.Scheduling.Helpers.SchedulingTestHelpers;
 
-namespace UnitTests.Scheduling.IntervalTests
+namespace CoravelUnitTests.Scheduling.IntervalTests
 {
     public class SchedulerHourlyTests
     {

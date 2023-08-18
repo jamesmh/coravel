@@ -56,7 +56,7 @@ namespace Coravel.Events
             {
                 foreach (var listenerType in listeners)
                 {
-                    using (var scope = this._scopeFactory.CreateScope())
+                    await using (var scope = this._scopeFactory.CreateAsyncScope())
                     {
                         var obj = scope.ServiceProvider.GetService(listenerType);
                         if (obj is IListener<TEvent> listener)
