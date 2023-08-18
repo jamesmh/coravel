@@ -108,6 +108,8 @@ scheduler.Schedule(
 
 The `ScheduleWithParams<T>()` method allows you to schedule the same invocable multiple times with different parameters.
 
+_Note: For these specific invocables to work, **do not register them with the DI services.**._
+
 ```csharp
 private class BackupDatabaseTableInvocable : IInvocable
 {
@@ -225,6 +227,77 @@ Creating a valid `TimeZoneInfo` differs depending on whether you're on Windows, 
 Also, you may get unexpected behavior due to daylight savings time. Be careful!
 :::
 
+## Prevent Overlapping Tasks
+
+Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
+
+But, what if the previous instance of this scheduled task is **still** running?
+
+In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
+
+In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
+
+```csharp
+scheduler
+    .Schedule<SomeInvocable>()
+    .EveryMinute()
+    .PreventOverlapping("SomeInvocable");
+```
+This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
+
+## Schedule Workers
+
+In order to make Coravel work well in web scenarios, the scheduler will run all due tasks sequentially (although asynchronously).
+
+If you have longer running tasks - especially tasks that do some CPU intensive work - this will cause any subsequent tasks to execute much later than you might have expected or desired.
+
+### What's A Worker?
+
+Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! 
+
+In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which will have a dedicated thread.
+
+### Usage
+
+To begin assigning a schedule worker to a group of scheduled tasks use:
+
+`OnWorker(string workerName)`
+
+For example:
+
+```csharp
+scheduler.OnWorker("EmailTasks");
+scheduler
+    .Schedule<SendNightlyReportsEmailJob>().Daily();
+scheduler
+    .Schedule<SendPendingNotifications>().EveryMinute();
+
+scheduler.OnWorker("CPUIntensiveTasks");
+scheduler
+    .Schedule<RebuildStaticCachedData>().Hourly();
+```
+
+For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will share a dedicated pipeline/thread.
+
+`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
+
+### Useful For
+
+This is useful, for example, when using Coravel in a console application.
+
+You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
+
+## Run Job Once
+
+By calling `Once()` after you specify the time interval or day constraints, this job will only run _the first time it is due_ (internally, the job is unscheduled 💪).
+
+```csharp
+scheduler
+    .Schedule<SpecialJob>()
+    .Hourly()
+    .Once();
+```
+
 ## Custom Boolean Constraint
 
 Using the `When` method you can add additional restrictions to determine when your scheduled task should be executed.
@@ -304,65 +377,6 @@ scheduler.Schedule<CacheSomeStuff>()
 This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.
 
 
-## Prevent Overlapping Tasks
-
-Sometimes you may have longer running tasks or tasks who's running time is variable. The normal behavior of the scheduler is to simply fire off a task if it is due.
-
-But, what if the previous instance of this scheduled task is **still** running?
-
-In this case, use the `PreventOverlapping` method to make sure there is only 1 running instance of your scheduled task. 
-
-In other words, if the same scheduled task is due but another instance of it is still running, Coravel will just ignore the currently due task.
-
-```csharp
-scheduler
-    .Schedule<SomeInvocable>()
-    .EveryMinute()
-    .PreventOverlapping("SomeInvocable");
-```
-This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
-
-## Schedule Workers
-
-In order to make Coravel work well in web scenarios, the scheduler will run all due tasks sequentially (although asynchronously).
-
-If you have longer running tasks - especially tasks that do some CPU intensive work - this will cause any subsequent tasks to execute much later than you might have expected or desired.
-
-### What's A Worker?
-
-Schedule workers solve this problem by allowing you to schedule groups of tasks that run in parallel! 
-
-In other words, a schedule worker is just a pipeline that you can assign to a group of tasks which will have a dedicated thread.
-
-### Usage
-
-To begin assigning a schedule worker to a group of scheduled tasks use:
-
-`OnWorker(string workerName)`
-
-For example:
-
-```csharp
-scheduler.OnWorker("EmailTasks");
-scheduler
-    .Schedule<SendNightlyReportsEmailJob>().Daily();
-scheduler
-    .Schedule<SendPendingNotifications>().EveryMinute();
-
-scheduler.OnWorker("CPUIntensiveTasks");
-scheduler
-    .Schedule<RebuildStaticCachedData>().Hourly();
-```
-
-For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will share a dedicated pipeline/thread.
-
-`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
-
-### Useful For
-
-This is useful, for example, when using Coravel in a console application.
-
-You can choose to scale-out your scheduled tasks however you feel is most efficient. Any super intensive tasks can be put onto their own worker and therefore won't cause the other scheduled tasks to lag behind!
 
 ## On App Closing
 

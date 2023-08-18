@@ -83,5 +83,11 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// </summary>
         /// <returns></returns>
         IScheduledEventConfiguration RunOnceAtStart();
+        
+        /// <summary>
+        /// Only run this scheduled event once when it's first due.
+        /// </summary>
+        /// <returns></returns>
+        IScheduledEventConfiguration Once();
     }
 }

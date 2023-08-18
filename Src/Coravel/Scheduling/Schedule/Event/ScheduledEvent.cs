@@ -16,7 +16,7 @@ namespace Coravel.Scheduling.Schedule.Event
         private ActionOrAsyncFunc _scheduledAction;
         private Type _invocableType = null;
         private bool _preventOverlapping = false;
-        private string _eventUniqueID = null;
+        private string _eventUniqueId = null;
         private IServiceScopeFactory _scopeFactory;
         private Func<Task<bool>> _whenPredicate;
         private bool _isScheduledPerSecond = false;
@@ -24,6 +24,8 @@ namespace Coravel.Scheduling.Schedule.Event
         private object[] _constructorParameters = null;
         private ZonedTime _zonedTime = ZonedTime.AsUTC();
         private bool _runOnceAtStart = false;
+        private bool _runOnce = false;
+        private bool _wasPreviouslyRun = false;
 
         public ScheduledEvent(Action scheduledAction)
         {
@@ -93,21 +95,16 @@ namespace Coravel.Scheduling.Schedule.Event
             }
         }
 
-        private bool IsSecondsDue(DateTime utcNow)
-        {
-            if (utcNow.Second == 0)
-            {
-                return _OneMinuteAsSeconds % this._secondsInterval == 0;
-            }
-            else
-            {
-                return utcNow.Second % this._secondsInterval == 0;
-            }
-        }
-
         public async Task InvokeScheduledEvent(CancellationToken cancellationToken)
         {
+            GenerateUniqueIdOnFirstRunIfNotSpecified();
+            
             if (await WhenPredicateFails())
+            {
+                return;
+            }
+
+            if (DecidedToUnSchedule())
             {
                 return;
             }
@@ -128,24 +125,34 @@ namespace Coravel.Scheduling.Schedule.Event
 
                     await invocable.Invoke();
                 }
-                
             }
+
+            MarkedAsExecutedOnce();
         }
 
-        private object GetInvocable(IServiceProvider serviceProvider)
+        private bool DecidedToUnSchedule()
         {
-            if (this._constructorParameters?.Length > 0)
+            if (PreviouslyRanAndMarkedToRunOnlyOnce())
             {
-                return ActivatorUtilities.CreateInstance(serviceProvider, this._invocableType,
-                    this._constructorParameters);
+                using var scope = this._scopeFactory.CreateScope();
+                var scheduler = scope.ServiceProvider.GetService<IScheduler>() as Scheduler;
+                return scheduler.TryUnschedule(this._eventUniqueId);
             }
 
-            return serviceProvider.GetRequiredService(this._invocableType);
+            return false;
+        }
+
+        private void GenerateUniqueIdOnFirstRunIfNotSpecified()
+        {
+            if (!this._wasPreviouslyRun && this._eventUniqueId is null)
+            {
+                this._eventUniqueId = Guid.NewGuid().ToString();
+            }
         }
 
         public bool ShouldPreventOverlapping() => this._preventOverlapping;
 
-        public string OverlappingUniqueIdentifier() => this._eventUniqueID;
+        public string OverlappingUniqueIdentifier() => this._eventUniqueId;
 
         public bool IsScheduledCronBasedTask() => !this._isScheduledPerSecond;
 
@@ -301,7 +308,7 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public IScheduledEventConfiguration AssignUniqueIndentifier(string uniqueIdentifier)
         {
-            this._eventUniqueID = uniqueIdentifier;
+            this._eventUniqueId = uniqueIdentifier;
             return this;
         }
 
@@ -377,7 +384,43 @@ namespace Coravel.Scheduling.Schedule.Event
             this._runOnceAtStart = true;
             return this;
         }
+        
+        public IScheduledEventConfiguration Once()
+        {
+            this._runOnce = true;
+            return this;
+        }
+        
+        private bool IsSecondsDue(DateTime utcNow)
+        {
+            if (utcNow.Second == 0)
+            {
+                return _OneMinuteAsSeconds % this._secondsInterval == 0;
+            }
+            else
+            {
+                return utcNow.Second % this._secondsInterval == 0;
+            }
+        }
 
         internal bool ShouldRunOnceAtStart() => this._runOnceAtStart;
+        
+        private object GetInvocable(IServiceProvider serviceProvider)
+        {
+            if (this._constructorParameters?.Length > 0)
+            {
+                return ActivatorUtilities.CreateInstance(serviceProvider, this._invocableType,
+                    this._constructorParameters);
+            }
+
+            return serviceProvider.GetRequiredService(this._invocableType);
+        }
+
+        private bool PreviouslyRanAndMarkedToRunOnlyOnce() => this._runOnce && this._wasPreviouslyRun;
+        
+        private void MarkedAsExecutedOnce()
+        {
+            this._wasPreviouslyRun = true;
+        }
     }
 }
