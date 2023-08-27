@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Coravel", "Coravel\Coravel.csproj", "{2CB7B14C-BD7F-4C1E-82B9-F0B3501E5BC6}"
 EndProject
@@ -24,6 +24,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoravelUnitTests", "UnitTests\CoravelUnitTests\CoravelUnitTests.csproj", "{BA6BC57C-2504-4942-91EF-F06A648EC637}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MailerUnitTests", "UnitTests\MailerUnitTests\MailerUnitTests.csproj", "{CFCB0F83-46EB-487C-A396-5F01D7A19C50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C258AAC-9BEA-4DBF-A37F-31C02668ADB8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

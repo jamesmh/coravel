@@ -1,9 +1,14 @@
 using System.Threading;
 
-namespace Coravel.Queuing.Interfaces
+namespace Coravel.Queuing.Interfaces;
+
+/// <summary>
+/// Defines a contract for a task that can be cancelled.
+/// </summary>
+public interface ICancellableTask
 {
-    public interface ICancellableTask
-    {
-        CancellationToken Token { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the cancellation token for the task.
+    /// </summary>
+    CancellationToken Token { get; set; }
 }

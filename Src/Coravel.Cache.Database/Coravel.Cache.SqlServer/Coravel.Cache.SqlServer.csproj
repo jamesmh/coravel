@@ -5,11 +5,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Coravel.Cache.SQLServer</PackageId>
     <Version>2.0.2</Version>
-    <Authors>James Hickey</Authors>
-    <Company>-</Company>
     <Title>Coravel SQL Server Cache Driver</Title>
     <Description>Distributed MS SQL Server cache driver for Coravel</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,7 +17,6 @@
     <PackageTags>netcore;coravel;caching;sqlserver</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
 </Project>

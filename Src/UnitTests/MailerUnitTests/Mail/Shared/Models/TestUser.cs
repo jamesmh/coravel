@@ -1,8 +1,7 @@
-namespace UnitTests.Mail.Shared.Models
+namespace UnitTests.Mail.Shared.Models;
+
+public class TestUser
 {
-    public class TestUser
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
-    }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
 }

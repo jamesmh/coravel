@@ -1,110 +1,107 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Coravel.Events
+namespace Coravel.Events;
+
+/// <summary>
+/// Will dispatch Coravel events and broadcast them to the appropriate listeners.
+///  </summary>
+public sealed class Dispatcher : IDispatcher, IEventRegistration
 {
-    /// <summary>
-    /// Will dispatch Coravel events and broadcast them to the appropriate listeners.
-    ///  </summary>
-    public class Dispatcher : IDispatcher, IEventRegistration
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly Dictionary<Type, List<Type>> _events;
+
+    public Dispatcher(IServiceScopeFactory scopeFactory)
     {
-        private IServiceScopeFactory _scopeFactory;
-        private Dictionary<Type, List<Type>> _events;
+        _scopeFactory = scopeFactory;
+        _events = new Dictionary<Type, List<Type>>();
+    }
 
-        public Dispatcher(IServiceScopeFactory scopeFactory)
+    /// <summary>
+    /// Register an event. You may subscribe listeners to this event by further chaining.
+    /// </summary>
+    /// <typeparam name="TEvent"></typeparam>
+    /// <returns></returns>
+    public IEventSubscription<TEvent> Register<TEvent>() where TEvent : IEvent
+    {
+        var listeners = new List<Type>();
+        var eventType = typeof(TEvent);
+
+        if (_events.ContainsKey(eventType))
         {
-            this._scopeFactory = scopeFactory;
-            this._events = new Dictionary<Type, List<Type>>();
+            listeners = _events[eventType];
+        }
+        else
+        {
+            _events.Add(eventType, listeners);
         }
 
-        /// <summary>
-        /// Register an event. You may subscribe listeners to this event by further chaining.
-        /// </summary>
-        /// <typeparam name="TEvent"></typeparam>
-        /// <returns></returns>
-        public IEventSubscription<TEvent> Register<TEvent>() where TEvent : IEvent
+        return new EventSubscription<TEvent>(listeners);
+    }
+
+    /// <summary>
+    ///  Broadcasts an event to be handled by it's subscribed listeners.
+    /// </summary>
+    /// <param name="toBroadcast"></param>
+    /// <typeparam name="TEvent"></typeparam>
+    /// <returns></returns>
+    public async Task Broadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+    {
+        if (_events.TryGetValue(toBroadcast.GetType(), out var listeners))
         {
-            var listeners = new List<Type>();
-            var eventType = typeof(TEvent);
-
-            if (this._events.ContainsKey(eventType))
+            foreach (var listenerType in listeners)
             {
-                listeners = this._events[eventType];
-            }
-            else
-            {
-                this._events.Add(eventType, listeners);
-            }
-
-            return new EventSubscription<TEvent>(listeners);
-        }
-
-        /// <summary>
-        ///  Broadcasts an event to be handled by it's subscribed listeners.
-        /// </summary>
-        /// <param name="toBroadcast"></param>
-        /// <typeparam name="TEvent"></typeparam>
-        /// <returns></returns>
-        public async Task Broadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
-        {
-            if (this._events.TryGetValue(toBroadcast.GetType(), out var listeners))
-            {
-                foreach (var listenerType in listeners)
+                await using var scope = _scopeFactory.CreateAsyncScope();
+                var obj = scope.ServiceProvider.GetService(listenerType);
+                if (obj is IListener<TEvent> listener)
                 {
-                    await using (var scope = this._scopeFactory.CreateAsyncScope())
+                    await listener.HandleAsync(toBroadcast);
+                }
+                else
+                {
+                    // Depending on what assemblies the events, listeners and calling assmebly are - the cast
+                    // above doesn't work (even though the type really does implement the interface).
+                    // Not sure why this happens. Might be a side effect of running inside a unit test proj. Dunno.
+                    // This condition will catch those cases and default to reflection.                        
+                    var result = listenerType.GetMethod("HandleAsync")?.Invoke(obj, new object[] { toBroadcast });
+
+                    if (result is Task task)
                     {
-                        var obj = scope.ServiceProvider.GetService(listenerType);
-                        if (obj is IListener<TEvent> listener)
-                        {
-                            await listener.HandleAsync(toBroadcast);
-                        }
-                        else {
-                            // Depending on what assemblies the events, listeners and calling assmebly are - the cast
-                            // above doesn't work (even though the type really does implement the interface).
-                            // Not sure why this happens. Might be a side effect of running inside a unit test proj. Dunno.
-                            // This condition will catch those cases and default to reflection.                        
-                            var result = listenerType.GetMethod("HandleAsync").Invoke(obj, new object[] { toBroadcast });
-                            await (result as Task);
-                        }
+                        await (task);
                     }
                 }
             }
         }
     }
+}
+
+/// <summary>
+/// Represents an event subscription.
+/// </summary>
+public struct EventSubscription<TEvent> : IEventSubscription<TEvent> where TEvent : IEvent
+{
+    private readonly List<Type> _listeners;
+
+    public EventSubscription(List<Type> listeners) => _listeners = listeners;
 
     /// <summary>
-    /// Represents an event subscription.
+    /// Subscribe a listener to an event.
     /// </summary>
-    public struct EventSubscription<TEvent> : IEventSubscription<TEvent> where TEvent : IEvent
+    /// <typeparam name="TListener"></typeparam>
+    /// <returns></returns>
+    public IEventSubscription<TEvent> Subscribe<TListener>() where TListener : IListener<TEvent>
     {
-        private List<Type> _listeners;
+        Type listenerType = typeof(TListener);
+        bool listenerAlreadyRegistered = _listeners.Contains(listenerType);
 
-        public EventSubscription(List<Type> listeners)
+        if (!listenerAlreadyRegistered)
         {
-            this._listeners = listeners;
+            _listeners.Add(typeof(TListener));
         }
 
-        /// <summary>
-        /// Subscribe a listener to an event.
-        /// </summary>
-        /// <typeparam name="TListener"></typeparam>
-        /// <returns></returns>
-        public IEventSubscription<TEvent> Subscribe<TListener>() where TListener : IListener<TEvent>
-        {
-            Type listenerType = typeof(TListener);
-            bool listenerAlreadyRegistered = this._listeners.Any(t => t.Equals(listenerType));
-
-            if (!listenerAlreadyRegistered)
-            {
-                this._listeners.Add(typeof(TListener));
-            }
-
-            return this;
-        }
+        return this;
     }
 }

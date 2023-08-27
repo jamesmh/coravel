@@ -1,93 +1,92 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Coravel.Scheduling.Schedule.Interfaces
+namespace Coravel.Scheduling.Schedule.Interfaces;
+
+/// <summary>
+/// Provides methods for configuring how a scheduled event behaves.
+/// This contains all public facing configuration methods - i.e. this defines the 
+/// fluent api for the scheduled events.
+/// </summary>
+public interface IScheduledEventConfiguration
 {
     /// <summary>
-    /// Provides methods for configuring how a scheduled event behaves.
-    /// This contains all public facing configuration methods - i.e. this defines the 
-    /// fluent api for the scheduled events.
+    /// Restrict task to run on Mondays.
     /// </summary>
-    public interface IScheduledEventConfiguration
-    {
-        /// <summary>
-        /// Restrict task to run on Mondays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Monday();
+    /// <returns></returns>
+    IScheduledEventConfiguration Monday();
 
-        /// <summary>
-        /// Restrict task to run on Tuesdays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Tuesday();
+    /// <summary>
+    /// Restrict task to run on Tuesdays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Tuesday();
 
-        /// <summary>
-        /// Restrict task to run on Wednesdays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Wednesday();
+    /// <summary>
+    /// Restrict task to run on Wednesdays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Wednesday();
 
-        /// <summary>
-        /// Restrict task to run on Thursdays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Thursday();
+    /// <summary>
+    /// Restrict task to run on Thursdays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Thursday();
 
-        /// <summary>
-        /// Restrict task to run on Fridays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Friday();
+    /// <summary>
+    /// Restrict task to run on Fridays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Friday();
 
-        /// <summary>
-        /// Restrict task to run on Saturdays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Saturday();
+    /// <summary>
+    /// Restrict task to run on Saturdays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Saturday();
 
-        /// <summary>
-        /// Restrict task to run on Sundays.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Sunday();
+    /// <summary>
+    /// Restrict task to run on Sundays.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Sunday();
 
-        /// <summary>
-        /// Restrict task to run on weekdays (Monday - Friday).
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Weekday();
+    /// <summary>
+    /// Restrict task to run on weekdays (Monday - Friday).
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Weekday();
 
-        /// <summary>
-        /// Restrict task to run on weekends (Saturday and Sunday).
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Weekend();
+    /// <summary>
+    /// Restrict task to run on weekends (Saturday and Sunday).
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Weekend();
 
-        /// <summary>
-        /// If this event has not completed from the last time it was invoked, and is due again,
-        /// it will be prevented from running.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier);
+    /// <summary>
+    /// If this event has not completed from the last time it was invoked, and is due again,
+    /// it will be prevented from running.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration PreventOverlapping(string uniqueIdentifier);
 
-        /// <summary>
-        /// Restrict scheduled task to run only when result of <paramref name="predicate"/> is true.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration When(Func<Task<bool>> predicate);
-        IScheduledEventConfiguration Zoned(TimeZoneInfo timeZoneInfo);
+    /// <summary>
+    /// Restrict scheduled task to run only when result of <paramref name="predicate"/> is true.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration When(Func<Task<bool>> predicate);
+    IScheduledEventConfiguration Zoned(TimeZoneInfo timeZoneInfo);
 
-        /// <summary>
-        /// Run this scheduled event on the first "tick" at application startup.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration RunOnceAtStart();
-        
-        /// <summary>
-        /// Only run this scheduled event once when it's first due.
-        /// </summary>
-        /// <returns></returns>
-        IScheduledEventConfiguration Once();
-    }
+    /// <summary>
+    /// Run this scheduled event on the first "tick" at application startup.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration RunOnceAtStart();
+    
+    /// <summary>
+    /// Only run this scheduled event once when it's first due.
+    /// </summary>
+    /// <returns></returns>
+    IScheduledEventConfiguration Once();
 }

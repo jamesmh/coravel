@@ -6,249 +6,253 @@ using Coravel.Mailer.Mail.Helpers;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Renderers;
 
-namespace Coravel.Mailer.Mail
+namespace Coravel.Mailer.Mail;
+
+public class Mailable<T>
 {
-    public class Mailable<T>
+    private const string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View())";
+
+    /// <summary>
+    /// Who the email is from.
+    /// </summary>
+    private MailRecipient? _from;
+
+    /// <summary>
+    /// Recipients of the message.
+    /// </summary>
+    private IEnumerable<MailRecipient> _to = Enumerable.Empty<MailRecipient>();
+
+    /// <summary>
+    /// cc recipients of the message.
+    /// </summary>
+    private IEnumerable<MailRecipient> _cc = Enumerable.Empty<MailRecipient>();
+
+    /// <summary>
+    /// bcc recipients of the message.
+    /// </summary>
+    private IEnumerable<MailRecipient> _bcc = Enumerable.Empty<MailRecipient>();
+
+    /// <summary>
+    /// Who the recipients should reply to.
+    /// </summary>
+    private MailRecipient? _replyTo;
+
+    /// <summary>
+    /// Mail's subject.
+    /// </summary>
+    private string _subject = string.Empty;
+
+    /// <summary>
+    /// Raw HTML to use as email message.
+    /// </summary>
+    private string _html = string.Empty;
+
+    /// <summary>
+    /// The MVC view to use to generate the message.
+    /// </summary>
+    private string _viewPath = string.Empty;
+
+    /// <summary>
+    /// Model that we want to mail to.
+    /// </summary>
+    private object? _mailToModel;
+
+    private List<Attachment>? _attachments;
+
+    /// <summary>
+    /// View data to pass to the view to render.
+    /// </summary>
+    private T? _viewModel;
+
+    public Mailable<T> From(MailRecipient recipient)
     {
-        private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View())";
+        _from = recipient;
+        return this;
+    }
 
-        /// <summary>
-        /// Who the email is from.
-        /// </summary>
-        private MailRecipient _from;
+    public Mailable<T> From(string email) =>
+        From(new MailRecipient(email));
 
-        /// <summary>
-        /// Recipients of the message.
-        /// </summary>
-        private IEnumerable<MailRecipient> _to;
+    public Mailable<T> To(IEnumerable<MailRecipient> recipients)
+    {
+        _to = recipients;
+        return this;
+    }
 
-        /// <summary>
-        /// cc recipients of the message.
-        /// </summary>
-        private IEnumerable<MailRecipient> _cc;
+    public Mailable<T> To(MailRecipient recipient) =>
+        To(new MailRecipient[] { recipient });
 
-        /// <summary>
-        /// bcc recipients of the message.
-        /// </summary>
-        private IEnumerable<MailRecipient> _bcc;
+    public Mailable<T> To(IEnumerable<string> addresses) =>
+        To(addresses.Select(address => new MailRecipient(address)));
 
-        /// <summary>
-        /// Who the recipients should reply to.
-        /// </summary>
-        private MailRecipient _replyTo;
+    public Mailable<T> To(string email) =>
+        To(new MailRecipient(email));
 
-        /// <summary>
-        /// Mail's subject.
-        /// </summary>
-        private string _subject;
+    public Mailable<T> To(object mailToModel)
+    {
+        _mailToModel = mailToModel;
+        return this;
+    }
 
-        /// <summary>
-        /// Raw HTML to use as email message.
-        /// </summary>
-        private string _html;
+    public Mailable<T> Cc(IEnumerable<MailRecipient> recipients)
+    {
+        _cc = recipients;
+        return this;
+    }
 
-        /// <summary>
-        /// The MVC view to use to generate the message.
-        /// </summary>
-        private string _viewPath;
+    public Mailable<T> Cc(IEnumerable<string> addresses) =>
+        Cc(addresses.Select(address => new MailRecipient(address)));
 
-        /// <summary>
-        /// Model that we want to mail to.
-        /// </summary>
-        private object _mailToModel;
+    public Mailable<T> Bcc(IEnumerable<MailRecipient> recipients)
+    {
+        _bcc = recipients;
+        return this;
+    }
 
-        private List<Attachment> _attachments;
+    public Mailable<T> Bcc(IEnumerable<string> addresses) =>
+        Bcc(addresses.Select(address => new MailRecipient(address)));
 
-        /// <summary>
-        /// View data to pass to the view to render.
-        /// </summary>
-        private T _viewModel;
+    public Mailable<T> ReplyTo(MailRecipient replyTo)
+    {
+        _replyTo = replyTo;
+        return this;
+    }
 
-        public Mailable<T> From(MailRecipient recipient)
+    public Mailable<T> ReplyTo(string address)
+    {
+        _replyTo = new MailRecipient(address);
+        return this;
+    }
+
+    public Mailable<T> Subject(string subject)
+    {
+        _subject = subject;
+        return this;
+    }
+
+    public Mailable<T> Attach(Attachment attachment)
+    {
+        if (_attachments is null)
         {
-            this._from = recipient;
-            return this;
+            _attachments = new List<Attachment>();
+        }
+        _attachments.Add(attachment);
+        return this;
+    }
+
+    public Mailable<T> Html(string html)
+    {
+        _html = html;
+        return this;
+    }
+
+    public Mailable<T> View(string viewPath, T? viewModel)
+    {
+        _viewModel = viewModel;
+        _viewPath = viewPath;
+        return this;
+    }
+
+    public Mailable<T> View(string viewPath)
+    {
+        View(viewPath, default);
+        return this;
+    }
+
+    public virtual void Build() { }
+
+    internal async Task SendAsync(RazorRenderer? renderer, IMailer mailer)
+    {
+        Build();
+
+        var message = await BuildMessage(renderer).ConfigureAwait(false);
+
+        await mailer.SendAsync(
+            message,
+            _subject,
+            _to,
+            _from,
+            _replyTo,
+            _cc,
+            _bcc,
+            _attachments
+        ).ConfigureAwait(false);
+    }
+
+    internal async Task<string> RenderAsync(RazorRenderer? renderer = null)
+    {
+        if (renderer != null)
+        {
+            Build();
+            return await BuildMessage(renderer).ConfigureAwait(false);
         }
 
-        public Mailable<T> From(string email) =>
-            this.From(new MailRecipient(email));
+        return string.Empty;
+    }
 
-        public Mailable<T> To(IEnumerable<MailRecipient> recipients)
+    private async Task<string> BuildMessage(RazorRenderer? renderer)
+    {
+        BindDynamicProperties();
+
+        if (_html != null)
         {
-            this._to = recipients;
-            return this;
+            return _html;
         }
 
-        public Mailable<T> To(MailRecipient recipient) =>
-            this.To(new MailRecipient[] { recipient });
-
-        public Mailable<T> To(IEnumerable<string> addresses) =>
-            this.To(addresses.Select(address => new MailRecipient(address)));
-
-        public Mailable<T> To(string email) =>
-            this.To(new MailRecipient(email));
-
-        public Mailable<T> To(object mailToModel)
+        if (_viewPath != null && renderer != null)
         {
-            this._mailToModel = mailToModel;
-            return this;
+            return await renderer
+                .RenderViewToStringAsync(_viewPath, _viewModel)
+                .ConfigureAwait(false);
         }
 
-        public Mailable<T> Cc(IEnumerable<MailRecipient> recipients)
+        throw new NoMailRendererFound(NoRenderFoundMessage);
+    }
+
+    private void BindDynamicProperties()
+    {
+        if (HasMailToModel())
         {
-            this._cc = recipients;
-            return this;
+            BindEmailField();
         }
 
-        public Mailable<T> Cc(IEnumerable<string> addresses) =>
-            this.Cc(addresses.Select(address => new MailRecipient(address)));
-
-        public Mailable<T> Bcc(IEnumerable<MailRecipient> recipients)
+        if (HasNoSubject())
         {
-            this._bcc = recipients;
-            return this;
+            BindSubjectField();
         }
+    }
 
-        public Mailable<T> Bcc(IEnumerable<string> addresses) =>
-            this.Bcc(addresses.Select(address => new MailRecipient(address)));
+    private bool HasNoSubject() => _subject == null;
 
-        public Mailable<T> ReplyTo(MailRecipient replyTo)
+    private bool HasMailToModel() => _mailToModel != null;
+
+    private void BindEmailField()
+    {
+        object? propEmail = _mailToModel?.GetPropOrFieldValue("Email");
+        object? propName = _mailToModel?.GetPropOrFieldValue("Name");
+
+        if (propEmail is string address)
         {
-            this._replyTo = replyTo;
-            return this;
-        }
-
-        public Mailable<T> ReplyTo(string address)
-        {
-            this._replyTo = new MailRecipient(address);
-            return this;
-        }
-
-        public Mailable<T> Subject(string subject)
-        {
-            this._subject = subject;
-            return this;
-        }
-
-        public Mailable<T> Attach(Attachment attachment)
-        {
-            if(this._attachments is null)
+            if (propName is string name)
             {
-                this._attachments = new List<Attachment>();
+                To(new MailRecipient(address, name));
             }
-            this._attachments.Add(attachment);
-            return this;
-        }
-
-        public Mailable<T> Html(string html)
-        {
-            this._html = html;
-            return this;
-        }
-
-        public Mailable<T> View(string viewPath, T viewModel)
-        {
-            this._viewModel = viewModel;
-            this._viewPath = viewPath;
-            return this;
-        }
-
-        public Mailable<T> View(string viewPath)
-        {
-            this.View(viewPath, default(T));
-            return this;
-        }
-
-        public virtual void Build() { }
-
-        internal async Task SendAsync(RazorRenderer renderer, IMailer mailer)
-        {
-            this.Build();
-
-            string message = await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
-
-            await mailer.SendAsync(
-                message,
-                this._subject,
-                this._to,
-                this._from,
-                this._replyTo,
-                this._cc,
-                this._bcc,
-                this._attachments
-            ).ConfigureAwait(false);
-        }
-
-        internal async Task<string> RenderAsync(RazorRenderer renderer, IMailer mailer)
-        {
-            this.Build();
-            return await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
-        }
-
-        private async Task<string> BuildMessage(RazorRenderer renderer, IMailer mailer)
-        {
-            this.BindDynamicProperties();
-
-            if (this._html != null)
+            else
             {
-                return this._html;
-            }
-
-            if (this._viewPath != null)
-            {
-                return await renderer
-                    .RenderViewToStringAsync<T>(this._viewPath, this._viewModel)
-                    .ConfigureAwait(false);
-            }
-
-            throw new NoMailRendererFound(NoRenderFoundMessage);
-        }
-
-        private void BindDynamicProperties()
-        {
-            if (this.HasMailToModel())
-            {
-                this.BindEmailField();
-            }
-
-            if (this.HasNoSubject())
-            {
-                this.BindSubjectField();
+                To(address);
             }
         }
+    }
 
-        private bool HasNoSubject() => this._subject == null;
-
-        private bool HasMailToModel() => this._mailToModel != null;
-
-        private void BindEmailField()
+    private void BindSubjectField()
+    {
+        if (_subject == null)
         {
-            object propEmail = this._mailToModel.GetPropOrFieldValue("Email");
-            object propName = this._mailToModel.GetPropOrFieldValue("Name");
+            var classNameOfThisMailable = GetType().Name;
 
-            if (propEmail is string address)
-            {
-                if (propName is string name)
-                {
-                    this.To(new MailRecipient(address, name));
-                }
-                else
-                {
-                    this.To(address);
-                }
-            }
-        }
-
-        private void BindSubjectField()
-        {
-            if (this._subject == null)
-            {
-                string classNameOfThisMailable = this.GetType().Name;
-
-                this._subject = classNameOfThisMailable
-                    .ToSnakeCase()
-                    .RemoveLastOccuranceOfWord("Mailable");
-            }
+            _subject = classNameOfThisMailable
+                .ToSnakeCase()
+                .RemoveLastOccuranceOfWord("Mailable");
         }
     }
 }

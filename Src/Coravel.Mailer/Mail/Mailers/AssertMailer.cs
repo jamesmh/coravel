@@ -2,51 +2,48 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using Coravel.Mailer.Mail.Interfaces;
+using System.Linq;
 
-namespace Coravel.Mailer.Mail.Mailers
+namespace Coravel.Mailer.Mail.Mailers;
+
+public class AssertMailer : IMailer
 {
-    public class AssertMailer : IMailer
+    public class Data
     {
-        public class Data
-        {
-            public string message { get; set; }
-            public string subject { get; set; }
-            public IEnumerable<MailRecipient> to { get; set; }
-            public MailRecipient from { get; set; }
-            public MailRecipient replyTo { get; set; }
-            public IEnumerable<MailRecipient> cc { get; set; }
-            public IEnumerable<MailRecipient> bcc { get; set; }
-            public IEnumerable<Attachment> attachments { get; set; }
-        }
-
-        private Action<Data> _assertAction;
-
-        public AssertMailer(Action<Data> assertAction)
-        {
-            this._assertAction = assertAction;
-        }
-
-        public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
-        {
-            this._assertAction(new Data
-            {
-                message = message,
-                subject = subject,
-                to = to,
-                from = from,
-                replyTo = replyTo,
-                cc = cc,
-                bcc = bcc,
-                attachments = attachments
-            });
-            return Task.CompletedTask;
-        }
-
-        public async Task SendAsync<T>(Mailable<T> mailable) =>
-            await mailable.SendAsync(null, this);
-
-
-        public async Task<string> RenderAsync<T>(Mailable<T> mailable) =>
-            await mailable.RenderAsync(null, this);
+        public string Message { get; set; } = string.Empty;
+        public string Subject { get; set; } = string.Empty;
+        public IEnumerable<MailRecipient> To { get; set; } = Enumerable.Empty<MailRecipient>();
+        public MailRecipient? From { get; set; }
+        public MailRecipient? ReplyTo { get; set; }
+        public IEnumerable<MailRecipient> Cc { get; set; } = Enumerable.Empty<MailRecipient>();
+        public IEnumerable<MailRecipient> Bcc { get; set; } = Enumerable.Empty<MailRecipient>();
+        public IEnumerable<Attachment>? Attachments { get; set; }
     }
+
+    private readonly Action<Data> _assertAction;
+
+    public AssertMailer(Action<Data> assertAction) => _assertAction = assertAction;
+
+    public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient? from, MailRecipient? replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment>? attachments = null)
+    {
+        _assertAction(new Data
+        {
+            Message = message,
+            Subject = subject,
+            To = to,
+            From = from,
+            ReplyTo = replyTo,
+            Cc = cc,
+            Bcc = bcc,
+            Attachments = attachments
+        });
+        return Task.CompletedTask;
+    }
+
+    public async Task SendAsync<T>(Mailable<T> mailable) =>
+        await mailable.SendAsync(null, this);
+
+
+    public async Task<string> RenderAsync<T>(Mailable<T> mailable) =>
+        await mailable.RenderAsync();
 }

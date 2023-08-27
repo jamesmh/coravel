@@ -1,12 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CoravelUnitTests.Scheduling.Stubs
+namespace CoravelUnitTests.Scheduling.Stubs;
+
+public class ServiceScopeFactoryStub : IServiceScopeFactory
 {
-    public class ServiceScopeFactoryStub : IServiceScopeFactory
+    public IServiceScope CreateScope()
     {
-        public IServiceScope CreateScope()
-        {
-            throw new System.NotImplementedException();
-        }
+        throw new System.NotImplementedException();
     }
 }

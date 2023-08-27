@@ -4,10 +4,10 @@ using Npgsql;
 
 namespace Coravel.Cache.PostgreSQL
 {
-    public class PostgreSQLDriver : IDriver
+    internal sealed class PostgreSqlDriver : IDriver
     {
-         public string TableName => "public.CoravelCacheStore";
-        
+        public string TableName => "public.CoravelCacheStore";
+
         public string DeleteByKeySQL => $@"
             DELETE FROM {TableName} WHERE Key = @Key;
         ";

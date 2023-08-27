@@ -1,22 +1,18 @@
 using Coravel.Mailer.Mail;
 using UnitTests.Mail.Shared.Models;
 
-namespace UnitTests.Mail.Shared.Mailables
+namespace UnitTests.Mail.Shared.Mailables;
+
+public class MailableWithModelProperties : Mailable<TestUserWithFields>
 {
-    public class MailableWithModelProperties : Mailable<TestUserWithFields>
+    private readonly TestUser _user;
+
+    public MailableWithModelProperties(TestUser user) => _user = user;
+
+    public override void Build()
     {
-        private TestUser _user;
-
-        public MailableWithModelProperties(TestUser user)
-        {
-            this._user = user;
-        }
-
-        public override void Build()
-        {
-            this.To(this._user)
-                .From("from@test.com")
-                .Html($"<html><body>Hi</body></html>");
-        }
+        To(_user)
+            .From("from@test.com")
+            .Html($"<html><body>Hi</body></html>");
     }
 }

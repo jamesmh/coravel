@@ -1,9 +1,15 @@
 ﻿using System.Threading;
 
-namespace Coravel.Invocable
+namespace Coravel.Invocable;
+
+/// <summary>
+/// Defines a contract for an invocable that can be cancelled.
+/// </summary>
+public interface ICancellableInvocable
 {
-    public interface ICancellableInvocable
-    {
-        CancellationToken CancellationToken { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the cancellation token for the invocable.
+    /// </summary>
+    CancellationToken CancellationToken { get; set; }
 }
+
