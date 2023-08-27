@@ -1,29 +1,25 @@
 using System;
 
-namespace Coravel.Scheduling.Schedule.Zoned
+namespace Coravel.Scheduling.Schedule.Zoned;
+
+internal sealed class ZonedTime
 {
-    public class ZonedTime
+    private readonly TimeZoneInfo _info;
+    public ZonedTime(TimeZoneInfo info) => _info = info;
+
+    public static ZonedTime AsUTC()
     {
-        private TimeZoneInfo _info;
-        public ZonedTime(TimeZoneInfo info)
-        {
-            this._info = info;
-        }
+        return new ZonedTime(TimeZoneInfo.Utc);
+    }
 
-        public static ZonedTime AsUTC()
+    public DateTime Convert(DateTime time)
+    {
+        if(_info == TimeZoneInfo.Utc)
         {
-            return new ZonedTime(TimeZoneInfo.Utc);
+            return time;
         }
-
-        public DateTime Convert(DateTime time)
-        {
-            if(this._info == TimeZoneInfo.Utc)
-            {
-                return time;
-            }
-            else {
-                return TimeZoneInfo.ConvertTime(time, this._info);
-            }
+        else {
+            return TimeZoneInfo.ConvertTime(time, _info);
         }
     }
 }

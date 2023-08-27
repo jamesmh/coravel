@@ -1,8 +1,7 @@
-namespace Coravel.Mailer.Mail
+namespace Coravel.Mailer.Mail;
+
+public class Attachment
 {
-    public class Attachment
-    {
-        public byte[] Bytes { get; set; }
-        public string Name { get; set; }
-    }
+    public byte[] Bytes { get; set; }
+    public string Name { get; set; }
 }

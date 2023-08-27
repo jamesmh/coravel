@@ -1,10 +1,10 @@
 ﻿@{
     string preview = ViewBag.Preview;
-    string logoSrc = ViewBag.LogoSrc;
-    string heading = ViewBag.Heading;
+string logoSrc = ViewBag.LogoSrc;
+string heading = ViewBag.Heading;
 
-    string address = ViewBag.CompanyAddress;
-    string companyName = ViewBag.CompanyName;
+string address = ViewBag.CompanyAddress;
+string companyName = ViewBag.CompanyName;
 }
 
 <!DOCTYPE html>
@@ -171,13 +171,13 @@
     <center style="width: 100%; background: #F1F1F1; text-align: left;">
 
         @if(preview != null)
-        {
-        <!-- Visually Hidden Preheader Text : BEGIN -->
-        <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
+    {
+    <!-- Visually Hidden Preheader Text : BEGIN -->
+    <div style="display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;mso-hide:all;font-family: sans-serif;">
             @preview
         </div>
-        <!-- Visually Hidden Preheader Text : END -->
-        }
+    <!-- Visually Hidden Preheader Text : END -->
+    }
 
         <div style="max-width: 680px; margin: auto;" class="email-container">
             <!--[if mso]>
@@ -195,13 +195,13 @@
                     <td>
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                             @if(logoSrc != null)
-                            {
-                            <tr>
+                        {
+                        <tr>
                                 <td style="padding: 30px 40px 30px 40px; text-align: center;">
                                     <img src="@logoSrc" border="0">
                                 </td>
                             </tr>
-                            }
+                        }
                         </table>
                     </td>
                 </tr>
@@ -214,13 +214,13 @@
                     <td bgcolor="#ffffff" style="border:1px solid #dddddd;">
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
                             @if(@heading != null)
-                            {
-                            <tr>
+                        {
+                        <tr>
                                 <td style="padding: 40px 40px 20px 40px; text-align: left;">
                                     <h1 style="margin: 0; font-family: 'Montserrat', sans-serif; font-size: 20px; line-height: 26px; color: #333333; font-weight: bold;">@heading</h1>
                                 </td>
                             </tr>
-                            }
+                        }
                             <tr>
                                 <td style="padding: 0px 40px 20px 40px; font-family: sans-serif; font-size: 15px; line-height: 20px; color: #555555; text-align: left;">
                                   @RenderBody()
@@ -239,41 +239,41 @@
                                 <td style="padding-bottom:40px;"></td>
                             </tr>
                               @if(IsSectionDefined("footer")) 
-                              {
-                                 <tr>
+                          {
+                             <tr>
                                     <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
                                         @RenderSection("footer")
                                     </td>
                                 </tr>
-                              }
-                              else {
-                                @if(IsSectionDefined("links"))
-                                {
-                                <tr>
+                          }
+                          else {
+                            @if(IsSectionDefined("links"))
+                            {
+                            <tr>
                                     <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
                                     @RenderSection("links")
                                     </td>
                                 </tr>
-                                }
-                                
-                                @if(address != null)
-                                {
-                                <tr>
+                            }
+                            
+                            @if(address != null)
+                            {
+                            <tr>
                                     <td style="padding: 0px 40px 10px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
                                         <p style="margin: 0;">@address</p>
                                     </td>
                                 </tr>
-                                }
+                            }
 
-                                @if(companyName != null)
-                                {
-                                <tr>
+                            @if(companyName != null)
+                            {
+                            <tr>
                                     <td style="padding: 0px 40px 40px 40px; font-family: sans-serif; font-size: 12px; line-height: 18px; color: #666666; text-align: left; font-weight:normal;">
                                         <p style="margin: 0;">Copyright &copy; @(System.DateTime.Now.Year) <b>@companyName</b>, All Rights Reserved.</p>
                                     </td>
                                 </tr>
-                                }
                             }
+                        }
 
                         </table>
                     </td>

@@ -2,29 +2,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace Tests.Cache
+namespace Tests.Cache;
+
+public class RememberAsyncTests : IClassFixture<WebApplicationFactory<TestMvcApp.Startup>>
 {
-    public class RememberAsyncTests : IClassFixture<WebApplicationFactory<TestMvcApp.Startup>>
+    private readonly WebApplicationFactory<TestMvcApp.Startup> _factory;
+
+    public RememberAsyncTests(WebApplicationFactory<TestMvcApp.Startup> factory) => _factory = factory;
+
+    [Fact]
+    public async Task Remember_Async_Cache_Working()
     {
-        private readonly WebApplicationFactory<TestMvcApp.Startup> _factory;
+        var client = _factory.CreateClient();
 
-        public RememberAsyncTests(WebApplicationFactory<TestMvcApp.Startup> factory)
-        {
-            this._factory = factory;
-        }
+        var response = await client.GetStringAsync("/Cache/RememberAsync");
+        var responseTwo = await client.GetStringAsync("/Cache/RememberAsync");
+        var responseThree = await client.GetStringAsync("/Cache/RememberAsync");
 
-        [Fact]
-        public async Task Remember_Async_Cache_Working()
-        {
-            var client = _factory.CreateClient();
-
-            var response = await client.GetStringAsync("/Cache/RememberAsync");
-            var responseTwo = await client.GetStringAsync("/Cache/RememberAsync");
-            var responseThree = await client.GetStringAsync("/Cache/RememberAsync");
-
-            Assert.Equal(Constants.WasCachedResult, response);
-            Assert.Equal(Constants.NotCachedResult, responseTwo);
-            Assert.Equal(Constants.NotCachedResult, responseThree);
-        }
+        Assert.Equal(Constants.WasCachedResult, response);
+        Assert.Equal(Constants.NotCachedResult, responseTwo);
+        Assert.Equal(Constants.NotCachedResult, responseThree);
     }
 }

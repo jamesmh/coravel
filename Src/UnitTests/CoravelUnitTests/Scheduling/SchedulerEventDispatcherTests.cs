@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using Coravel;
 using Coravel.Events.Interfaces;
@@ -10,51 +11,52 @@ using CoravelUnitTests.Scheduling.Stubs;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace CoravelUnitTests.Scheduling
+namespace CoravelUnitTests.Scheduling;
+
+public class SchedulerEventDispatcherTests
 {
-    public class SchedulerEventDispatcherTests
+    [Fact]
+    public async Task<bool> DoesNotThrowOnNullDispatcher()
     {
-         [Fact]
-        public async Task<bool> DoesNotThrowOnNullDispatcher()
-        {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), null);
-            bool dummy = true;
+        var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), null);
+        bool dummy = true;
 
-            scheduler.Schedule(() => dummy = true)
-            .EveryMinute();
+        scheduler.Schedule(() => dummy = true)
+        .EveryMinute();
 
-            await scheduler.RunAtAsync(DateTime.Parse("2018/06/07"));
-            await scheduler.RunAtAsync(DateTime.Parse("2018/06/08"));
-            await scheduler.RunAtAsync(DateTime.Parse("2018/06/09"));
+        await scheduler.RunAtAsync(DateTime.Parse("2018/06/07", new CultureInfo("en-US")));
+        await scheduler.RunAtAsync(DateTime.Parse("2018/06/08", new CultureInfo("en-US")));
+        await scheduler.RunAtAsync(DateTime.Parse("2018/06/09", new CultureInfo("en-US")));
 
-            // Should not throw due to null Dispatcher
-            return dummy;
-        }
+        // Should not throw due to null Dispatcher
+        Assert.True(dummy);
+        return dummy;
+    }
 
-        [Fact]
-        public async Task<bool> SchedulerDispatchesEvents(){
-            var services = new ServiceCollection();
-            services.AddEvents();
-            services.AddTransient<ScheduledEventStartedListener>();
-            var provider = services.BuildServiceProvider();
+    [Fact]
+    public async Task<bool> SchedulerDispatchesEvents()
+    {
+        var services = new ServiceCollection();
+        services.AddEvents();
+        services.AddTransient<ScheduledEventStartedListener>();
+        var provider = services.BuildServiceProvider();
 
-            IEventRegistration registration = provider.ConfigureEvents();
-            
-            registration
-                .Register<ScheduledEventStarted>()
-                .Subscribe<ScheduledEventStartedListener>();
+        IEventRegistration registration = provider.ConfigureEvents();
 
-            var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), provider.GetRequiredService<IDispatcher>());
-            bool dummy = true;
+        registration
+            .Register<ScheduledEventStarted>()
+            .Subscribe<ScheduledEventStartedListener>();
 
-            scheduler.Schedule(() => dummy = true)
-            .EveryMinute();
+        var scheduler = new Scheduler(new InMemoryMutex(), provider.GetRequiredService<IServiceScopeFactory>(), provider.GetRequiredService<IDispatcher>());
+        bool dummy = true;
 
-            await scheduler.RunAtAsync(DateTime.Parse("2018/06/07"));  
+        scheduler.Schedule(() => dummy = true)
+        .EveryMinute();
 
-            Assert.True(ScheduledEventStartedListener.Ran);    
+        await scheduler.RunAtAsync(DateTime.Parse("2018/06/07", new CultureInfo("en-US")));
 
-            return dummy; // Avoids "unused variable" warning ;)      
-        }
+        Assert.True(ScheduledEventStartedListener.Ran);
+
+        return dummy; // Avoids "unused variable" warning ;)      
     }
 }

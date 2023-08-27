@@ -1,91 +1,90 @@
 using System;
 
-namespace Coravel.Scheduling.Schedule.Cron
+namespace Coravel.Scheduling.Schedule.Cron;
+
+public sealed class CronExpression
 {
-    public class CronExpression
+    private readonly string _minutes;
+    private readonly string _hours;
+    private readonly string _days;
+    private readonly string _months;
+    private string _weekdays;
+
+    public CronExpression(string expression)
     {
-        private string _minutes;
-        private string _hours;
-        private string _days;
-        private string _months;
-        private string _weekdays;
-
-        public CronExpression(string expression)
+        var values = expression.Split(' ');
+        if (values.Length != 5)
         {
-            var values = expression.Split(' ');
-            if (values.Length != 5)
-            {
-                throw new MalformedCronExpressionException($"Cron expression '{expression}' is malformed.");
-            }
-
-            this._minutes = values[0];
-            this._hours = values[1];
-            this._days = values[2];
-            this._months = values[3];
-            this._weekdays = values[4];
-
-            this.GuardExpressionIsValid();
+            throw new MalformedCronExpressionException($"Cron expression '{expression}' is malformed.");
         }
 
-        public CronExpression AppendWeekDay(DayOfWeek day)
+        _minutes = values[0];
+        _hours = values[1];
+        _days = values[2];
+        _months = values[3];
+        _weekdays = values[4];
+
+        GuardExpressionIsValid();
+    }
+
+    public CronExpression AppendWeekDay(DayOfWeek day)
+    {
+        int intDay = (int)day;
+
+        if (_weekdays == "*")
         {
-            int intDay = (int)day;
-
-            if (this._weekdays == "*")
-            {
-                this._weekdays = intDay.ToString();
-            }
-            else
-            {
-                this._weekdays += "," + intDay.ToString();
-            }
-
-            return this;
+            _weekdays = intDay.ToString();
+        }
+        else
+        {
+            _weekdays += "," + intDay.ToString();
         }
 
-        public bool IsDue(DateTime time)
-        {
-            return this.IsMinuteDue(time)
-                   && this.IsHoursDue(time)
-                   && this.IsDayDue(time)
-                   && this.IsMonthDue(time)
-                   && this.IsWeekDayDue(time);
-        }
+        return this;
+    }
 
-        public bool IsWeekDayDue(DateTime time)
-        {
-            return new CronExpressionPart(this._weekdays, 7).IsDue((int)time.DayOfWeek);
-        }
+    public bool IsDue(DateTime time)
+    {
+        return IsMinuteDue(time)
+               && IsHoursDue(time)
+               && IsDayDue(time)
+               && IsMonthDue(time)
+               && IsWeekDayDue(time);
+    }
 
-        private bool IsMinuteDue(DateTime time)
-        {
-            return new CronExpressionPart(this._minutes, 60).IsDue(time.Minute);
-        }
+    public bool IsWeekDayDue(DateTime time)
+    {
+        return new CronExpressionPart(_weekdays, 7).IsDue((int)time.DayOfWeek);
+    }
 
-        private bool IsHoursDue(DateTime time)
-        {
-            return new CronExpressionPart(this._hours, 24).IsDue(time.Hour);
-        }
+    private bool IsMinuteDue(DateTime time)
+    {
+        return new CronExpressionPart(_minutes, 60).IsDue(time.Minute);
+    }
 
-        private bool IsDayDue(DateTime time)
-        {
-            return new CronExpressionPart(this._days, 31).IsDue(time.Day);
-        }
+    private bool IsHoursDue(DateTime time)
+    {
+        return new CronExpressionPart(_hours, 24).IsDue(time.Hour);
+    }
 
-        private bool IsMonthDue(DateTime time)
-        {
-            return new CronExpressionPart(this._months, 12).IsDue(time.Month);
-        }
+    private bool IsDayDue(DateTime time)
+    {
+        return new CronExpressionPart(_days, 31).IsDue(time.Day);
+    }
 
-        private void GuardExpressionIsValid()
-        {
-            // We don't want to check that the expression is due, but just run validation and ignore any results.
-            var time = DateTime.UtcNow;
-            this.IsMinuteDue(time);
-            this.IsHoursDue(time);
-            this.IsDayDue(time);
-            this.IsMonthDue(time);
-            this.IsWeekDayDue(time);
-        }
+    private bool IsMonthDue(DateTime time)
+    {
+        return new CronExpressionPart(_months, 12).IsDue(time.Month);
+    }
+
+    private void GuardExpressionIsValid()
+    {
+        // We don't want to check that the expression is due, but just run validation and ignore any results.
+        var time = DateTime.UtcNow;
+        IsMinuteDue(time);
+        IsHoursDue(time);
+        IsDayDue(time);
+        IsMonthDue(time);
+        IsWeekDayDue(time);
     }
 }

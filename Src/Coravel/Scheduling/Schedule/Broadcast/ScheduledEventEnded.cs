@@ -2,17 +2,16 @@ using System;
 using Coravel.Events.Interfaces;
 using Coravel.Scheduling.Schedule.Event;
 
-namespace Coravel.Scheduling.Schedule.Broadcast
-{
-    public class ScheduledEventEnded : IEvent
-    {
-        public ScheduledEvent EndedEvent { get; private set; }
-        public DateTime EndedAtUtc { get; private set; }
+namespace Coravel.Scheduling.Schedule.Broadcast;
 
-        public ScheduledEventEnded(ScheduledEvent endedEvent)
-        {
-            this.EndedEvent = endedEvent;
-            this.EndedAtUtc = DateTime.UtcNow;
-        }
+internal sealed class ScheduledEventEnded : IEvent
+{
+    public ScheduledEvent EndedEvent { get; }
+    public DateTime EndedAtUtc { get; }
+
+    public ScheduledEventEnded(ScheduledEvent endedEvent)
+    {
+        EndedEvent = endedEvent;
+        EndedAtUtc = DateTime.UtcNow;
     }
 }

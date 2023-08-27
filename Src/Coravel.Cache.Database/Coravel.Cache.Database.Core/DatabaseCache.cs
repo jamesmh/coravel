@@ -7,65 +7,65 @@ using Newtonsoft.Json;
 
 namespace Coravel.Cache.Database.Core
 {
-    public class DatabaseCache : ICache
+    internal sealed class DatabaseCache : ICache
     {
         private readonly IDriver _driver;
         private readonly string _connectionString;
-        private static bool _TableCreated = false;       
+        private static bool _TableCreated = false;
 
         public DatabaseCache(string connectionString, IDriver driver)
         {
-            this._connectionString = connectionString;
-            this._driver = driver;
-            this.TryCreateCacheTablesIfNotExisting();
+            _connectionString = connectionString;
+            _driver = driver;
+            TryCreateCacheTablesIfNotExisting();
         }
 
         public void Flush()
         {
-            this._connectionString.AsDBConnection(this._driver, con =>            
-                con.Execute($@"DELETE FROM {this._driver.TableName};")
+            _connectionString.AsDBConnection(_driver, con =>
+                con.Execute($@"DELETE FROM {_driver.TableName};")
             );
         }
 
         public TResult Forever<TResult>(string key, Func<TResult> cacheFunc)
         {
-            return this.TryCachingEntry(key, cacheFunc, DateTimeOffset.MaxValue);
+            return TryCachingEntry(key, cacheFunc, DateTimeOffset.MaxValue);
         }
 
         public async Task<TResult> ForeverAsync<TResult>(string key, Func<Task<TResult>> cacheFunc)
         {
-            return await this.TryCachingEntryAsync(key, cacheFunc, DateTimeOffset.MaxValue);
+            return await TryCachingEntryAsync(key, cacheFunc, DateTimeOffset.MaxValue);
         }
 
         public void Forget(string key)
         {
-            this._connectionString.AsDBConnection(this._driver, con =>            
-                con.Execute($"DELETE FROM {this._driver.TableName} WHERE Key = @Key", new { Key = key })
+            _connectionString.AsDBConnection(_driver, con =>
+                con.Execute($"DELETE FROM {_driver.TableName} WHERE Key = @Key", new { Key = key })
             );
         }
 
         public TResult Remember<TResult>(string key, Func<TResult> cacheFunc, TimeSpan expiresIn)
         {
-            return this.TryCachingEntry(key, cacheFunc, DateTimeOffset.UtcNow.Add(expiresIn));  
+            return TryCachingEntry(key, cacheFunc, DateTimeOffset.UtcNow.Add(expiresIn));
         }
 
         public async Task<TResult> RememberAsync<TResult>(string key, Func<Task<TResult>> cacheFunc, TimeSpan expiresIn)
         {
-            return await this.TryCachingEntryAsync(key, cacheFunc, DateTimeOffset.UtcNow.Add(expiresIn));
+            return await TryCachingEntryAsync(key, cacheFunc, DateTimeOffset.UtcNow.Add(expiresIn));
         }
 
-                public async Task<bool> HasAsync(string key)
+        public async Task<bool> HasAsync(string key)
         {
-            return await this._connectionString.AsDBTransactionAsync<bool>(this._driver, async (con, trans) =>
+            return await _connectionString.AsDBTransactionAsync(_driver, async (con, trans) =>
             {
                 var cachedItem = await GetCacheItemAsync(key, con, trans);
-                
-                if(cachedItem == null)
+
+                if (cachedItem == null)
                 {
                     return false;
                 }
 
-                if(cachedItem.IsExpired())
+                if (cachedItem.IsExpired())
                 {
                     return false;
                 }
@@ -76,16 +76,16 @@ namespace Coravel.Cache.Database.Core
 
         public async Task<TResult> GetAsync<TResult>(string key)
         {
-            return await this._connectionString.AsDBTransactionAsync<TResult>(this._driver, async (con, trans) =>
+            return await _connectionString.AsDBTransactionAsync(_driver, async (con, trans) =>
             {
                 var cachedItem = await GetCacheItemAsync(key, con, trans);
 
-                if(cachedItem == null)
+                if (cachedItem == null)
                 {
                     throw new NoCacheEntryException("Cache entry for key \"" + key + "\" does not exist.");
                 }
 
-                if(cachedItem.IsExpired())
+                if (cachedItem.IsExpired())
                 {
                     throw new NoCacheEntryException("Cache entry for key \"" + key + "\" has expired.");
                 }
@@ -96,7 +96,7 @@ namespace Coravel.Cache.Database.Core
 
         private T TryCachingEntry<T>(string key, Func<T> cacheFunc, DateTimeOffset expiresAt)
         {
-            return this._connectionString.AsDBTransaction<T>(this._driver, (con, trans) =>
+            return _connectionString.AsDBTransaction(_driver, (con, trans) =>
             {
                 var cachedItem = GetCacheItem(key, con, trans);
 
@@ -105,7 +105,7 @@ namespace Coravel.Cache.Database.Core
                     bool expired = cachedItem.ExpiresAt.UtcDateTime <= DateTimeOffset.UtcNow;
                     if (expired)
                     {
-                        con.Execute(this._driver.DeleteByKeySQL, new { Key = key }, trans);                        
+                        con.Execute(_driver.DeleteByKeySQL, new { Key = key }, trans);
                     }
                     else
                     {
@@ -122,7 +122,7 @@ namespace Coravel.Cache.Database.Core
                     ExpiresAt = expiresAt
                 };
 
-                con.Execute(this._driver.InsertOrUpdateCacheEntrySQL, parameters, trans);
+                con.Execute(_driver.InsertOrUpdateCacheEntrySQL, parameters, trans);
 
                 return result;
             });
@@ -130,7 +130,7 @@ namespace Coravel.Cache.Database.Core
 
         private async Task<T> TryCachingEntryAsync<T>(string key, Func<Task<T>> cacheFunc, DateTimeOffset expiresAt)
         {
-            return await this._connectionString.AsDBTransactionAsync<T>(this._driver, async (con, trans) =>
+            return await _connectionString.AsDBTransactionAsync(_driver, async (con, trans) =>
             {
                 var cachedItem = await GetCacheItemAsync(key, con, trans);
 
@@ -139,8 +139,8 @@ namespace Coravel.Cache.Database.Core
                     bool expired = cachedItem.IsExpired();
                     if (expired)
                     {
-                        await con.ExecuteAsync(this._driver.DeleteByKeySQL, new { Key = key }, trans);                        
-                    } 
+                        await con.ExecuteAsync(_driver.DeleteByKeySQL, new { Key = key }, trans);
+                    }
                     else
                     {
                         return JsonConvert.DeserializeObject<T>(cachedItem.Value);
@@ -156,7 +156,7 @@ namespace Coravel.Cache.Database.Core
                     ExpiresAt = expiresAt
                 };
 
-                await con.ExecuteAsync(this._driver.InsertOrUpdateCacheEntrySQL, parameters, trans);
+                await con.ExecuteAsync(_driver.InsertOrUpdateCacheEntrySQL, parameters, trans);
 
                 return result;
             });
@@ -164,12 +164,12 @@ namespace Coravel.Cache.Database.Core
 
         private CacheEntryDBModel GetCacheItem(string key, DbConnection con, DbTransaction trans)
         {
-            return con.QueryFirstOrDefault<CacheEntryDBModel>(this._driver.GetCacheEntrySQL, new { Key = key }, trans);
+            return con.QueryFirstOrDefault<CacheEntryDBModel>(_driver.GetCacheEntrySQL, new { Key = key }, trans);
         }
 
         private async Task<CacheEntryDBModel> GetCacheItemAsync(string key, DbConnection con, DbTransaction trans)
         {
-            return await con.QueryFirstOrDefaultAsync<CacheEntryDBModel>(this._driver.GetCacheEntrySQL, new { Key = key }, trans);
+            return await con.QueryFirstOrDefaultAsync<CacheEntryDBModel>(_driver.GetCacheEntrySQL, new { Key = key }, trans);
         }
 
         private void TryCreateCacheTablesIfNotExisting()
@@ -179,9 +179,9 @@ namespace Coravel.Cache.Database.Core
                 return;
             }
 
-            this._connectionString.AsDBTransaction(this._driver, (con, trans) =>
+            _connectionString.AsDBTransaction(_driver, (con, trans) =>
             {
-                con.Execute(this._driver.CreateTablesSQL, null, trans);
+                con.Execute(_driver.CreateTablesSQL, null, trans);
                 _TableCreated = true;
             });
         }

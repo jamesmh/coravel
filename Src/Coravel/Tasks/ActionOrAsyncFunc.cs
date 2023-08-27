@@ -1,39 +1,38 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Coravel.Tasks
+namespace Coravel.Tasks;
+
+internal sealed class ActionOrAsyncFunc
 {
-    public class ActionOrAsyncFunc
+    private readonly Action? _action;
+    private readonly Func<Task>? _asyncAction;
+    private readonly bool _isAsync;
+    public Guid Guid { get; }
+
+    public ActionOrAsyncFunc(Action action)
     {
-        private Action _action;
-        private Func<Task> _asyncAction;
-        private bool _isAsync;
-        public Guid Guid { get; }
+        _isAsync = false;
+        _action = action;
+        Guid = Guid.NewGuid();
+    }
 
-        public ActionOrAsyncFunc(Action action)
+    public ActionOrAsyncFunc(Func<Task> asyncAction)
+    {
+        _isAsync = true;
+        _asyncAction = asyncAction;
+        Guid = Guid.NewGuid();
+    }
+
+    public async Task Invoke()
+    {
+        if (_isAsync && _asyncAction != null)
         {
-            this._isAsync = false;
-            this._action = action;
-            this.Guid = Guid.NewGuid();
+            await _asyncAction();
         }
-
-        public ActionOrAsyncFunc(Func<Task> asyncAction)
+        else
         {
-            this._isAsync = true;
-            this._asyncAction = asyncAction;
-            this.Guid = Guid.NewGuid();
-        }
-
-        public async Task Invoke()
-        {
-            if (this._isAsync)
-            {
-                await this._asyncAction();
-            }
-            else
-            {
-                this._action();
-            }
+            _action?.Invoke();
         }
     }
 }

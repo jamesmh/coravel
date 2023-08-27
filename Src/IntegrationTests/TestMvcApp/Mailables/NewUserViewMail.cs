@@ -1,19 +1,18 @@
 using Coravel.Mailer.Mail;
 using TestMvcApp.Models;
 
-namespace TestMvcApp.Mailables
+namespace TestMvcApp.Mailables;
+
+public class NewUserViewMail : Mailable<UserModel>
 {
-    public class NewUserViewMail : Mailable<UserModel>
+    private readonly UserModel _user;
+
+    public NewUserViewMail(UserModel user) => _user = user;
+
+    public override void Build()
     {
-        private UserModel _user;
-
-        public NewUserViewMail(UserModel user) => this._user = user;
-
-        public override void Build()
-        {
-            this.To(this._user)
-                .From("replyto@test.com")
-                .View("~/Views/Mail/NewUser.cshtml", this._user);
-        }
+        To(_user)
+            .From("replyto@test.com")
+            .View("~/Views/Mail/NewUser.cshtml", _user);
     }
 }

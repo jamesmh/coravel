@@ -1,12 +1,12 @@
 @{
     string preview = ViewBag.Preview;
-    string logoSrc = ViewBag.LogoSrc;
-    string heading = ViewBag.Heading;
-    string primaryColor = ViewBag.PrimaryColor ?? "#539be2";
+string logoSrc = ViewBag.LogoSrc;
+string heading = ViewBag.Heading;
+string primaryColor = ViewBag.PrimaryColor ?? "#539be2";
 
-    string companyAddress = ViewBag.CompanyAddress;
-    IEnumerable<string> links = ViewBag.Links;
-    string companyName = ViewBag.CompanyName;
+string companyAddress = ViewBag.CompanyAddress;
+IEnumerable<string> links = ViewBag.Links;
+string companyName = ViewBag.CompanyName;
 }
 
 <!DOCTYPE html>
@@ -84,7 +84,7 @@
 
 
     @if(logoSrc != null)
-    {
+{
     <tr>
         <td bgcolor="@(primaryColor)" align="center">
             <!--[if (gte mso 9)|(IE)]>
@@ -106,10 +106,10 @@
             <![endif]-->
         </td>
     </tr>
-    }
+}
 
     @if(heading != null)
-    {
+{
     <tr>
         <td bgcolor="@(primaryColor)" align="center" style="padding: 0px 10px 0px 10px;">
             <!--[if (gte mso 9)|(IE)]>
@@ -131,7 +131,7 @@
             <![endif]-->
         </td>
     </tr>
-    }
+}
 
     <tr>
         <td bgcolor="#f4f4f4" align="center" style="padding: 0px 10px 0px 10px;">
@@ -165,44 +165,44 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" >
            
             @if(IsSectionDefined("footer"))            
-            {
-            <tr>
+        {
+        <tr>
                 <td bgcolor="#f4f4f4" align="left" style="padding: 30px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >                  
                     @RenderSection("footer")
                 </td>
             </tr>
-            }            
-            else
-            {
+        }            
+        else
+        {
 
-             @if(IsSectionDefined("links"))
-              {
-              <tr>
+         @if(IsSectionDefined("links"))
+          {
+          <tr>
                 <td bgcolor="#f4f4f4" align="left" style="padding: 30px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                   <p style="margin: 0;">    
                     @RenderSection("links")
                 </td>
               </tr>
-              }
-              
-              @if(companyAddress != null)
-              {
-              <tr>
+          }
+          
+          @if(companyAddress != null)
+          {
+          <tr>
                 <td bgcolor="#f4f4f4" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                   <p style="margin: 0;">@companyAddress</p>
                 </td>
               </tr>
-              }
+          }
 
-              @if(companyName != null)
-              {
-              <tr>
+          @if(companyName != null)
+          {
+          <tr>
                 <td bgcolor="#f4f4f4" align="left" style="padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;" >
                   <p style="margin: 0;">Copyright &copy; @(System.DateTime.Now.Year) <b>@companyName</b>, All Rights Reserved.</p>
                 </td>
               </tr>
-              }
-            }
+          }
+        }
             </table>
             <!--[if (gte mso 9)|(IE)]>
             </td>

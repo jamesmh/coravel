@@ -1,11 +1,8 @@
-﻿using System;
+﻿namespace Coravel.Scheduling.Schedule.Cron;
 
-namespace Coravel.Scheduling.Schedule.Cron
+public sealed class MalformedCronExpressionException : System.Exception
 {
-    public class MalformedCronExpressionException : Exception
+    public MalformedCronExpressionException(string message) : base(message)
     {
-        public MalformedCronExpressionException(string message) : base(message)
-        {
-        }
     }
 }

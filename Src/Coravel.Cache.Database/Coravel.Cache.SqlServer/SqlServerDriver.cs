@@ -5,10 +5,10 @@ using Coravel.Cache.Database.Core;
 
 namespace Coravel.Cache.SQLServer
 {
-    public class SQLServerDriver : IDriver
+    internal sealed class SqlServerDriver : IDriver
     {
-         public string TableName => "[dbo].[CoravelCacheStore]";
-          public string DeleteByKeySQL => $@"
+        public string TableName => "[dbo].[CoravelCacheStore]";
+        public string DeleteByKeySQL => $@"
             DELETE FROM {TableName} WHERE [Key] = @Key;
         ";
 

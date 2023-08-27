@@ -13,99 +13,98 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 
-namespace Coravel.Mailer.Mail.Renderers
+namespace Coravel.Mailer.Mail.Renderers;
+
+public class RazorRenderer
 {
-    public class RazorRenderer
+    private readonly IRazorViewEngine _viewEngine;
+    private readonly ITempDataProvider _tempDataProvider;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly string? _logoSrc;
+    private readonly string? _companyName;
+    private readonly string? _companyAddress;
+    private readonly string? _primaryColor;
+
+    public RazorRenderer(
+        IRazorViewEngine viewEngine,
+        ITempDataProvider tempDataProvider,
+        IServiceProvider serviceProvider,
+        IConfiguration config)
     {
-        private IRazorViewEngine _viewEngine;
-        private ITempDataProvider _tempDataProvider;
-        private IServiceProvider _serviceProvider;
-        private string _logoSrc;
-        private string _companyName;
-        private string _companyAddress;
-        private string _primaryColor;
+        _viewEngine = viewEngine;
+        _tempDataProvider = tempDataProvider;
+        _serviceProvider = serviceProvider;
 
-        public RazorRenderer(
-            IRazorViewEngine viewEngine,
-            ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider,
-            IConfiguration config)
-        {
-            this._viewEngine = viewEngine;
-            this._tempDataProvider = tempDataProvider;
-            this._serviceProvider = serviceProvider;
+        _logoSrc = config?.GetValue<string>("Coravel:Mail:LogoSrc");
+        _companyName = config?.GetValue<string>("Coravel:Mail:CompanyName");
+        _companyAddress = config?.GetValue<string>("Coravel:Mail:CompanyAddress");
+        _primaryColor = config?.GetValue<string>("Coravel:Mail:PrimaryColor");
+    }
 
-            this._logoSrc = config?.GetValue<string>("Coravel:Mail:LogoSrc");
-            this._companyName = config?.GetValue<string>("Coravel:Mail:CompanyName");
-            this._companyAddress = config?.GetValue<string>("Coravel:Mail:CompanyAddress");
-            this._primaryColor = config?.GetValue<string>("Coravel:Mail:PrimaryColor");
-        }
+    public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
+    {
+        var actionContext = GetActionContext();
+        var view = FindView(actionContext, viewName);
 
-        public async Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model)
-        {
-            var actionContext = GetActionContext();
-            var view = FindView(actionContext, viewName);
-
-            using (var output = new StringWriter())
+        using var output = new StringWriter();
+        var viewContext = new ViewContext(
+            actionContext,
+            view,
+            new ViewDataDictionary<TModel>(
+                metadataProvider: new EmptyModelMetadataProvider(),
+                modelState: new ModelStateDictionary())
             {
-                var viewContext = new ViewContext(
-                    actionContext,
-                    view,
-                    new ViewDataDictionary<TModel>(
-                        metadataProvider: new EmptyModelMetadataProvider(),
-                        modelState: new ModelStateDictionary())
-                    {
-                        Model = model
-                    },
-                    new TempDataDictionary(
-                        actionContext.HttpContext,
-                        this._tempDataProvider),
-                    output,
-                    new HtmlHelperOptions());
+                Model = model
+            },
+            new TempDataDictionary(
+                actionContext.HttpContext,
+                _tempDataProvider),
+            output,
+            new HtmlHelperOptions());
 
-                this.BindConfigurationToViewBag(viewContext.ViewBag);
+        BindConfigurationToViewBag(viewContext.ViewBag);
 
-                await view.RenderAsync(viewContext);
+        await view.RenderAsync(viewContext);
 
-                return output.ToString();
-            }
-        }
+        return output.ToString();
+    }
 
-        private void BindConfigurationToViewBag(dynamic viewBag)
+    private void BindConfigurationToViewBag(dynamic viewBag)
+    {
+        viewBag.LogoSrc = _logoSrc;
+        viewBag.CompanyName = _companyName;
+        viewBag.CompanyAddress = _companyAddress;
+        viewBag.PrimaryColor = _primaryColor;
+    }
+
+    private IView FindView(ActionContext actionContext, string viewName)
+    {
+        var getViewResult = _viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
+        if (getViewResult.Success)
         {
-            viewBag.LogoSrc = this._logoSrc;
-            viewBag.CompanyName = this._companyName;
-            viewBag.CompanyAddress = this._companyAddress;
-            viewBag.PrimaryColor = this._primaryColor;
+            return getViewResult.View;
         }
 
-        private IView FindView(ActionContext actionContext, string viewName)
+        var findViewResult = _viewEngine.FindView(actionContext, viewName, isMainPage: true);
+        if (findViewResult.Success)
         {
-            var getViewResult = this._viewEngine.GetView(executingFilePath: null, viewPath: viewName, isMainPage: true);
-            if (getViewResult.Success)
-            {
-                return getViewResult.View;
-            }
-
-            var findViewResult = this._viewEngine.FindView(actionContext, viewName, isMainPage: true);
-            if (findViewResult.Success)
-            {
-                return findViewResult.View;
-            }
-
-            var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
-            var errorMessage = string.Join(
-                Environment.NewLine,
-                new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations)); ;
-
-            throw new InvalidOperationException(errorMessage);
+            return findViewResult.View;
         }
 
-        private ActionContext GetActionContext()
+        var searchedLocations = getViewResult.SearchedLocations.Concat(findViewResult.SearchedLocations);
+        var errorMessage = string.Join(
+            Environment.NewLine,
+            new[] { $"Unable to find view '{viewName}'. The following locations were searched:" }.Concat(searchedLocations));
+
+        throw new InvalidOperationException(errorMessage);
+    }
+
+    private ActionContext GetActionContext()
+    {
+        var httpContext = new DefaultHttpContext
         {
-            var httpContext = new DefaultHttpContext();
-            httpContext.RequestServices = this._serviceProvider;
-            return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
-        }
+            RequestServices = _serviceProvider
+        };
+        return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
     }
 }

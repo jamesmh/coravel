@@ -5,34 +5,38 @@ using Coravel.Queuing.HostedService;
 using Coravel.Queuing.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Coravel
+namespace Coravel;
+
+/// <summary>
+/// IServiceCollection extensions for registering Coravel's Queuing.
+/// </summary>
+public static class QueueServiceRegistration
 {
     /// <summary>
-    /// IServiceCollection extensions for registering Coravel's Queuing.
+    /// Register Coravel's queueing.
     /// </summary>
-    public static class QueueServiceRegistration
+    /// <param name="services">Service collection</param>
+    /// <returns></returns>
+    public static IServiceCollection AddQueue(this IServiceCollection services)
     {
-        /// <summary>
-        /// Register Coravel's queueing.
-        /// </summary>
-        /// <param name="services">Service collection</param>
-        /// <returns></returns>
-        public static IServiceCollection AddQueue(this IServiceCollection services)
-        {
-            services.AddSingleton<IQueue>(p =>
-                new Queue(
-                    p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetService<IDispatcher>()
-                )
-            );
-            services.AddHostedService<QueuingHost>();
-            return services;
-        }
+        services.AddSingleton<IQueue>(queue =>
+            new Queue(
+                queue.GetRequiredService<IServiceScopeFactory>(),
+                queue.GetService<IDispatcher>() ?? throw new ArgumentNullException(nameof(queue))
+            )
+        );
+        services.AddHostedService<QueuingHost>();
+        return services;
+    }
 
-        public static IQueueConfiguration ConfigureQueue(this IServiceProvider provider)
-        {
-            var queue = provider.GetRequiredService<IQueue>();
-            return (Queue) queue;
-        }
+    /// <summary>
+    /// Configures the queuing services using the service provider.
+    /// </summary>
+    /// <param name="provider">The service provider.</param>
+    /// <returns>A queue configuration object.</returns>
+    public static IQueueConfiguration ConfigureQueue(this IServiceProvider provider)
+    {
+        var queue = provider.GetRequiredService<IQueue>();
+        return (Queue)queue;
     }
 }
