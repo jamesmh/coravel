@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Security;
 using Coravel.Mailer.Mail;
+using Coravel.Mailer.Mail.Exceptions;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Mailers;
 using Coravel.Mailer.Mail.Renderers;
@@ -24,10 +25,17 @@ namespace Coravel
         {
             string mailerType = config.GetValue<string>("Coravel:Mail:Driver", "FileLog");
 
-            var strategies = new Dictionary<string, Action>();
-            strategies.Add("SMTP", () => AddSmtpMailer(services, config));
-            strategies.Add("FILELOG", () => AddFileLogMailer(services, config));
-            strategies[mailerType.ToUpper()].Invoke();
+            switch(mailerType.ToUpper()) {
+                case "SMTP":
+                    AddSmtpMailer(services, config);
+                    break;
+                case "FILELOG":
+                    AddFileLogMailer(services, config);
+                    break;
+                default:
+                    throw new DriverNotFound(mailerType);
+            }
+
             return services;
         }
 
