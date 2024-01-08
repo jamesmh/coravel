@@ -58,6 +58,7 @@ namespace Coravel.Mailer.Mail.Mailers
             SetRecipients(to, mail);
             SetCc(cc, mail);
             SetBcc(bcc, mail);
+            SetReplyTo(replyTo, mail);
             mail.Subject = subject;
             SetMailBody(message, attachments, mail);
 
@@ -117,6 +118,11 @@ namespace Coravel.Mailer.Mail.Mailers
         private void SetFrom(MailRecipient @from, MimeMessage mail)
         {
             mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
+        }
+
+        private void SetReplyTo(MailRecipient replyTo,  MimeMessage mail)
+        {
+            mail.ReplyTo.Add(AsMailboxAddress(replyTo));
         }
 
         private static MailboxAddress AsMailboxAddress(MailRecipient recipient) =>
