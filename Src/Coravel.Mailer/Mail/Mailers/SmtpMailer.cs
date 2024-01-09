@@ -120,7 +120,7 @@ namespace Coravel.Mailer.Mail.Mailers
             mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
         }
 
-        private void SetReplyTo(MailRecipient replyTo,  MimeMessage mail)
+        private static void SetReplyTo(MailRecipient replyTo,  MimeMessage mail)
         {
             mail.ReplyTo.Add(AsMailboxAddress(replyTo));
         }
