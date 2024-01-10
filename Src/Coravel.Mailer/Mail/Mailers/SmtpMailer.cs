@@ -61,8 +61,10 @@ namespace Coravel.Mailer.Mail.Mailers
             mail.Subject = subject;
             SetMailBody(message, attachments, mail);
 
-            if(replyTo != null)
+            if (replyTo != null)
+            {
                 SetReplyTo(replyTo, mail);
+            }
 
             using (var client = new SmtpClient())
             {
