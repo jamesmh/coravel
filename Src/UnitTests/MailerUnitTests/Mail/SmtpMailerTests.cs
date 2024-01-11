@@ -31,6 +31,24 @@ namespace UnitTests.Mail
         }
 
 
+        [Fact]
+        public async Task SmtpMailerRenderWithReplyToSucessful()
+        {
+            var renderer = RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build());
+            var mailer = new SmtpMailer(renderer, "dummy", 1, "dummy", "dummy");
+
+            string message = await mailer.RenderAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .ReplyTo("replyto@test.com")
+                    .To("to@test.com")
+                    .Html("<html></html>")
+            );
+
+            Assert.Equal("<html></html>", message);
+        }
+
         [Theory]
         [InlineData("", "", false)]
         [InlineData(null, "", false)]
