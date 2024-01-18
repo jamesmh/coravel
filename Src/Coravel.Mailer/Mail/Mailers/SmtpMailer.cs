@@ -61,6 +61,11 @@ namespace Coravel.Mailer.Mail.Mailers
             mail.Subject = subject;
             SetMailBody(message, attachments, mail);
 
+            if (replyTo != null)
+            {
+                SetReplyTo(replyTo, mail);
+            }
+
             using (var client = new SmtpClient())
             {
                 client.ServerCertificateValidationCallback = this._certCallback;
@@ -117,6 +122,11 @@ namespace Coravel.Mailer.Mail.Mailers
         private void SetFrom(MailRecipient @from, MimeMessage mail)
         {
             mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
+        }
+
+        private static void SetReplyTo(MailRecipient replyTo, MimeMessage mail)
+        {
+            mail.ReplyTo.Add(AsMailboxAddress(replyTo));
         }
 
         private static MailboxAddress AsMailboxAddress(MailRecipient recipient) =>
