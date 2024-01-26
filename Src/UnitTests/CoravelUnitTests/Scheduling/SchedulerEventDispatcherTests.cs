@@ -14,7 +14,7 @@ namespace CoravelUnitTests.Scheduling
 {
     public class SchedulerEventDispatcherTests
     {
-         [Fact]
+        [Fact]
         public async Task<bool> DoesNotThrowOnNullDispatcher()
         {
             var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), null);

@@ -99,12 +99,6 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public async Task RunSchedulerAsync()
-        {
-            DateTime utcNow = DateTime.UtcNow;
-            await this.RunAtAsync(utcNow);
-        }
-
         public async Task RunAtAsync(DateTime utcDate)
         {
             Interlocked.Increment(ref this._schedulerIterationsActiveCount);
