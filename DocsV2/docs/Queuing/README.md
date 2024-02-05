@@ -22,7 +22,7 @@ In your `Startup` file, in the `ConfigureServices()`:
 services.AddQueue();
 ```
 
-The, you inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
+Then you inject an instance of the `Coravel.Queuing.Interfaces.IQueue` interface into your controller, etc.
 
 ```csharp
 IQueue _queue;
