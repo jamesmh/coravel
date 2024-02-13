@@ -41,13 +41,13 @@ namespace Coravel.Queuing
 
 		public Guid QueueInvocable<T>() where T : IInvocable
 		{
-			var job = EnqueueInvocable(typeof(T));
+			var job = EnqueueInvocable<T>();
 			return job.Guid;
 		}
 
 		public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
 		{
-			var job = this.EnqueueInvocable(typeof(T), invocable =>
+			var job = this.EnqueueInvocable<T>(invocable =>
 			{
 				IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>)invocable;
 				invocableWithParams.Payload = payload;
@@ -58,7 +58,7 @@ namespace Coravel.Queuing
 		public (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
 		{
 			var tokenSource = new CancellationTokenSource();
-			var func = this.EnqueueInvocable(typeof(T), (invocable) =>
+			var func = this.EnqueueInvocable<T>((invocable) =>
 			{
 				(invocable as ICancellableTask).Token = tokenSource.Token;
 			});
@@ -66,7 +66,7 @@ namespace Coravel.Queuing
 			return (func.Guid, tokenSource);
 		}
 
-		public (Guid, CancellationTokenSource) QueueCancellableInvocable(Type invocableType)
+		public (Guid, CancellationTokenSource) QueueCancellableInvocable(IInvocable invocableType)
 		{
 			var tokenSource = new CancellationTokenSource();
 			var func = this.EnqueueInvocable(invocableType, (invocable) =>
@@ -156,30 +156,47 @@ namespace Coravel.Queuing
 			}
 		}
 
-		private ActionOrAsyncFunc EnqueueInvocable(Type invocableType, Action<IInvocable> beforeInvoked = null)
+		private ActionOrAsyncFunc EnqueueInvocable<T>(Action<IInvocable> beforeInvoked = null)
 		{
 			var func = new ActionOrAsyncFunc(async () =>
+			{
+				var invocableType = typeof(T);
+				// This allows us to scope the scheduled IInvocable object
+				// and allow DI to inject it's dependencies.
+				await using (var scope = this._scopeFactory.CreateAsyncScope())
 				{
-					// This allows us to scope the scheduled IInvocable object
-					// and allow DI to inject it's dependencies.
-					await using (var scope = this._scopeFactory.CreateAsyncScope())
+					if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
 					{
-						if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
+						if (beforeInvoked != null)
 						{
-							if (beforeInvoked != null)
-							{
-								beforeInvoked(invocable);
-							}
+							beforeInvoked(invocable);
+						}
 
-							await invocable.Invoke();
-						}
-						else
-						{
-							this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
-							throw new Exception($"Queued invocable {invocableType} is not a registered service.");
-						}
+						await invocable.Invoke();
 					}
-				});
+					else
+					{
+						this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
+						throw new Exception($"Queued invocable {invocableType} is not a registered service.");
+					}
+				}
+			});
+			this._tasks.Enqueue(func);
+			return func;
+		}
+
+
+		private ActionOrAsyncFunc EnqueueInvocable<T>(T invocableType, Action<IInvocable> beforeInvoked = null) where T : IInvocable
+		{
+			var func = new ActionOrAsyncFunc(async () =>
+			{
+				if (beforeInvoked != null)
+				{
+					beforeInvoked(invocableType);
+				}
+
+				await invocableType.Invoke();
+			});
 			this._tasks.Enqueue(func);
 			return func;
 		}

@@ -39,7 +39,7 @@ namespace Coravel.Queuing.Interfaces
 		/// Queue an invocable that, when dequeued, will be instantiated using DI and invoked.
 		/// </summary>
 		/// <param name="invocableType">The IInvocable and ICancellableTask task type.</param>
-		(Guid, CancellationTokenSource) QueueCancellableInvocable(Type invocableType);
+		(Guid, CancellationTokenSource) QueueCancellableInvocable(IInvocable invocableType);
 
 		/// <summary>
 		/// Queue an event to be broadcasted.
