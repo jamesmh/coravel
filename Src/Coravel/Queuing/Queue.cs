@@ -14,217 +14,229 @@ using Microsoft.Extensions.Logging;
 
 namespace Coravel.Queuing
 {
-    public class Queue : IQueue, IQueueConfiguration
-    {
-        private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
-        private ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
-        private Action<Exception> _errorHandler;
+	public class Queue : IQueue, IQueueConfiguration
+	{
+		private ConcurrentQueue<ActionOrAsyncFunc> _tasks = new ConcurrentQueue<ActionOrAsyncFunc>();
+		private ConcurrentDictionary<Guid, CancellationTokenSource> _tokens = new ConcurrentDictionary<Guid, CancellationTokenSource>();
+		private Action<Exception> _errorHandler;
 
-        private ILogger<IQueue> _logger;
-        private IServiceScopeFactory _scopeFactory;
-        private IDispatcher _dispatcher;
-        private int _queueIsConsuming = 0;
-        private int _tasksRunningCount = 0;
+		private ILogger<IQueue> _logger;
+		private IServiceScopeFactory _scopeFactory;
+		private IDispatcher _dispatcher;
+		private int _queueIsConsuming = 0;
+		private int _tasksRunningCount = 0;
 
-        public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
-        {
-            this._scopeFactory = scopeFactory;
-            this._dispatcher = dispatcher;
-        }
+		public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
+		{
+			this._scopeFactory = scopeFactory;
+			this._dispatcher = dispatcher;
+		}
 
-        public Guid QueueTask(Action task)
-        {
-            var job = new ActionOrAsyncFunc(task);
-            this._tasks.Enqueue(job);
-            return job.Guid;
-        }
+		public Guid QueueTask(Action task)
+		{
+			var job = new ActionOrAsyncFunc(task);
+			this._tasks.Enqueue(job);
+			return job.Guid;
+		}
 
-        public Guid QueueInvocable<T>() where T : IInvocable
-        {
-            var job = EnqueueInvocable<T>();
-            return job.Guid;
-        }
+		public Guid QueueInvocable<T>() where T : IInvocable
+		{
+			var job = EnqueueInvocable(typeof(T));
+			return job.Guid;
+		}
 
-        public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
-        {
-            var job = this.EnqueueInvocable<T>(invocable => {
-                IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
-                invocableWithParams.Payload = payload;
-            });
-            return job.Guid;
-        }
+		public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
+		{
+			var job = this.EnqueueInvocable(typeof(T), invocable =>
+			{
+				IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>)invocable;
+				invocableWithParams.Payload = payload;
+			});
+			return job.Guid;
+		}
 
-        public (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
-        {
-            var tokenSource = new CancellationTokenSource();
-            var func = this.EnqueueInvocable<T>((invocable) => {
-                (invocable as ICancellableTask).Token = tokenSource.Token;
-            });
-            this._tokens.TryAdd(func.Guid, tokenSource);
-            return (func.Guid, tokenSource);
-        }
+		public (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask
+		{
+			var tokenSource = new CancellationTokenSource();
+			var func = this.EnqueueInvocable(typeof(T), (invocable) =>
+			{
+				(invocable as ICancellableTask).Token = tokenSource.Token;
+			});
+			this._tokens.TryAdd(func.Guid, tokenSource);
+			return (func.Guid, tokenSource);
+		}
 
-        public Guid QueueAsyncTask(Func<Task> asyncTask)
-        {
-            var job = new ActionOrAsyncFunc(asyncTask);
-            this._tasks.Enqueue(job);
-            return job.Guid;
-        }
+		public (Guid, CancellationTokenSource) QueueCancellableInvocable(Type invocableType)
+		{
+			var tokenSource = new CancellationTokenSource();
+			var func = this.EnqueueInvocable(invocableType, (invocable) =>
+			{
+				(invocable as ICancellableTask).Token = tokenSource.Token;
+			});
+			this._tokens.TryAdd(func.Guid, tokenSource);
+			return (func.Guid, tokenSource);
+		}
 
-        public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
-        {
-            this.QueueAsyncTask(async () => await this._dispatcher.Broadcast(toBroadcast));
-        }
+		public Guid QueueAsyncTask(Func<Task> asyncTask)
+		{
+			var job = new ActionOrAsyncFunc(asyncTask);
+			this._tasks.Enqueue(job);
+			return job.Guid;
+		}
 
-        public IQueueConfiguration OnError(Action<Exception> errorHandler)
-        {
-            this._errorHandler = errorHandler;
-            return this;
-        }
+		public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+		{
+			this.QueueAsyncTask(async () => await this._dispatcher.Broadcast(toBroadcast));
+		}
 
-        public IQueueConfiguration LogQueuedTaskProgress(ILogger<IQueue> logger)
-        {
-            this._logger = logger;
-            return this;
-        }
+		public IQueueConfiguration OnError(Action<Exception> errorHandler)
+		{
+			this._errorHandler = errorHandler;
+			return this;
+		}
 
-        public async Task ConsumeQueueAsync()
-        {
-            try
-            {
-                Interlocked.Increment(ref this._queueIsConsuming);
+		public IQueueConfiguration LogQueuedTaskProgress(ILogger<IQueue> logger)
+		{
+			this._logger = logger;
+			return this;
+		}
 
-                await this.TryDispatchEvent(new QueueConsumationStarted());
+		public async Task ConsumeQueueAsync()
+		{
+			try
+			{
+				Interlocked.Increment(ref this._queueIsConsuming);
 
-                var dequeuedTasks = this.DequeueAllTasks();
-                var dequeuedGuids = dequeuedTasks.Select(t => t.Guid);
+				await this.TryDispatchEvent(new QueueConsumationStarted());
 
-                await Task.WhenAll(
-                    dequeuedTasks
-                        .Select(InvokeTask)
-                        .ToArray()
-                );
+				var dequeuedTasks = this.DequeueAllTasks();
+				var dequeuedGuids = dequeuedTasks.Select(t => t.Guid);
 
-                this.CleanTokens(dequeuedGuids);
+				await Task.WhenAll(
+					dequeuedTasks
+						.Select(InvokeTask)
+						.ToArray()
+				);
 
-                await this.TryDispatchEvent(new QueueConsumationEnded());
-            }
-            finally
-            {
-                Interlocked.Decrement(ref this._queueIsConsuming);
-            }
-        }
+				this.CleanTokens(dequeuedGuids);
 
-        public async Task ConsumeQueueOnShutdown() 
-        {
-            this.CancelAllTokens();
-            await this.ConsumeQueueAsync();
-        }
-        public bool IsRunning => this._queueIsConsuming > 0;
+				await this.TryDispatchEvent(new QueueConsumationEnded());
+			}
+			finally
+			{
+				Interlocked.Decrement(ref this._queueIsConsuming);
+			}
+		}
 
-        public QueueMetrics GetMetrics()
-        {
-            // See https://docs.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentqueue-1.count?view=net-5.0#remarks
-            var waitingCount = this._tasks.IsEmpty
-                ? 0
-                : this._tasks.Count;
+		public async Task ConsumeQueueOnShutdown()
+		{
+			this.CancelAllTokens();
+			await this.ConsumeQueueAsync();
+		}
+		public bool IsRunning => this._queueIsConsuming > 0;
 
-            return new QueueMetrics(this._tasksRunningCount, waitingCount);
-        }
+		public QueueMetrics GetMetrics()
+		{
+			// See https://docs.microsoft.com/en-us/dotnet/api/system.collections.concurrent.concurrentqueue-1.count?view=net-5.0#remarks
+			var waitingCount = this._tasks.IsEmpty
+				? 0
+				: this._tasks.Count;
 
-        private void CancelAllTokens()
-        {
-            foreach(var kv in this._tokens.AsEnumerable())
-            {
-                if(!kv.Value.IsCancellationRequested)
-                {
-                    kv.Value.Cancel();
-                }
-            }
-        }
+			return new QueueMetrics(this._tasksRunningCount, waitingCount);
+		}
 
-        private ActionOrAsyncFunc EnqueueInvocable<T>(Action<IInvocable> beforeInvoked = null) where T : IInvocable
-        {
-            var func = new ActionOrAsyncFunc(async () =>
-                {
-                    Type invocableType = typeof(T);
-                    // This allows us to scope the scheduled IInvocable object
-                    // and allow DI to inject it's dependencies.
-                    await using (var scope = this._scopeFactory.CreateAsyncScope())
-                    {
-                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
-                        {                            
-                            if(beforeInvoked != null)
-                            {                            
-                                beforeInvoked(invocable);
-                            }
+		private void CancelAllTokens()
+		{
+			foreach (var kv in this._tokens.AsEnumerable())
+			{
+				if (!kv.Value.IsCancellationRequested)
+				{
+					kv.Value.Cancel();
+				}
+			}
+		}
 
-                            await invocable.Invoke();
-                        }
-                        else
-                        {
-                            this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
-                            throw new Exception($"Queued invocable {invocableType} is not a registered service.");
-                        }
-                    }
-                });
-            this._tasks.Enqueue(func);
-            return func;
-        }
+		private ActionOrAsyncFunc EnqueueInvocable(Type invocableType, Action<IInvocable> beforeInvoked = null)
+		{
+			var func = new ActionOrAsyncFunc(async () =>
+				{
+					// This allows us to scope the scheduled IInvocable object
+					// and allow DI to inject it's dependencies.
+					await using (var scope = this._scopeFactory.CreateAsyncScope())
+					{
+						if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
+						{
+							if (beforeInvoked != null)
+							{
+								beforeInvoked(invocable);
+							}
 
-        private void CleanTokens(IEnumerable<Guid> guidsForTokensToClean)
-        {
-            foreach(var guid in guidsForTokensToClean)
-            {
-                if(this._tokens.TryRemove(guid, out var token))
-                {
-                    token.Dispose();
-                }
-            }                   
-        }
+							await invocable.Invoke();
+						}
+						else
+						{
+							this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
+							throw new Exception($"Queued invocable {invocableType} is not a registered service.");
+						}
+					}
+				});
+			this._tasks.Enqueue(func);
+			return func;
+		}
 
-        private List<ActionOrAsyncFunc> DequeueAllTasks()
-        {
-            List<ActionOrAsyncFunc> dequeuedTasks = new List<ActionOrAsyncFunc>(this._tasks.Count());
-            while (this._tasks.TryPeek(out var dummy))
-            {
-                this._tasks.TryDequeue(out var dequeuedTask);
-                dequeuedTasks.Add(dequeuedTask);
-            }
-            return dequeuedTasks;
-        }
+		private void CleanTokens(IEnumerable<Guid> guidsForTokensToClean)
+		{
+			foreach (var guid in guidsForTokensToClean)
+			{
+				if (this._tokens.TryRemove(guid, out var token))
+				{
+					token.Dispose();
+				}
+			}
+		}
 
-        private async Task TryDispatchEvent(IEvent toBroadcast)
-        {
-            if (this._dispatcher != null)
-            {
-                await this._dispatcher.Broadcast(toBroadcast);
-            }
-        }
+		private List<ActionOrAsyncFunc> DequeueAllTasks()
+		{
+			List<ActionOrAsyncFunc> dequeuedTasks = new List<ActionOrAsyncFunc>(this._tasks.Count());
+			while (this._tasks.TryPeek(out var dummy))
+			{
+				this._tasks.TryDequeue(out var dequeuedTask);
+				dequeuedTasks.Add(dequeuedTask);
+			}
+			return dequeuedTasks;
+		}
 
-        private async Task InvokeTask(ActionOrAsyncFunc task)
-        {
-            try
-            {
-                Interlocked.Increment(ref this._tasksRunningCount);
-                this._logger?.LogInformation("Queued task started...");
-                await this.TryDispatchEvent(new QueueTaskStarted(task.Guid));
+		private async Task TryDispatchEvent(IEvent toBroadcast)
+		{
+			if (this._dispatcher != null)
+			{
+				await this._dispatcher.Broadcast(toBroadcast);
+			}
+		}
 
-                await task.Invoke();
+		private async Task InvokeTask(ActionOrAsyncFunc task)
+		{
+			try
+			{
+				Interlocked.Increment(ref this._tasksRunningCount);
+				this._logger?.LogInformation("Queued task started...");
+				await this.TryDispatchEvent(new QueueTaskStarted(task.Guid));
 
-                this._logger?.LogInformation("Queued task finished...");
-                await this.TryDispatchEvent(new QueueTaskCompleted(task.Guid));
-            }
-            catch (Exception e)
-            {
-                await this.TryDispatchEvent(new DequeuedTaskFailed(task));
+				await task.Invoke();
 
-                _errorHandler?.Invoke(e);
-            }
-            finally
-            {
-                Interlocked.Decrement(ref this._tasksRunningCount);
-            }
-        }
-    }
+				this._logger?.LogInformation("Queued task finished...");
+				await this.TryDispatchEvent(new QueueTaskCompleted(task.Guid));
+			}
+			catch (Exception e)
+			{
+				await this.TryDispatchEvent(new DequeuedTaskFailed(task));
+
+				_errorHandler?.Invoke(e);
+			}
+			finally
+			{
+				Interlocked.Decrement(ref this._tasksRunningCount);
+			}
+		}
+	}
 }
