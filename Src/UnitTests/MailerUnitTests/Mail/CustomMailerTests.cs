@@ -15,7 +15,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailerSucessful()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 Assert.Equal("test", subject);
                 Assert.Equal("from@test.com", from.Email);
@@ -41,7 +41,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailer_GlobalFrom()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 Assert.Equal("global@test.com", from.Email);
                 Assert.Equal("Global", from.Name);
@@ -66,7 +66,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailer_Render()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 await Task.CompletedTask;
             };
@@ -92,7 +92,7 @@ namespace UnitTests.Mail
         [Fact]
         public async Task CustomMailerHasAttachments()
         {
-            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+            async Task SendMailCustom(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
             {
                 Assert.Equal(2, attachments.Count());
                 Assert.Equal("Attachment 2", attachments.Skip(1).Single().Name);

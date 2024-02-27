@@ -7,7 +7,7 @@ namespace Coravel.Mailer.Mail.Mailers
 {
     public class CustomMailer : IMailer
     {
-        public delegate Task SendAsyncFunc(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null);
+        public delegate Task SendAsyncFunc(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null);
         private RazorRenderer _renderer;
         private SendAsyncFunc _sendAsyncFunc;
         private MailRecipient _globalFrom;
@@ -25,10 +25,10 @@ namespace Coravel.Mailer.Mail.Mailers
         public async Task SendAsync<T>(Mailable<T> mailable) =>
             await mailable.SendAsync(this._renderer, this);
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, MailRecipient sender, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
         {
             await this._sendAsyncFunc(
-                message, subject, to, this._globalFrom ?? from, replyTo, cc, bcc, attachments
+                message, subject, to, this._globalFrom ?? from, replyTo, sender, cc, bcc, attachments
             );
         }
     }
