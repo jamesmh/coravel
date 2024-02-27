@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <PackageReference Include="Coravel.Cache.Database.Core" version="2.0.0" />
-  </ItemGroup>
-
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Coravel.Cache.SQLServer</PackageId>
     <Version>2.0.2</Version>
     <Authors>James Hickey</Authors>
@@ -21,5 +17,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Coravel.Cache.Database.Core\Coravel.Cache.Database.Core.csproj" />
+  </ItemGroup>
 
 </Project>

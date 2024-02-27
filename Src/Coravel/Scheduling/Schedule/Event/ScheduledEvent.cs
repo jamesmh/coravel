@@ -108,7 +108,7 @@ namespace Coravel.Scheduling.Schedule.Event
             }
             else
             {
-                await using AsyncServiceScope scope = new(this._scopeFactory.CreateAsyncScope());
+                await using AsyncServiceScope scope = new AsyncServiceScope(this._scopeFactory.CreateAsyncScope());
                 if (GetInvocable(scope.ServiceProvider) is IInvocable invocable)
                 {
                     if (invocable is ICancellableInvocable cancellableInvokable)
