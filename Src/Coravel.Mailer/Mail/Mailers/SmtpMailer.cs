@@ -126,7 +126,7 @@ namespace Coravel.Mailer.Mail.Mailers
 
         private void SetFrom(MailRecipient @from, MimeMessage mail)
         {
-            mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
+            mail.From.Add(AsMailboxAddress(@from ?? this._globalFrom));
         }
 
         private static void SetReplyTo(MailRecipient replyTo, MimeMessage mail)
