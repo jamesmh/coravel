@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>.net6.0</TargetFramework>
     <PackageId>Coravel</PackageId>
-s    <Version>5.0.3</Version>
+    <Version>5.0.3</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel</Title>
