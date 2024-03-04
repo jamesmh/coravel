@@ -241,7 +241,7 @@ In other words, if the same scheduled task is due but another instance of it is 
 scheduler
     .Schedule<SomeInvocable>()
     .EveryMinute()
-    .PreventOverlapping("SomeInvocable");
+    .PreventOverlapping(nameof(SomeInvocable));
 ```
 This method takes in one parameter - a unique key (`string`) among all your scheduled tasks. This makes sure Coravel knows which task to lock and release.
 
