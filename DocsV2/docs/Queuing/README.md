@@ -187,7 +187,7 @@ provider
 
 ## Adjusting Consummation Delay
 
-Normally, the queue will consume all of it's queued tasks every 30 seconds.
+Normally, the queue will consume all of its queued tasks every 30 seconds.
 You can adjust this delay in the `appsettings.json` file.
 
 ```json

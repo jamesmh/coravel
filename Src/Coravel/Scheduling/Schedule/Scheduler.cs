@@ -190,8 +190,8 @@ namespace Coravel.Scheduling.Schedule
         }
 
         /// <summary>
-        /// This will grab all the scheduled tasks and combine each task into it's assigned "worker".
-        /// Each worker runs on it's own thread and will process it's assigned scheduled tasks asynchronously.
+        /// This will grab all the scheduled tasks and combine each task into its assigned "worker".
+        /// Each worker runs on its own thread and will process its assigned scheduled tasks asynchronously.
         /// This method return a list of active tasks (one per worker - which needs to be awaited).
         /// </summary>
         /// <param name="utcDate"></param>
@@ -223,7 +223,7 @@ namespace Coravel.Scheduling.Schedule
                 }
             }
 
-            // We want each "worker" (indicated by the "WorkerName" prop) to run on it's own thread.
+            // We want each "worker" (indicated by the "WorkerName" prop) to run on its own thread.
             // So we'll group all the "due" scheduled events (the actual work the user wants to perform) into
             // buckets for each "worker".
             var groupedScheduledEvents = scheduledWorkers

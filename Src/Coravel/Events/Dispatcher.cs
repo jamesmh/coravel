@@ -45,7 +45,7 @@ namespace Coravel.Events
         }
 
         /// <summary>
-        ///  Broadcasts an event to be handled by it's subscribed listeners.
+        ///  Broadcasts an event to be handled by its subscribed listeners.
         /// </summary>
         /// <param name="toBroadcast"></param>
         /// <typeparam name="TEvent"></typeparam>
