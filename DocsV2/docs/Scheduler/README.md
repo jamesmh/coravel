@@ -279,7 +279,7 @@ scheduler
 
 For this example, `SendNightlyReportsEmailJob` and `SendPendingNotifications` will share a dedicated pipeline/thread.
 
-`RebuildStaticCachedData` has it's own dedicated worker so it will not affect the other tasks if it does take a long time to run.
+`RebuildStaticCachedData` has its own dedicated worker so it will not affect the other tasks if it does take a long time to run.
 
 ### Useful For
 
