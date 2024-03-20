@@ -18,6 +18,11 @@ namespace Coravel.Mailer.Mail
         private MailRecipient _from;
 
         /// <summary>
+        /// Who is sending the email on the from address's behalf.
+        /// </summary>
+        private MailRecipient? _sender;
+
+        /// <summary>
         /// Recipients of the message.
         /// </summary>
         private IEnumerable<MailRecipient> _to;
@@ -63,6 +68,18 @@ namespace Coravel.Mailer.Mail
         /// View data to pass to the view to render.
         /// </summary>
         private T _viewModel;
+
+        public Mailable<T> Sender(MailRecipient recipient)
+        {
+            this._sender = recipient;
+            return this;
+        }
+
+        public Mailable<T> Sender(string email) =>
+            this.Sender(new MailRecipient(email));
+
+        public Mailable<T> Sender(string email, string name) =>
+            this.Sender(new MailRecipient(email, name));
 
         public Mailable<T> From(MailRecipient recipient)
         {
@@ -173,6 +190,7 @@ namespace Coravel.Mailer.Mail
                 this._to,
                 this._from,
                 this._replyTo,
+                this._sender,
                 this._cc,
                 this._bcc,
                 this._attachments
