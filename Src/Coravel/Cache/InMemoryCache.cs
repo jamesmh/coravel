@@ -11,7 +11,7 @@ namespace Coravel.Cache
         private readonly IMemoryCache _cache;
         private readonly HashSet<string> _keys;
         // I could create a new type for a thread safe hashset.
-        // But, the Flush() method needs to be safe in it's entire operation.
+        // But, the Flush() method needs to be safe in its entire operation.
         private readonly object _setLock;
         
         public InMemoryCache(IMemoryCache cache)
