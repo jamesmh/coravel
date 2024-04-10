@@ -58,7 +58,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
 
         /// <summary>
         /// Begin scheduling further tasks on an isolated worker.
-        /// A worker will run all scheduled tasks on it's own separate thread.
+        /// A worker will run all scheduled tasks on its own separate thread.
         /// </summary>
         /// <param name="workerName"></param>
         /// <returns></returns>
