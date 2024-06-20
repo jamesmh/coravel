@@ -95,26 +95,17 @@ namespace Demo
                     .Schedule<RebuildStaticCachedData>().Hourly();
 
                 scheduler.OnWorker("TestingSeconds");
-                // scheduler.Schedule(
-                //     () => Console.WriteLine($"Runs every second. Ran at: {DateTime.UtcNow}")
-                // ).EverySecond();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds().Zoned(TimeZoneInfo.Local);
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every ten seconds. Ran at: {DateTime.UtcNow}")).EveryTenSeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every fifteen seconds. Ran at: {DateTime.UtcNow}")).EveryFifteenSeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every minute Ran at: {DateTime.UtcNow}")).EveryMinute();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every 2nd minute Ran at: {DateTime.UtcNow}")).Cron("*/2 * * * *");
+                scheduler.Schedule(
+                    () => Console.WriteLine($"Runs every second. Ran at: {DateTime.UtcNow}")
+                ).EverySecond();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds().Zoned(TimeZoneInfo.Local);
+                scheduler.Schedule(() => Console.WriteLine($"Runs every ten seconds. Ran at: {DateTime.UtcNow}")).EveryTenSeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every fifteen seconds. Ran at: {DateTime.UtcNow}")).EveryFifteenSeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every minute Ran at: {DateTime.UtcNow}")).EveryMinute();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every 2nd minute Ran at: {DateTime.UtcNow}")).Cron("*/2 * * * *");
 
 
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
                 scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
             });
 

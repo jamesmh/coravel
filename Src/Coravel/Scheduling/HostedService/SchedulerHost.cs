@@ -62,8 +62,7 @@ namespace Coravel.Scheduling.HostedService
                 }
 
                 if (ticks.Length > 0)
-                {
-                    this._logger.LogInformation($"Coravel's scheduler is behind {ticks.Length} ticks and is catching-up to the current tick. Triggered at {now.ToString("o")}.");
+                {                
                     foreach (var tick in ticks)
                     {
                         await this._scheduler.RunAtAsync(tick);
