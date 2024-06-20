@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Coravel.Cache.Database.Core</PackageId>
     <Version>2.0.2</Version>
     <Authors>James Hickey</Authors>
@@ -19,9 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Coravel" Version="3.0.0" />
-    <PackageReference Include="Dapper" Version="1.60.6" />
+    <PackageReference Include="Dapper" Version="2.1.28" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Coravel\Coravel.csproj" />
   </ItemGroup>
 
 </Project>
