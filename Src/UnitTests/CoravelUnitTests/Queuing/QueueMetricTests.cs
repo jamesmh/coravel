@@ -15,10 +15,11 @@ namespace CoravelUnitTests.Queuing
         public async Task TestQueueHasCorrectNumberOfJobsWaiting()
         {
             Queue queue = new Queue(null, new DispatcherStub());
+            Action dummy = () => { };
 
-            queue.QueueTask(() => Console.Write("test-job-1"));
-            queue.QueueTask(() => Console.Write("test-job-2"));
-            queue.QueueTask(() => Console.Write("test-job-3"));
+            queue.QueueTask(() => dummy());
+            queue.QueueTask(() => dummy());
+            queue.QueueTask(() => dummy());
 
             Assert.Equal(3, queue.GetMetrics().WaitingCount());
             await queue.ConsumeQueueAsync();

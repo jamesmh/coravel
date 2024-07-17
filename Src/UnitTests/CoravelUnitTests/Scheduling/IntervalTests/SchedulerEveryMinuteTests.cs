@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
@@ -56,6 +57,38 @@ namespace CoravelUnitTests.Scheduling.IntervalTests
 
             await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
 
+            Assert.Equal(shouldRun, taskRan);
+        }
+
+        [Theory]
+        // Sunday
+        [InlineData("2024-07-14 12:00:00 am", false)]
+        [InlineData("2024-07-14 12:00:00 pm", false)]
+        // Monday
+        [InlineData("2024-07-15 12:00:00 am", true)]
+        [InlineData("2024-07-15 12:00:00 pm", true)]
+        // Tuesday
+        [InlineData("2024-07-16 12:00:00 am", true)]
+        [InlineData("2024-07-16 12:00:00 pm", true)]
+        // Wednesday
+        [InlineData("2024-07-17 12:00:00 am", true)]
+        [InlineData("2024-07-17 12:00:00 pm", true)]
+        // Thursday
+        [InlineData("2024-07-18 12:00:00 am", true)]
+        [InlineData("2024-07-18 12:00:00 pm", true)]
+        // Friday
+        [InlineData("2024-07-19 12:00:00 am", true)]
+        [InlineData("2024-07-19 12:00:00 pm", true)]
+        // Saturday
+        [InlineData("2024-07-20 12:00:00 am", false)]
+        [InlineData("2024-07-20 12:00:00 pm", false)]
+        public async Task ValidEveryMinuteWeekday(string dateString, bool shouldRun)
+        {
+            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+            bool taskRan = false;
+
+            scheduler.Schedule(() => taskRan = true).EveryMinute().Weekday();
+            await scheduler.RunAtAsync(DateTime.Parse(dateString));
             Assert.Equal(shouldRun, taskRan);
         }
     }
