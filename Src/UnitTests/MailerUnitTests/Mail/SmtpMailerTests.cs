@@ -63,5 +63,21 @@ namespace UnitTests.Mail
             var mailer = new SmtpMailer(renderer, "dummy", 1, username, password);
             Assert.Equal(mailer.UseSMTPAuthentication(), shouldUseAuthentication);
         }
+
+        [Fact]
+        public async Task SmtpMailerGlobalFromUsedByDefault()
+        {
+            var renderer = RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build());
+            var mailer = new SmtpMailer(renderer, "dummy", 1, "dummy", "dummy", globalFrom: new MailRecipient("global@from.com"));
+
+            string message = await mailer.RenderAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .To("to@test.com")
+                    .Html("<html></html>")
+            );
+
+            Assert.Equal("<html></html>", message);
+        }
     }
 }

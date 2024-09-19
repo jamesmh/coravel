@@ -134,7 +134,7 @@ What about static content like the mail footer and logo? Coravel's got you cover
 
 In your `appsettings.json`, you may add the following global values that will populate when using Coravel's built-in templates:
 
-```
+```json
 "Coravel": {
     "Mail": {
         /* Your app's logo that will be shown at the top of your e-mails. */
@@ -202,6 +202,19 @@ To specify who the sender of the email is, use the `From()` method:
 You may also supply an instance of `Coravel.Mailer.Mail.MailRecipient` to include the address and sender name:
 
 `From(new MailRecipient(email, name))`
+
+You can set a global from address by setting it in `appsettings.json`:
+
+```json
+  "Coravel": {
+    "Mail": {
+      "From":{
+        "Address": "global@from.com",
+        "Name": "My Company"
+      }
+    }
+  }
+```
 
 ### Send To Recipient
 

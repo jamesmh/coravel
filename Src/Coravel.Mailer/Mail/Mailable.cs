@@ -18,6 +18,11 @@ namespace Coravel.Mailer.Mail
         private MailRecipient _from;
 
         /// <summary>
+        /// The email sender.
+        /// </summary>
+        private MailRecipient _sender;
+
+        /// <summary>
         /// Recipients of the message.
         /// </summary>
         private IEnumerable<MailRecipient> _to;
@@ -72,6 +77,15 @@ namespace Coravel.Mailer.Mail
 
         public Mailable<T> From(string email) =>
             this.From(new MailRecipient(email));
+
+        public Mailable<T> Sender(MailRecipient recipient)
+        {
+            this._sender = recipient;
+            return this;
+        }
+
+        public Mailable<T> Sender(string email) =>
+            this.Sender(new MailRecipient(email));
 
         public Mailable<T> To(IEnumerable<MailRecipient> recipients)
         {
@@ -175,7 +189,8 @@ namespace Coravel.Mailer.Mail
                 this._replyTo,
                 this._cc,
                 this._bcc,
-                this._attachments
+                this._attachments,
+                sender: this._sender
             ).ConfigureAwait(false);
         }
 
