@@ -27,9 +27,9 @@ namespace Coravel.Mailer.Mail.Mailers
             return await mailable.RenderAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
         {
-            from = this._globalFrom ?? from;
+            from = from ?? this._globalFrom;
 
             using (var writer = File.CreateText(FilePath))
             {
@@ -38,6 +38,7 @@ namespace Coravel.Mailer.Mail.Mailers
 Subject: {subject}
 To: {CommaSeparated(to)}    
 From: {DisplayAddress(from)}
+Sender: { (sender is null ? "N/A" : DisplayAddress(sender)) }
 ReplyTo: {DisplayAddress(replyTo)}
 Cc: {CommaSeparated(cc)}
 Bcc: {CommaSeparated(bcc)}

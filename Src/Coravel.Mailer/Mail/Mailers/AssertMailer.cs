@@ -13,6 +13,7 @@ namespace Coravel.Mailer.Mail.Mailers
             public string subject { get; set; }
             public IEnumerable<MailRecipient> to { get; set; }
             public MailRecipient from { get; set; }
+            public MailRecipient sender { get; set; }
             public MailRecipient replyTo { get; set; }
             public IEnumerable<MailRecipient> cc { get; set; }
             public IEnumerable<MailRecipient> bcc { get; set; }
@@ -26,7 +27,7 @@ namespace Coravel.Mailer.Mail.Mailers
             this._assertAction = assertAction;
         }
 
-        public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments)
+        public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments, MailRecipient sender = null)
         {
             this._assertAction(new Data
             {
@@ -37,7 +38,8 @@ namespace Coravel.Mailer.Mail.Mailers
                 replyTo = replyTo,
                 cc = cc,
                 bcc = bcc,
-                attachments = attachments
+                attachments = attachments,
+                sender = sender
             });
             return Task.CompletedTask;
         }

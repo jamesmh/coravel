@@ -34,7 +34,8 @@ namespace Demo
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; }).AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
 
             // Coravel Scheduling
             services.AddScheduler();
@@ -68,19 +69,19 @@ namespace Demo
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+               // app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            // app.UseMvc(routes =>
-            // {
-            //     routes.MapRoute(
-            //         name: "default",
-            //         template: "{controller=Home}/{action=Index}/{id?}");
-            // });
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             IEventRegistration registration = app.ApplicationServices.ConfigureEvents();
 
