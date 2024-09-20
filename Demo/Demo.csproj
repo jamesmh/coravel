@@ -8,7 +8,7 @@
 
   <ItemGroup>
      <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
-     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.0" />
+     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.27" />
      <!-- <PackageReference Include="Coravel" Version="3.3.0" /> -->
   </ItemGroup>
 
