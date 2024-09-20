@@ -58,6 +58,35 @@ E-mails are not as easy as they should be. Luckily for you, Coravel solves this 
 
 You can support my ongoing open-source work on [BuyMeACoffee](https://www.buymeacoffee.com/gIPOyBD5N).
 
+## Quick-Start
+
+Here's how quickly you can use Coravel to begin building a basic worker service process that can issue actions at scheduled intervals:
+
+1. In terminal: `dotnet new worker -n [NameOfYourApp] -o ./[NameOfYourApp]`
+2. In terminal: `dotnet add package coravel`
+3. Replace `Program.cs` with the following:
+
+```csharp
+using Coravel;
+
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services.AddScheduler();
+
+var host = builder.Build();
+
+host.Services.UseScheduler(s =>
+{
+    s.Schedule(() => Console.WriteLine("It's alive! 🧟")).EverySecond();
+});
+
+host.Run();
+```
+4. In terminal: `dotnet run`
+
+That's it - happy coding!
+
 ## Coravel Pro
 
 If you are building a .NET application with Entity Framework then you might want to look into [Coravel Pro](https://www.pro.coravel.net/). It is an admin panel & tools to make maintaining and managing your .NET app a breeze!

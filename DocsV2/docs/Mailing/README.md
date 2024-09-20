@@ -102,7 +102,8 @@ async Task SendMailCustomAsync(
     MailRecipient replyTo,
     IEnumerable<MailRecipient> cc,
     IEnumerable<MailRecipient> bcc,
-    IEnumerable<Attachment> attachments = null
+    IEnumerable<Attachment> attachments = null,
+    MailRecipient sender = null
 )
 {
     // Custom logic for sending an email.
@@ -110,6 +111,10 @@ async Task SendMailCustomAsync(
 
 services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
 ```
+
+:::warn 
+Breaking changes to this method signature are more likely than other as this is the signature that the Mailer's internals use. If a new version of the Mailer causes your code to stop compiling sucessfully, it's probably this signature that needs to be updated. Luckliy, it's usually a quick change in 1 spot.
+:::
 
 ### Built-In View Templates
 
@@ -134,7 +139,7 @@ What about static content like the mail footer and logo? Coravel's got you cover
 
 In your `appsettings.json`, you may add the following global values that will populate when using Coravel's built-in templates:
 
-```
+```json
 "Coravel": {
     "Mail": {
         /* Your app's logo that will be shown at the top of your e-mails. */
@@ -195,35 +200,53 @@ You can then call various methods like `To` and `From` to configure the recipien
 
 ### From
 
-To specify who the sender of the email is, use the `From()` method:
+To specify who the email is from, use the `From()` method:
 
-`From("test@test.com")`
+```csharp
+From("test@test.com")
+```
 
 You may also supply an instance of `Coravel.Mailer.Mail.MailRecipient` to include the address and sender name:
 
-`From(new MailRecipient(email, name))`
+```csharp
+From(new MailRecipient(email, name))
+```
 
-### Send To Recipient
+You can set a global from address by setting it in `appsettings.json`:
+
+```json
+  "Coravel": {
+    "Mail": {
+      "From":{
+        "Address": "global@from.com",
+        "Name": "My Company"
+      }
+    }
+  }
+```
+
+### To
 
 Using the `To()` method, you can supply the recipient's e-mail address and name.
 
-#### Address
+Or, using an e-mail address in a `string`:
 
-Using an e-mail address in a `string`:
+```csharp
+To("test@test.com")
+```
 
-`To("test@test.com")`
+You can also pass:
+- `To(IEnumerable<string>)`
+- `To(MailRecipient)`
+- `To(IEnumerable<MailRecipient>)`
 
-#### Multiple Addresses
+### Sender
 
-You can pass`IEnumerable<string>` to the `To()` method.
+To specify the sender of the email (different from the `From` address), use the `Sender()` method:
 
-#### MailRecipient
-
-Pass an instance of `MailRecipient` to the `To()` method.
-
-#### Multiple MailRecipients
-
-Pass an `IEnumerable<MailRecipient>` to the `To()` method.
+```csharp
+Sender("test@test.com")
+```
 
 #### Attachments
 
@@ -261,18 +284,16 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 
 ##### .NET Core 3.1+
 
+For a standard .NET 6+ web project, this should work out-of-the-box. If using a shared library, the following applies.
+
 In .NET Core 3.1 there were some breaking changes to the way razor views are handled.
 
-Which ever project(s) you have razor views inside, you'll need to make sure .NET compiles them at build time.
-
-Here's what you'll need to change within your `.csproj` file to enable this:
+If you have a shared library with razor views inside, you'll need to make sure .NET compiles them at build time by adding the following to your `.csproj`:
 
 ```xml
 <Project Sdk="Microsoft.NET.Sdk.Razor">  👈 Make sure it's this SDK.
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>True</AddRazorSupportForMvc> 👈 Add this too.
   </PropertyGroup>
 ```

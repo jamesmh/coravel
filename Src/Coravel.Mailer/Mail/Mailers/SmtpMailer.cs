@@ -50,11 +50,12 @@ namespace Coravel.Mailer.Mail.Mailers
             await mailable.SendAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null)
+        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
         {
             var mail = new MimeMessage();
             
             this.SetFrom(@from, mail);
+            SetSender(sender, mail);
             SetRecipients(to, mail);
             SetCc(cc, mail);
             SetBcc(bcc, mail);
@@ -121,7 +122,17 @@ namespace Coravel.Mailer.Mail.Mailers
 
         private void SetFrom(MailRecipient @from, MimeMessage mail)
         {
-            mail.From.Add(AsMailboxAddress(this._globalFrom ?? @from));
+            mail.From.Add(AsMailboxAddress(@from ?? this._globalFrom));
+        }
+
+        private static void SetSender(MailRecipient sender, MimeMessage mail)
+        {
+            if(sender is null)
+            {
+                return;
+            }
+            
+            mail.Sender = AsMailboxAddress(sender);            
         }
 
         private static void SetReplyTo(MailRecipient replyTo, MimeMessage mail)

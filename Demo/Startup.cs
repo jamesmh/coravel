@@ -34,7 +34,8 @@ namespace Demo
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options => { options.EnableEndpointRouting = false; }).AddRazorRuntimeCompilation();
+            services.AddControllersWithViews();
 
             // Coravel Scheduling
             services.AddScheduler();
@@ -68,19 +69,19 @@ namespace Demo
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
+               // app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+           // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            // app.UseMvc(routes =>
-            // {
-            //     routes.MapRoute(
-            //         name: "default",
-            //         template: "{controller=Home}/{action=Index}/{id?}");
-            // });
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
 
             IEventRegistration registration = app.ApplicationServices.ConfigureEvents();
 
@@ -95,26 +96,17 @@ namespace Demo
                     .Schedule<RebuildStaticCachedData>().Hourly();
 
                 scheduler.OnWorker("TestingSeconds");
-                // scheduler.Schedule(
-                //     () => Console.WriteLine($"Runs every second. Ran at: {DateTime.UtcNow}")
-                // ).EverySecond();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds().Zoned(TimeZoneInfo.Local);
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every ten seconds. Ran at: {DateTime.UtcNow}")).EveryTenSeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every fifteen seconds. Ran at: {DateTime.UtcNow}")).EveryFifteenSeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every minute Ran at: {DateTime.UtcNow}")).EveryMinute();
-                // scheduler.Schedule(() => Console.WriteLine($"Runs every 2nd minute Ran at: {DateTime.UtcNow}")).Cron("*/2 * * * *");
+                scheduler.Schedule(
+                    () => Console.WriteLine($"Runs every second. Ran at: {DateTime.UtcNow}")
+                ).EverySecond();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds().Zoned(TimeZoneInfo.Local);
+                scheduler.Schedule(() => Console.WriteLine($"Runs every ten seconds. Ran at: {DateTime.UtcNow}")).EveryTenSeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every fifteen seconds. Ran at: {DateTime.UtcNow}")).EveryFifteenSeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every thirty seconds. Ran at: {DateTime.UtcNow}")).EveryThirtySeconds();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every minute Ran at: {DateTime.UtcNow}")).EveryMinute();
+                scheduler.Schedule(() => Console.WriteLine($"Runs every 2nd minute Ran at: {DateTime.UtcNow}")).Cron("*/2 * * * *");
 
 
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-                scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
                 scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
             });
 
