@@ -286,7 +286,7 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 
 For a standard .NET 6+ web project, this should work out-of-the-box. If using a shared library, the following applies.
 
-in .NET Core 3.1 there were some breaking changes to the way razor views are handled.
+In .NET Core 3.1 there were some breaking changes to the way razor views are handled.
 
 If you have a shared library with razor views inside, you'll need to make sure .NET compiles them at build time by adding the following to your `.csproj`:
 
