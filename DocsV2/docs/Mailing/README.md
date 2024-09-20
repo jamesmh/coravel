@@ -112,7 +112,7 @@ async Task SendMailCustomAsync(
 services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
 ```
 
-:::warn 
+:::warning 
 Breaking changes to this method signature are more likely than other as this is the signature that the Mailer's internals use. If a new version of the Mailer causes your code to stop compiling sucessfully, it's probably this signature that needs to be updated. Luckliy, it's usually a quick change in 1 spot.
 :::
 
