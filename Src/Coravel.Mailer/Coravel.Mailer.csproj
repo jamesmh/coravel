@@ -17,6 +17,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <PackageReadmeFile>./readme.md</PackageReadmeFile>
+    <PackageIcon>./logo.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
