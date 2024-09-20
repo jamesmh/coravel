@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel.Cache.Database.Core</PackageId>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel Database Cache Driver Shared Library</Title>
@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Coravel" Version="3.0.0" />
     <PackageReference Include="Dapper" Version="1.60.6" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

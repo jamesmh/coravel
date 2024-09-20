@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <PackageReference Include="npgsql" Version="4.0.7" />
-    <PackageReference Include="Coravel.Cache.Database.Core" version="2.0.0" />
+    <PackageReference Include="npgsql" Version="8.0.3" />
+    <PackageReference Include="Coravel.Cache.Database.Core" version="2.0.3" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Coravel.Cache.PostgreSQL</PackageId>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
     <Authors>James Hickey</Authors>
     <Company>-</Company>
     <Title>Coravel PostgreSQL Cache Driver</Title>
