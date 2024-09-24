@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Coravel.Mailer.Mail.Interfaces;
+using Coravel.Mailer.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Demo.Mailables;
 using Demo.Models;
@@ -71,6 +72,24 @@ namespace Demo.Controllers
             };
 
             string message = await this._mailer.RenderAsync(new NewUserViewMail(user));
+
+            return Content(message, "text/html");
+        }
+
+        public async Task<IActionResult> RenderViewWithInlineMailable()
+        {
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            string message = await this._mailer.RenderAsync(
+                Mailable.AsInline<UserModel>()
+                    .To(user)
+                    .From("from@test.com")
+                    .View("~/Views/Mail/NewUser.cshtml", user)
+            );
 
             return Content(message, "text/html");
         }

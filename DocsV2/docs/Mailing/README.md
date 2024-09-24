@@ -43,9 +43,17 @@ This will install the Nuget package `Coravel.Mailer`, along with scaffolding som
 
 ## Config
 
-### Configure Services
+### Configure Mailer
 
-In `Startup.ConfigureServices()`:
+From `Program.cs` in newer minimal .NET configurations:
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+builder.AddMailer();
+```
+
+Using non-web projects, you would do this inside of your `Startup.ConfigureServices()` method:
 
 ```csharp
 services.AddMailer(this.Configuration); // Instance of IConfiguration.
@@ -89,32 +97,36 @@ Add the following keys:
 
 #### Custom Driver
 
-The custom driver allows you to decide how you want to send e-mails (through some API call, etc.). Because it requires a closure, you need to explicitly call `AddCustomMailer()` in `ConfigureServices()`:
+The custom driver allows you to decide how you want to send e-mails - using HTTP APIs, something else, etc.
+
+The recommended way to configure a customer mailer is by implementing `Coravel.Mailer.Mail.Interfaces.ICanSendMail`. This class will allow your custom mailer to participate in the dependency injection configuration so that you can inject things like HTTP clients, etc.
+
+To configure it, in `Program.cs` instead of calling `AddMailer()` you do:
 
 ```csharp
-// A local function with the expected signature.
-// This defines how all e-mails are sent.
-async Task SendMailCustomAsync(
-    string message,
-    string subject,
-    IEnumerable<MailRecipient> to,
-    MailRecipient from,
-    MailRecipient replyTo,
-    IEnumerable<MailRecipient> cc,
-    IEnumerable<MailRecipient> bcc,
-    IEnumerable<Attachment> attachments = null,
-    MailRecipient sender = null
-)
-{
-    // Custom logic for sending an email.
-}
+var builder = WebApplication.CreateBuilder(args);
 
-services.AddCustomMailer(this.Configuration, SendMailCustomAsync);
+builder.AddCustomMailer<MyHttpApiCustomMailer>();
 ```
 
-:::warning 
-Breaking changes to this method signature are more likely than other as this is the signature that the Mailer's internals use. If a new version of the Mailer causes your code to stop compiling sucessfully, it's probably this signature that needs to be updated. Luckliy, it's usually a quick change in 1 spot.
-:::
+Here's an example of a custom mailer:
+
+```csharp
+public class MyHttpApiCustomMailer : ICanSendMail
+{
+    private readonly IHttpClient _httpClient;
+
+    public MyHttpApiCustomMailer(IHttpClientFactory httpFactory)
+    {
+        this._httpClient = httpFactory.CreateHttpClient("MailApi");
+    }
+
+    public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
+    {
+        // Code that uses the HttpClient to send mail via an HTTP API.
+    }
+}
+```
 
 ### Built-In View Templates
 
@@ -161,8 +173,8 @@ In your `appsettings.json`, you may add the following global values that will po
 
 ### Creating A Mailable
 
-Coravel uses **Mailables** to send mail. Each Mailable is a c# class that represents a specific type of e-mail
-that you can send, such as "New User Sign-up", "Completed Order", etc.
+Coravel uses **Mailables** to send mail. You can create a C# class that represents a specific type of e-mail
+that you can send, such as "New User Sign-up", "Completed Order", etc. This approach is useful whenever you want to encapsulate the logic for this email type and can re-use it across your application (see next section for an alternative approach).
 
 :::tip
 If you used the Coravel CLI, it already generated a sample Mailable in your `~/Mailables` folder!
@@ -197,6 +209,54 @@ namespace App.Mailables
 All of the configuration for a Mailable is done in the `Build()` method. 
 
 You can then call various methods like `To` and `From` to configure the recipients, sender, etc.
+
+#### Inline Mailables
+
+You can create mailables on-the-fly if this is preferred. From the code that is trying to send an email - like a controller action or pub/sub handler - you can call either `Mailable.AsInline()` or `Mailable.AsInline<T>()`.
+
+The generic version allows you to send email using `View(string viewPath, T viewModel)`:
+
+```csharp
+public async Task<IActionResult> SendMyEmail()
+{
+    UserModel user = new UserModel()
+    {
+        Email = "FromUserModel@test.com",
+        Name = "Coravel Test Person"
+    };
+
+    await this._mailer.SendAsync(
+        Mailable.AsInline<UserModel>()
+            .To(user)
+            .From("from@test.com")
+            .View("~/Views/Mail/NewUser.cshtml", user)
+    );
+
+    return Ok();
+}
+```
+
+The non-generic version is suited to using `Html()` when passing a view model is not needed.
+
+```csharp
+public async Task<IActionResult> SendMyEmail()
+{
+    UserModel user = new UserModel()
+    {
+        Email = "FromUserModel@test.com",
+        Name = "Coravel Test Person"
+    };
+
+    await this._mailer.SendAsync(
+        Mailable.AsInline()
+            .To(user)
+            .From("from@test.com")
+            .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+    );
+
+    return Ok();
+}
+```
 
 ### From
 

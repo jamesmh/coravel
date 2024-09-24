@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using TestMvcApp.Mailables;
@@ -73,6 +74,85 @@ namespace TestMvcApp.Controllers
             };
 
             string message = await this._mailer.RenderAsync(new NewUserViewMail(user));
+
+            return Content(message, "text/html");
+        }
+
+        [Route("WithHtmlInlineMailable")]
+        public async Task<IActionResult> WithHtmlInlineMailable()
+        {
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            await this._mailer.SendAsync(
+                Mailable.AsInline()
+                    .To(user)
+                    .From("replyto@test.com")
+                    .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+            );
+
+            return Ok();
+        }
+
+        [Route("RenderHtmlInlineMailable")]
+        public async Task<IActionResult> RenderHtmlInlineMailable()
+        {
+
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            string message = await this._mailer.RenderAsync(
+                Mailable.AsInline()
+                    .To(user)
+                    .From("replyto@test.com")
+                    .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+            );
+
+            return Content(message, "text/html");
+        }
+
+        [Route("WithHtmlInlineMailableOfT")]
+        public async Task<IActionResult> WithHtmlInlineMailableOfT()
+        {
+
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            await this._mailer.SendAsync(
+                Mailable.AsInline<UserModel>()
+                    .To(user)
+                    .From("replyto@test.com")
+                    .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+            );
+
+            return Ok();
+        }
+
+        [Route("RenderHtmlInlineMailableOfT")]
+        public async Task<IActionResult> RenderHtmlInlineMailableOfT()
+        {
+
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            string message = await this._mailer.RenderAsync(
+                Mailable.AsInline<UserModel>()
+                    .To(user)
+                    .From("replyto@test.com")
+                    .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+            );
 
             return Content(message, "text/html");
         }
