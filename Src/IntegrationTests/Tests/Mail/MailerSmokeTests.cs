@@ -24,6 +24,30 @@ namespace Tests.Mail
             var content = await this._factory.CreateClient().GetStringAsync("/Mail/RenderHtml");
             Assert.False(string.IsNullOrWhiteSpace(content));
         }
+
+        [Fact]
+        public async Task WithHtmlInlineMailableDoesntThrowTest() {
+            var content = await this._factory.CreateClient().GetStringAsync("/Mail/WithHtmlInlineMailable");
+            // Pass = no exceptions.
+        }
+        
+        [Fact]
+        public async Task RenderHtmlInlineMailableDoesntThrowTest() {
+            var content = await this._factory.CreateClient().GetStringAsync("/Mail/RenderHtmlInlineMailable");
+            Assert.False(string.IsNullOrWhiteSpace(content));
+        }
+
+        [Fact]
+        public async Task WithHtmlInlineMailableOfTDoesntThrowTest() {
+            var content = await this._factory.CreateClient().GetStringAsync("/Mail/WithHtmlInlineMailableOfT");
+            // Pass = no exceptions.
+        }
+        
+        [Fact]
+        public async Task RenderHtmlInlineMailableOfTDoesntThrowTest() {
+            var content = await this._factory.CreateClient().GetStringAsync("/Mail/RenderHtmlInlineMailableOfT");
+            Assert.False(string.IsNullOrWhiteSpace(content));
+        }
         
         // This actually works when running the app manually. Something about the ASP.NET Core Integration Tests
         // that doesn't work well here.

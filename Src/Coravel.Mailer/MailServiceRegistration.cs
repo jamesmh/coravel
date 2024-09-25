@@ -5,6 +5,7 @@ using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Interfaces;
 using Coravel.Mailer.Mail.Mailers;
 using Coravel.Mailer.Mail.Renderers;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +32,12 @@ namespace Coravel
             return services;
         }
 
+        public static WebApplicationBuilder AddMailer(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddMailer(builder.Configuration);
+            return builder;
+        }
+
         /// <summary>
         /// Register Coravel's mailer using the File Log Mailer - which sends mail to a file.
         /// Useful for testing.
@@ -44,6 +51,12 @@ namespace Coravel
             var mailer = new FileLogMailer(renderer, globalFrom);
             services.AddSingleton<IMailer>(mailer);
             return services;
+        }
+
+        public static WebApplicationBuilder AddFileLogMailer(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddFileLogMailer(builder.Configuration);
+            return builder;
         }
 
         /// <summary>
@@ -69,6 +82,12 @@ namespace Coravel
             return services;
         }
 
+        public static WebApplicationBuilder AddSmtpMailer(this WebApplicationBuilder builder, RemoteCertificateValidationCallback certCallback)
+        {
+            builder.Services.AddSmtpMailer(builder.Configuration, certCallback);
+            return builder;
+        }
+
         /// <summary>
         /// Register Coravel's mailer using the Smtp Mailer.
         /// </summary>
@@ -78,6 +97,12 @@ namespace Coravel
         {
             AddSmtpMailer(services, config, null);
             return services;
+        }
+
+        public static WebApplicationBuilder AddSmtpMailer(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddSmtpMailer(builder.Configuration);
+            return builder;
         }
 
         /// <summary>
@@ -93,6 +118,33 @@ namespace Coravel
             var mailer = new CustomMailer(renderer, sendMailAsync, globalFrom);
             services.AddSingleton<IMailer>(mailer);
             return services;
+        }
+
+        public static WebApplicationBuilder AddCustomMailer(this WebApplicationBuilder builder, CustomMailer.SendAsyncFunc sendMailAsync)
+        {
+            builder.Services.AddCustomMailer(builder.Configuration, sendMailAsync);
+            return builder;
+        }
+
+        /// <summary>
+        /// Register Coravel's mailer a Custom Mailer that implements `ICanSendMail`.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        public static IServiceCollection AddCustomMailer<T>(this IServiceCollection services, IConfiguration config) where T : ICanSendMail
+        {
+            var globalFrom = GetGlobalFromRecipient(config);
+            RazorRenderer renderer = RazorRendererFactory.MakeInstance(config);
+            services.AddSingleton<IMailer>(p =>
+                new CanSendMailWrapper<T>(renderer, p.GetRequiredService<IServiceScopeFactory>(), globalFrom)
+            );
+            return services;
+        }
+
+        public static WebApplicationBuilder AddCustomMailer<T>(this WebApplicationBuilder builder) where T : ICanSendMail
+        {
+            builder.Services.AddCustomMailer<T>(builder.Configuration);
+            return builder;
         }
 
         private static MailRecipient GetGlobalFromRecipient(IConfiguration config)

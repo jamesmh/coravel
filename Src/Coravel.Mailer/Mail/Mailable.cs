@@ -67,8 +67,7 @@ namespace Coravel.Mailer.Mail
         /// <summary>
         /// View data to pass to the view to render.
         /// </summary>
-        private T _viewModel;
-
+        private T _viewModel;       
         public Mailable<T> From(MailRecipient recipient)
         {
             this._from = recipient;
@@ -265,5 +264,11 @@ namespace Coravel.Mailer.Mail
                     .RemoveLastOccuranceOfWord("Mailable");
             }
         }
+    }
+
+    public class Mailable
+    {
+        public static InlineMailable AsInline() => new InlineMailable();
+        public static InlineMailable<T> AsInline<T>() => new InlineMailable<T>();
     }
 }

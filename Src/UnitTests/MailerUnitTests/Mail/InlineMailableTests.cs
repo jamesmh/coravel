@@ -2,13 +2,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Coravel.Mailer.Mail;
 using Coravel.Mailer.Mail.Mailers;
-using UnitTests.Mail.Shared.Mailables;
 using UnitTests.Mail.Shared.Models;
 using Xunit;
 
 namespace UnitTests.Mail
 {
-    public class GeneralMailTests
+    public class InlineMailableTests
     {
         [Fact]
         public async Task MailableHasSubjectField()
@@ -18,7 +17,7 @@ namespace UnitTests.Mail
                 Assert.Equal("test", data.subject);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -32,10 +31,10 @@ namespace UnitTests.Mail
         {
             void AssertMail(AssertMailer.Data data)
             {
-                Assert.Equal("Generic Html", data.subject);
+                Assert.Equal("Inline", data.subject);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Html("<test></test>");
@@ -59,7 +58,12 @@ namespace UnitTests.Mail
                 Assert.Equal(user.Name, model.Name);
             };
 
-            await new AssertMailer(AssertMail).SendAsync(new MailableWithModelProperties(user));
+            await new AssertMailer(AssertMail).SendAsync(
+                new InlineMailable()
+                    .To(user)
+                    .From("from@test.com")
+                    .Html($"<html><body>Hi</body></html>")
+            );
         }
 
         [Fact]
@@ -70,7 +74,7 @@ namespace UnitTests.Mail
                 Assert.Equal("to@test.com", data.to.First().Email);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -89,7 +93,7 @@ namespace UnitTests.Mail
                 Assert.Equal("My Name", recipient.Name);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To(new MailRecipient("to@test.com", "My Name"))
                 .From("from@test.com")
                 .Subject("test")
@@ -106,7 +110,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.to.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To(new string[] { "one@test.com", "two@test.com", "three@test.com" })
                 .From("from@test.com")
                 .Subject("test")
@@ -123,7 +127,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.to.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To(new MailRecipient[] {
                     new MailRecipient("one@test.com"),
                     new MailRecipient("two@test.com"),
@@ -144,7 +148,7 @@ namespace UnitTests.Mail
                 Assert.Equal("from@test.com", data.from.Email);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -162,7 +166,7 @@ namespace UnitTests.Mail
                 Assert.Equal("From", data.from.Name);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From(new MailRecipient("from@test.com", "From"))
                 .Subject("test")
@@ -179,7 +183,7 @@ namespace UnitTests.Mail
                 Assert.Equal("replyTo@test.com", data.replyTo.Email);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -198,7 +202,7 @@ namespace UnitTests.Mail
                 Assert.Equal("ReplyTo", data.replyTo.Name);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -216,7 +220,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.cc.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -234,7 +238,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.cc.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -256,7 +260,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.bcc.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -274,7 +278,7 @@ namespace UnitTests.Mail
                 Assert.Equal(3, data.bcc.Count());
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -297,7 +301,7 @@ namespace UnitTests.Mail
                 Assert.True(data.attachments.Skip(1).Single().Name == "Attachment 2");
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -329,7 +333,7 @@ namespace UnitTests.Mail
                 Assert.Equal("sender@test.com", data.sender.Email);
             };
 
-            var mail = new GenericHtmlMailable()
+            var mail = new InlineMailable()
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
@@ -347,11 +351,54 @@ namespace UnitTests.Mail
                 Assert.Equal("sender@test.com", data.sender.Email);
             };
 
-            var mail = new GenericHtmlMailable()
+            // This generic type is used in the "View()" method. 
+            // This test just makes sure that using this class and the non-generic version
+            // in the same file works/compiles fine.
+            var mail = new InlineMailable<TestUser>() 
                 .To("to@test.com")
                 .From("from@test.com")
                 .Subject("test")
                 .Sender("sender@test.com")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task inline_mailable_works_from_static_mailable_method()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("to@test.com", data.to.First().Email);
+                Assert.Equal("from@test.com", data.from.Email);
+                Assert.Equal("test", data.subject);
+                Assert.Equal("<test></test>", data.message);
+            };
+
+            var mail = Mailable.AsInline()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task inline_mailable_of_T_works_from_static_mailable_method()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("to@test.com", data.to.First().Email);
+                Assert.Equal("from@test.com", data.from.Email);
+                Assert.Equal("test", data.subject);
+                Assert.Equal("<test></test>", data.message);
+            };
+
+            var mail = Mailable.AsInline<TestUser>()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
                 .Html("<test></test>");
 
             await new AssertMailer(AssertMail).SendAsync(mail);
