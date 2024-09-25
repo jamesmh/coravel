@@ -106,6 +106,7 @@ To configure it, in `Program.cs` instead of calling `AddMailer()` you do:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<MyHttpApiCustomMailer>();
 builder.AddCustomMailer<MyHttpApiCustomMailer>();
 ```
 
