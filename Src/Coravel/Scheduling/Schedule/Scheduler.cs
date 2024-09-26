@@ -18,7 +18,7 @@ namespace Coravel.Scheduling.Schedule
     {
         private ConcurrentDictionary<string, ScheduledTask> _tasks;
         private Action<Exception> _errorHandler;
-        private ILogger<IScheduler> _logger;
+        private bool _shouldLogProgress = false;
         private IMutex _mutex;
         private readonly int EventLockTimeout_24Hours = 1440;
         private IServiceScopeFactory _scopeFactory;
@@ -114,9 +114,9 @@ namespace Coravel.Scheduling.Schedule
             return this;
         }
 
-        public ISchedulerConfiguration LogScheduledTaskProgress(ILogger<IScheduler> logger)
+        public ISchedulerConfiguration LogScheduledTaskProgress()
         {
-            this._logger = logger;
+            this._shouldLogProgress = true;
             return this;
         }
 
@@ -136,16 +136,24 @@ namespace Coravel.Scheduling.Schedule
         }
 
         private async Task InvokeEventWithLoggerScope(ScheduledEvent scheduledEvent)
-        {
-            var eventInvocableTypeName = scheduledEvent.InvocableType()?.Name;
-            using (_logger != null && eventInvocableTypeName != null ?
-                _logger.BeginScope($"Invocable Type : {eventInvocableTypeName}") : null)
+        {         
+            using var scope = this._scopeFactory.CreateAsyncScope();
+            ILogger<IScheduler> logger = null;
+
+            if(this._shouldLogProgress)
             {
-                await InvokeEvent(scheduledEvent);
+                logger = scope.ServiceProvider.GetRequiredService<ILogger<IScheduler>>();
+            }
+
+            var eventInvocableTypeName = scheduledEvent.InvocableType()?.Name;
+            using (logger != null && eventInvocableTypeName != null ?
+                logger.BeginScope($"Invocable Type : {eventInvocableTypeName}") : null)
+            {
+                await InvokeEvent(scheduledEvent, logger);
             }
         }
 
-        private async Task InvokeEvent(ScheduledEvent scheduledEvent)
+        private async Task InvokeEvent(ScheduledEvent scheduledEvent, ILogger<IScheduler> logger)
         {
             try
             {
@@ -153,9 +161,9 @@ namespace Coravel.Scheduling.Schedule
 
                 async Task Invoke()
                 {
-                    this._logger?.LogDebug("Scheduled task started...");
+                    logger?.LogDebug("Scheduled task started...");
                     await scheduledEvent.InvokeScheduledEvent(this._cancellationTokenSource.Token);
-                    this._logger?.LogDebug("Scheduled task finished...");
+                    logger?.LogDebug("Scheduled task finished...");
                 };
 
                 if (scheduledEvent.ShouldPreventOverlapping())
@@ -183,7 +191,7 @@ namespace Coravel.Scheduling.Schedule
             {
                 await this.TryDispatchEvent(new ScheduledEventFailed(scheduledEvent, e));
 
-                this._logger?.LogError(e, "A scheduled task threw an Exception: ");
+                logger?.LogError(e, "A scheduled task threw an Exception: ");
 
                 this._errorHandler?.Invoke(e);
             }

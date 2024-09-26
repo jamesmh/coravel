@@ -18,8 +18,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <summary>
         /// Log the progress of scheduled tasks.
         /// </summary>
-        /// <param name="logger"></param>
         /// <returns></returns>
-        ISchedulerConfiguration LogScheduledTaskProgress(ILogger<IScheduler> logger);        
+        ISchedulerConfiguration LogScheduledTaskProgress();        
     }
 }

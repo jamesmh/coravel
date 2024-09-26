@@ -5,7 +5,7 @@ public class MessageBody
     public string Html { get; set; }
     public string Text { get; set; }
 
-    public MessageBody(string? html, string? text)
+    public MessageBody(string html, string text)
     {
         if(html is null && text is null)
         {
