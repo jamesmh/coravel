@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CoravelUnitTests.Scheduling.Stubs
@@ -6,7 +7,17 @@ namespace CoravelUnitTests.Scheduling.Stubs
     {
         public IServiceScope CreateScope()
         {
-            throw new System.NotImplementedException();
+            return new AsyncServiceScope(new ServiceScopeStub());
+        }
+    }
+
+    public class ServiceScopeStub : IServiceScope
+    {
+        public IServiceProvider ServiceProvider => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            // no-op
         }
     }
 }

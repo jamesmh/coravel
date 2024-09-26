@@ -52,6 +52,7 @@ namespace Demo
 
             services.AddScoped<SendNightlyReportsEmailJob>();
             services.AddScoped<DoExpensiveCalculationAndStore>();
+            services.AddScoped<Demo.Invocables.RebuildStaticCachedData>();
 
             services.AddEvents();
 
@@ -93,7 +94,7 @@ namespace Demo
             {
                 scheduler.OnWorker("CPUIntensiveTasks");
                 scheduler
-                    .Schedule<RebuildStaticCachedData>().Hourly();
+                    .Schedule<RebuildStaticCachedData>().EveryFifteenSeconds();
 
                 scheduler.OnWorker("TestingSeconds");
                 scheduler.Schedule(
@@ -108,7 +109,7 @@ namespace Demo
 
 
                 scheduler.Schedule(() => Thread.Sleep(5000)).EverySecond();
-            });
+            }).LogScheduledTaskProgress();
 
             app.ApplicationServices
                 .ConfigureQueue()

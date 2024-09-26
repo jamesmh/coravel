@@ -330,34 +330,39 @@ You can, of course, add error handling inside your specific tasks too.
 
 ## Logging Executed Task Progress
 
-Coravel uses the `ILogger` .Net Core interface to allow logging scheduled task progress.
-
-In your `Startup.cs` file, you need to inject an instance of `IServiceProvider` to the constructor and assign it to a member field / property:
-
-```csharp
-public Startup(IConfiguration configuration, /* Add this */ IServiceProvider services)
-{
-    Configuration = configuration;
-    Services = services;
-}
-
-public IConfiguration Configuration { get; }
-
-/* Add this property */
-public IServiceProvider Services { get; }
-```
-
-Next, do the following:
+If you want Coravel to output log statements about scheduled task progress (usually to debug issues), you can call `LogScheduledTaskProgress()`:
 
 ```csharp
 provider.UseScheduler(scheduler =>
 {
     // Assign scheduled tasks...
 })
-.LogScheduledTaskProgress(Services.GetService<ILogger<IScheduler>>());
+.LogScheduledTaskProgress();
 ```
 
-The `LogScheduledTaskProgress()` method accepts an instance of `ILogger<IScheduler>`, which is available through the service provider.
+Your logging level should also be set to `Debug` in your `appsettings.json` file.
+
+:::tip
+This method had a breaking change in Coravel `6.0.0`.
+:::
+
+## Logging Tick Catch Up
+
+Coravel's scheduling runs on an internal `Timer`. Sometimes, due to a lack of resources or an overloaded system (common in small containerized processes),
+the next "tick" could occur after 1 second. For example, a constrained container process might be overloaded and the `Timer` misses 10 seconds of ticks. 
+Coravel will chronologically replay each tick in order to catch up to "now".
+
+You can enable Coravel to output a log statement by setting the following configuration value in `appsettings.json`:
+
+```json
+"Coravel": {
+    "Schedule": {
+        "LogTickCatchUp": true
+    }
+}
+```
+
+This will be outputted as an `Informational` log statement.
 
 ## Force Run A Task At App Startup
 
@@ -375,8 +380,6 @@ scheduler.Schedule<CacheSomeStuff>()
 ```
 
 This will run immediately on application startup - even on weekends. After this initial run, any further runs will respect the assigned schedule of running once an hour only on weekdays.
-
-
 
 ## On App Closing
 
