@@ -50,7 +50,7 @@ namespace Coravel.Mailer.Mail.Mailers
             await mailable.SendAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
+        public async Task SendAsync(MessageBody message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
         {
             var mail = new MimeMessage();
             
@@ -82,9 +82,9 @@ namespace Coravel.Mailer.Mail.Mailers
             }
         }
 
-        private static void SetMailBody(string message, IEnumerable<Attachment> attachments, MimeMessage mail)
+        private static void SetMailBody(MessageBody message, IEnumerable<Attachment> attachments, MimeMessage mail)
         {
-            var bodyBuilder = new BodyBuilder { HtmlBody = message };
+            var bodyBuilder = new BodyBuilder { HtmlBody = message.Html, TextBody = message.Text };
             if (attachments != null)
             {
                 foreach (var attachment in attachments)
