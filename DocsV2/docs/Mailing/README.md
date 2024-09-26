@@ -122,7 +122,7 @@ public class MyHttpApiCustomMailer : ICanSendMail
         this._httpClient = httpFactory.CreateHttpClient("MailApi");
     }
 
-    public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
+    public async Task SendAsync(MessageBody message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
     {
         // Code that uses the HttpClient to send mail via an HTTP API.
     }
@@ -237,7 +237,7 @@ public async Task<IActionResult> SendMyEmail()
 }
 ```
 
-The non-generic version is suited to using `Html()` when passing a view model is not needed.
+The non-generic version is suited to using `Html()` and/or `Text()` when passing a view model is not needed.
 
 ```csharp
 public async Task<IActionResult> SendMyEmail()
@@ -253,6 +253,7 @@ public async Task<IActionResult> SendMyEmail()
             .To(user)
             .From("from@test.com")
             .Html($"<html><body><h1>Welcome {user.Name}</h1></body></html>")
+            .Text($"Welcome {user.Name}")
     );
 
     return Ok();
@@ -301,6 +302,37 @@ You can also pass:
 - `To(MailRecipient)`
 - `To(IEnumerable<MailRecipient>)`
 
+### Html
+
+If you want to supply raw Html as your e-mail use the `Html(string html)` method:
+
+```csharp
+public override void Build()
+{
+    this.To(this._user)
+        .From("from@test.com")
+        .Html(someHtml);
+}
+```
+
+In this case, your Mailable class should use the `string` generic type: `public class MyMailable : Mailable<string>`.
+
+### Text
+
+If you want to add a plain text representation of your email then use `Text(string plainText)`:
+
+```csharp
+public override void Build()
+{
+    this.To(this._user)
+        .From("from@test.com")
+        .Html(someHtml)
+        .Text(plainText);
+}
+```
+
+`Text()` doesn't replace `Html()` or `View()`. It _adds_ a plain text representation to your email that the email client will use in the event it doesn't support HTML.
+
 ### Sender
 
 To specify the sender of the email (different from the `From` address), use the `Sender()` method:
@@ -339,11 +371,9 @@ Further methods, which all accept either `IEnumerable<string>` or `IEnumerable<M
 - `Bcc`
 - `ReplyTo`
 
-### Specifying Mail Templates
+### Mail Templates With `View()`
 
-#### Razor Templates
-
-##### .NET Core 3.1+
+#### .NET Core 3.1+
 
 For a standard .NET 6+ web project, this should work out-of-the-box. If using a shared library, the following applies.
 
@@ -359,9 +389,13 @@ If you have a shared library with razor views inside, you'll need to make sure .
   </PropertyGroup>
 ```
 
-##### Razor Views
+#### View
 
 Using a razor view to send e-mails is done using the `View(string viewPath, T viewModel)` method.
+
+:::tip
+You can still use `Text(string planText)` to add an alternative plain text representation beside the HTML message that calling `View()` produces.
+:::
 
 The type of the `viewModel` parameter must match the type of your Mailable's generic type parameter. For example, a `Mailable<UserModel>` will have the method `View(string viewPath, UserModel viewModel)`. Coravel will automatically bind the model to your view so you can generate dynamic content (just like using `View()` inside your MVC controllers).
 
@@ -378,8 +412,6 @@ public class MyMailable : Mailable<string>
     }
 }
 ```
-
-##### Example
 
 :::tip
 The CLI generated a sample for you at `~/Views/Example.cshtml`.
@@ -408,22 +440,7 @@ It might look like this (which uses a built-in template):
 }
 ```
 
-#### Html Template
-
-If you want to supply raw Html as your e-mail use the `Html(string html)` method:
-
-```csharp
-public override void Build()
-{
-    this.To(this._user)
-        .From("from@test.com")
-        .Html(someHtml);
-}
-```
-
-In this case, your Mailable class should use the `string` generic type: `public class MyMailable : Mailable<string>`.
-
-## Mail Templates
+## Mail Template Components
 
 When using razor views, there are various pieces of data that Coravel will automatically passes for you:
 
@@ -558,3 +575,7 @@ public async Task<IActionResult> RenderView()
     return Content(message, "text/html");
 }
 ```
+
+:::tip
+Since we can only render 1 mail body, using `Html()` or `View()` will take precedence over `Text()` when rendering an email with `RenderAsync()`.
+:::

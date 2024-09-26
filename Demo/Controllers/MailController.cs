@@ -94,6 +94,25 @@ namespace Demo.Controllers
             return Content(message, "text/html");
         }
 
+        public async Task<IActionResult> WithHtmlAndPlainText()
+        {
+            UserModel user = new UserModel()
+            {
+                Email = "FromUserModel@test.com",
+                Name = "Coravel Test Person"
+            };
+
+            await this._mailer.SendAsync(
+                Mailable.AsInline<UserModel>()
+                    .To(user)
+                    .From("from@test.com")
+                    .View("~/Views/Mail/NewUser.cshtml", user)
+                    .Text("This is a plain text version of the email!")
+            );
+
+            return Ok();
+        }
+
         public IActionResult QueueMail()
         {
             UserModel user = new UserModel()

@@ -27,7 +27,7 @@ namespace Coravel.Mailer.Mail.Mailers
             return await mailable.RenderAsync(this._renderer, this);
         }
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
+        public async Task SendAsync(MessageBody message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
         {
             from = from ?? this._globalFrom;
 
@@ -45,7 +45,17 @@ Bcc: {CommaSeparated(bcc)}
 Attachment: { (attachments is null ? "N/A" : string.Join(";", attachments.Select(a => a.Name))) }
 ---------------------------------------------
 
-{message}
+------------------
+Message Type: HTML
+------------------
+{ (message.HasHtmlMessage() ? message.Html : "N/A") }
+
+!!!!!!!!!!!!!!!!!!!!!!!
+
+-----------------------
+Message Type: Plan Text
+-----------------------
+{ (message.HasPlainTextMessage() ? message.Text : "N/A") }
                 ").ConfigureAwait(false);
             }
         }

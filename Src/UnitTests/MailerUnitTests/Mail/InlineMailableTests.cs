@@ -372,7 +372,8 @@ namespace UnitTests.Mail
                 Assert.Equal("to@test.com", data.to.First().Email);
                 Assert.Equal("from@test.com", data.from.Email);
                 Assert.Equal("test", data.subject);
-                Assert.Equal("<test></test>", data.message);
+                Assert.Equal("<test></test>", data.message.Html);
+                Assert.Null(data.message.Text);
             };
 
             var mail = Mailable.AsInline()
@@ -392,7 +393,8 @@ namespace UnitTests.Mail
                 Assert.Equal("to@test.com", data.to.First().Email);
                 Assert.Equal("from@test.com", data.from.Email);
                 Assert.Equal("test", data.subject);
-                Assert.Equal("<test></test>", data.message);
+                Assert.Equal("<test></test>", data.message.Html);
+                Assert.Null(data.message.Text);
             };
 
             var mail = Mailable.AsInline<TestUser>()

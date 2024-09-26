@@ -16,14 +16,14 @@ namespace UnitTests.Mail
     {
         public class CustomAssertMailer : ICanSendMail
         {
-            private Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient> _assert;
+            private Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient> _assert;
 
-            public CustomAssertMailer(Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient> assert)
+            public CustomAssertMailer(Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient> assert)
             {
                 this._assert = assert;
             }
 
-            public Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
+            public Task SendAsync(MessageBody message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments = null, MailRecipient sender = null)
             {
                 this._assert(message, subject, to, from, replyTo, cc, bcc, attachments, sender);
                 return Task.CompletedTask;
@@ -35,14 +35,13 @@ namespace UnitTests.Mail
         public async Task when_sending_generic_mail_it_sends()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
-                    Assert.Equal("test", message);
+                    Assert.Equal("test", message.Html);
                     Assert.Equal("from@test.com", from.Email);
                     Assert.Equal("from@test.com", from.Email);
                     Assert.Equal("to@test.com", to.First().Email);
-                    Assert.Equal("test", message);
                 });
 
             services.AddScoped<CustomAssertMailer>();
@@ -64,16 +63,112 @@ namespace UnitTests.Mail
         }
 
         [Fact]
+        public async Task when_sending_html_only_it_renders_html()
+        {
+            var services = new ServiceCollection();
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+                (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
+                { 
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("to@test.com", to.First().Email);
+                    Assert.Equal("test", message.Html);
+                    Assert.Null(message.Text);
+                });
+
+            services.AddScoped<CustomAssertMailer>();
+            var provider = services.BuildServiceProvider();
+
+            var mailer = new CanSendMailWrapper<CustomAssertMailer>(
+                RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build()),
+                provider.GetRequiredService<IServiceScopeFactory>(), 
+                null
+            );
+
+            await mailer.SendAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .To("to@test.com")
+                    .Html("test")
+            );
+        }
+
+        [Fact]
+        public async Task when_sending_text_only_it_renders_html()
+        {
+            var services = new ServiceCollection();
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+                (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
+                { 
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("to@test.com", to.First().Email);
+                    Assert.Equal("test", message.Text);
+                    Assert.Null(message.Html);
+                });
+
+            services.AddScoped<CustomAssertMailer>();
+            var provider = services.BuildServiceProvider();
+
+            var mailer = new CanSendMailWrapper<CustomAssertMailer>(
+                RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build()),
+                provider.GetRequiredService<IServiceScopeFactory>(), 
+                null
+            );
+
+            await mailer.SendAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .To("to@test.com")
+                    .Text("test")
+            );
+        }
+
+        [Fact]
+        public async Task when_sending_html_and_text_it_renders_both()
+        {
+            var services = new ServiceCollection();
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+                (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
+                { 
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("from@test.com", from.Email);
+                    Assert.Equal("to@test.com", to.First().Email);
+                    Assert.Equal("plain text", message.Text);
+                   Assert.Equal("html text", message.Html);
+                });
+
+            services.AddScoped<CustomAssertMailer>();
+            var provider = services.BuildServiceProvider();
+
+            var mailer = new CanSendMailWrapper<CustomAssertMailer>(
+                RazorRendererFactory.MakeInstance(new ConfigurationBuilder().Build()),
+                provider.GetRequiredService<IServiceScopeFactory>(), 
+                null
+            );
+
+            await mailer.SendAsync(
+                new GenericHtmlMailable()
+                    .Subject("test")
+                    .From("from@test.com")
+                    .To("to@test.com")
+                    .Text("plain text")
+                    .Html("html text")
+            );
+        }
+
+        [Fact]
         public async Task when_using_global_from_when_from_not_defined_it_uses_global_value()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
-                    Assert.Equal("test", message);
                     Assert.Equal("global@test.com", from.Email);
                     Assert.Equal("to@test.com", to.First().Email);
-                    Assert.Equal("test", message);
+                    Assert.Equal("test", message.Html);
                 });
 
             services.AddScoped<CustomAssertMailer>();
@@ -98,13 +193,12 @@ namespace UnitTests.Mail
         public async Task when_using_global_from_when_from_is_defined_it_uses_from_value()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
-                    Assert.Equal("test", message);
+                    Assert.Equal("test", message.Html);
                     Assert.Equal("from@test.com", from.Email);
                     Assert.Equal("to@test.com", to.First().Email);
-                    Assert.Equal("test", message);
                 });
 
             services.AddScoped<CustomAssertMailer>();
@@ -129,7 +223,7 @@ namespace UnitTests.Mail
         public async Task when_using_render_it_renders()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
 
@@ -159,7 +253,7 @@ namespace UnitTests.Mail
         public async Task when_attachments_it_works()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
                     Assert.Equal(2, attachments.Count());
@@ -198,7 +292,7 @@ namespace UnitTests.Mail
         public async Task when_assigning_sender_it_is_assigned()
         {
             var services = new ServiceCollection();
-            services.AddScoped<Action<string, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
+            services.AddScoped<Action<MessageBody, string, IEnumerable<MailRecipient>, MailRecipient, MailRecipient, IEnumerable<MailRecipient>, IEnumerable<MailRecipient>, IEnumerable<Attachment>, MailRecipient>>(p =>
                 (message, subject, to, from, replyTo, cc, bcc, attachments, sender) =>
                 { 
                     Assert.Equal("sender@test.com", sender.Email);

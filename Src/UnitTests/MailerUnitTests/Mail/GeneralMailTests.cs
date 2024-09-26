@@ -356,5 +356,63 @@ namespace UnitTests.Mail
 
             await new AssertMailer(AssertMail).SendAsync(mail);
         }
+
+        [Fact]
+        public async Task when_html_only_defined()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("<test></test>", data.message.Html);
+                Assert.Null(data.message.Text);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Sender("sender@test.com")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task when_text_only_defined()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("plain text", data.message.Text);
+                Assert.Null(data.message.Html);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Sender("sender@test.com")
+                .Text("plain text");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
+
+        [Fact]
+        public async Task when_html_and_text_defined()
+        {
+            void AssertMail(AssertMailer.Data data)
+            {
+                Assert.Equal("plain text", data.message.Text);
+                Assert.Equal("<test></test>", data.message.Html);
+            };
+
+            var mail = new GenericHtmlMailable()
+                .To("to@test.com")
+                .From("from@test.com")
+                .Subject("test")
+                .Sender("sender@test.com")
+                .Text("plain text")
+                .Html("<test></test>");
+
+            await new AssertMailer(AssertMail).SendAsync(mail);
+        }
     }
 }

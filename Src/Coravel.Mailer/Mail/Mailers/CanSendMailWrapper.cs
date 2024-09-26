@@ -25,7 +25,7 @@ namespace Coravel.Mailer.Mail.Mailers
         public async Task SendAsync<T>(Mailable<T> mailable) =>
             await mailable.SendAsync(this._renderer, this);
 
-        public async Task SendAsync(string message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments, MailRecipient sender = null)
+        public async Task SendAsync(MessageBody message, string subject, IEnumerable<MailRecipient> to, MailRecipient from, MailRecipient replyTo, IEnumerable<MailRecipient> cc, IEnumerable<MailRecipient> bcc, IEnumerable<Attachment> attachments, MailRecipient sender = null)
         {
             await using (var scope = this._scopeFactory.CreateAsyncScope())
             {

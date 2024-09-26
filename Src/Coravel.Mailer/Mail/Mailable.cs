@@ -10,7 +10,7 @@ namespace Coravel.Mailer.Mail
 {
     public class Mailable<T>
     {
-        private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html() or View())";
+        private static readonly string NoRenderFoundMessage = "Please use one of the available methods for specifying how to render your mail (e.g. Html(), Text() or View())";
 
         /// <summary>
         /// Who the email is from.
@@ -50,7 +50,7 @@ namespace Coravel.Mailer.Mail
         /// <summary>
         /// Raw HTML to use as email message.
         /// </summary>
-        private string _html;
+        private MessageBody _messageBody;
 
         /// <summary>
         /// The MVC view to use to generate the message.
@@ -155,7 +155,17 @@ namespace Coravel.Mailer.Mail
 
         public Mailable<T> Html(string html)
         {
-            this._html = html;
+            this._messageBody = this._messageBody is null
+                ? new MessageBody(html, null)
+                : new MessageBody(html, this._messageBody.Text);
+            return this;
+        }
+
+        public Mailable<T> Text(string plainText)
+        {
+            this._messageBody = this._messageBody is null
+                ? new MessageBody(null, plainText)
+                : new MessageBody(this._messageBody.Html, plainText);
             return this;
         }
 
@@ -178,7 +188,7 @@ namespace Coravel.Mailer.Mail
         {
             this.Build();
 
-            string message = await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
+            MessageBody message = await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
 
             await mailer.SendAsync(
                 message,
@@ -196,25 +206,40 @@ namespace Coravel.Mailer.Mail
         internal async Task<string> RenderAsync(RazorRenderer renderer, IMailer mailer)
         {
             this.Build();
-            return await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
+            var mailMessage = await this.BuildMessage(renderer, mailer).ConfigureAwait(false);
+            return mailMessage.HasHtmlMessage() ? mailMessage.Html : mailMessage.Text;
         }
 
-        private async Task<string> BuildMessage(RazorRenderer renderer, IMailer mailer)
+        private async Task<MessageBody> BuildMessage(RazorRenderer renderer, IMailer mailer)
         {
             this.BindDynamicProperties();
 
-            if (this._html != null)
+            // If View() was used, the caller can still also use Text() too, so we need to handle
+            // when only View() is called and when both View() and Text() are used.
+            if (this._viewPath is not null)
             {
-                return this._html;
-            }
-
-            if (this._viewPath != null)
-            {
-                return await renderer
+                var htmlRendered = await renderer
                     .RenderViewToStringAsync<T>(this._viewPath, this._viewModel)
                     .ConfigureAwait(false);
+
+                if(this._messageBody is null)
+                {
+                    this._messageBody = new MessageBody(htmlRendered, null);
+                }
+                else {
+                    this._messageBody.Html = htmlRendered;
+                }
+
+                return this._messageBody;
             }
 
+            // View() wasn't called, so we'll see if a message body was defined.
+            if (this._messageBody is not null)
+            {
+                return this._messageBody;
+            }
+
+            // No render or message body found. e.g. View(), Html() nor Text() were called.
             throw new NoMailRendererFound(NoRenderFoundMessage);
         }
 
