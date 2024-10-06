@@ -19,6 +19,23 @@ namespace Coravel
         /// <returns></returns>
         public static IServiceCollection AddQueue(this IServiceCollection services)
         {
+            services.AddSingleton<QueueOptions>(new QueueOptions());
+            services.AddSingleton<IQueue>(p =>
+                new Queue(
+                    p.GetRequiredService<IServiceScopeFactory>(),
+                    p.GetService<IDispatcher>()
+                )
+            );
+            services.AddHostedService<QueuingHost>();
+            return services;
+        }
+
+        public static IServiceCollection AddQueue(this IServiceCollection services, Action<QueueOptions> options)
+        {
+            var opt = new QueueOptions();
+            options(opt);
+
+            services.AddSingleton<QueueOptions>(opt);
             services.AddSingleton<IQueue>(p =>
                 new Queue(
                     p.GetRequiredService<IServiceScopeFactory>(),
