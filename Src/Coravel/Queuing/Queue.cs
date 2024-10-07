@@ -47,10 +47,16 @@ namespace Coravel.Queuing
 
         public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
+            var tokenSource = new CancellationTokenSource();
             var job = this.EnqueueInvocable<T>(invocable => {
-                IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
+                var invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
                 invocableWithParams.Payload = payload;
+                if (invocableWithParams is ICancellableTask task)
+                {
+                    task.Token = tokenSource.Token;
+                }
             });
+            this._tokens.TryAdd(job.Guid, tokenSource);
             return job.Guid;
         }
 
@@ -130,6 +136,14 @@ namespace Coravel.Queuing
                 : this._tasks.Count;
 
             return new QueueMetrics(this._tasksRunningCount, waitingCount);
+        }
+
+        public bool TryCancelInvocable(Guid tokenId)
+        {
+            if (!_tokens.TryGetValue(tokenId, out var tokenNeedCancel)) return false; // token does not exist
+            if (tokenNeedCancel.IsCancellationRequested) return false; // token is already canceled
+            tokenNeedCancel.Cancel();
+            return true;
         }
 
         private void CancelAllTokens()
