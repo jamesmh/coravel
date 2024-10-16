@@ -21,7 +21,7 @@
         },
         "repositoryUrl": {
             "url": "https://github.com/jamesmh/coravel",
-            "wellknown": "https://docs.coravel.net/.well-known/funding-manifest-urls"
+            "wellknown": "https://github.com/jamesmh/coravel/.well-known/funding-manifest-urls"
         },
         "licenses": ["spdx:MIT"],
         "tags": ["dotnet", "scheduler", "queuing", "mailing", "caching", "background"]
