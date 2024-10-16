@@ -1,0 +1,58 @@
+{
+    "version": "v1.0.0",
+
+    "entity": {
+        "type": "individual",
+        "role": "maintainer",
+        "name": "James Hickey",
+        "email": "james@jamesmichaelhickey.com",
+        "description": "Maintainer of Coravel open-source tooling for .NET applications. Trying to bring advanced application tooling to the .NET ecosystem so .NET developers can focus on their application's business value and not tedious common tasks.",             
+        "webpageUrl": {
+            "url": "https://github.com/jamesmh/coravel"
+        }
+    },
+
+    "projects": [{
+        "guid": "coravel-core",
+        "name": "Coravel",
+        "description": "Near-zero config .NET library that makes advanced application features like Task Scheduling, Caching, Queuing, Event Broadcasting, and more a breeze!",
+        "webpageUrl": {
+            "url": "https://github.com/jamesmh/coravel"
+        },
+        "repositoryUrl": {
+            "url": "https://github.com/jamesmh/coravel"
+        },
+        "licenses": ["spdx:MIT"],
+        "tags": ["dotnet", "scheduler", "queuing", "mailing", "caching", "background"]
+    }],
+
+    "funding": {
+        "channels": [{
+            "guid": "bank",
+            "type": "bank",
+            "description": "Will accept direct bank transfers / interact e-transfers. Please e-mail me for details."
+        },
+        {
+            "guid": "stripe",
+            "type": "payment-provider",
+            "description": "Pay with your debit/credit card through this gateway for one-time payments or recurring subscriptions. Please e-mail me for details."
+        },
+        {
+            "guid": "buy-me-a-coffee",
+            "type": "payment-provider",
+            "address": "https://www.buymeacoffee.com/gIPOyBD5N",
+            "description": "Pay with your debit/credit card through this gateway for one-time payment or monthly sponsorship."
+        }],
+
+        "plans": [{
+            "guid": "core-donation",
+            "status": "active",
+            "name": "Core Donation",
+            "description": "Pays for combination of hosting/infrastructure, part-time developer(s) to work on triage/bugs/features/docs and marketing.",
+            "amount": 0,
+            "currency": "USD",
+            "frequency": "one-time",
+            "channels": ["bank", "stripe", "buy-me-a-coffee"]
+        }]
+    }
+}
