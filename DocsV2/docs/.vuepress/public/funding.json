@@ -19,6 +19,9 @@
         "webpageUrl": {
             "url": "https://docs.coravel.net"
         },
+        "repositoryUrl": {
+            "url": "https://docs.coravel.net"
+        },
         "licenses": ["spdx:MIT"],
         "tags": ["dotnet", "scheduler", "queuing", "mailing", "caching", "background"]
     }],
