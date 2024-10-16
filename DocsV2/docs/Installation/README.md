@@ -6,13 +6,13 @@ meta:
     content: dotnet ".NET task scheduling" ".NET scheduler" ".NET Queue" ".NET Queuing" ".NET Caching" Coravel
 ---
 
-## GitHub
-
-[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
-
 # Installation
 
 [[toc]]
+
+## GitHub
+
+[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
 
 ## Requirements
 
