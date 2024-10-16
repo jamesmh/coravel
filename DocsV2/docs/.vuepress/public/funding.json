@@ -17,8 +17,7 @@
         "name": "Coravel",
         "description": "Near-zero config .NET library that makes advanced application features like Task Scheduling, Caching, Queuing, Event Broadcasting, and more a breeze!",
         "webpageUrl": {
-            "url": "https://github.com/jamesmh/coravel",
-            "wellknown": "https://docs.coravel.net/.well-known/funding-manifest-urls"
+            "url": "https://docs.coravel.net"
         },
         "repositoryUrl": {
             "url": "https://github.com/jamesmh/coravel",
