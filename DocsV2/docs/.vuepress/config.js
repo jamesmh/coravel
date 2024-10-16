@@ -13,6 +13,8 @@ module.exports = {
             text: 'Home',
             link: '/'
         }],
+        repo: "https://github.com/jamesmh/coravel",
+        repoLabel: 'On GitHub',
         sidebar: [{
                 title: 'Getting Started',
                 collapsable: false,

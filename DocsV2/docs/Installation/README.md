@@ -6,6 +6,10 @@ meta:
     content: dotnet ".NET task scheduling" ".NET scheduler" ".NET Queue" ".NET Queuing" ".NET Caching" Coravel
 ---
 
+## GitHub
+
+[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
+
 # Installation
 
 [[toc]]
@@ -21,10 +25,6 @@ Include Coravel in either an existing .NET Core application (version 2.1.0+) or 
 Coravel requires the nuget package `Coravel` to get started.
 
 `dotnet add package coravel`
-
-## GitHub
-
-[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
 
 ## Extras
 
