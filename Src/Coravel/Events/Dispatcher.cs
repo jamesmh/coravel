@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +59,7 @@ namespace Coravel.Events
                 {
                     await using (var scope = this._scopeFactory.CreateAsyncScope())
                     {
-                        var obj = scope.ServiceProvider.GetService(listenerType);
+                        var obj = scope.ServiceProvider.GetRequiredService(listenerType);
                         if (obj is IListener<TEvent> listener)
                         {
                             await listener.HandleAsync(toBroadcast);
@@ -67,8 +68,12 @@ namespace Coravel.Events
                             // Depending on what assemblies the events, listeners and calling assmebly are - the cast
                             // above doesn't work (even though the type really does implement the interface).
                             // Not sure why this happens. Might be a side effect of running inside a unit test proj. Dunno.
-                            // This condition will catch those cases and default to reflection.                        
-                            var result = listenerType.GetMethod("HandleAsync").Invoke(obj, new object[] { toBroadcast });
+                            // This condition will catch those cases and default to reflection.
+                            //
+                            // But! It is possible that Listener class implements more IListener<TEvent>s, so we should directly invoke the anticipated method.
+                            // Do not attempt to .GetMethod("HandleAsync") because this might be ambiguous and throw an exception
+                            var result = listenerType.InvokeMember(nameof(IListener<TEvent>.HandleAsync), BindingFlags.InvokeMethod,
+                                Type.DefaultBinder, obj, new object[] {toBroadcast});
                             await (result as Task);
                         }
                     }
