@@ -8,8 +8,7 @@
         "email": "james@jamesmichaelhickey.com",
         "description": "Maintainer of Coravel open-source tooling for .NET applications. Trying to bring advanced application tooling to the .NET ecosystem so .NET developers can focus on their application's business value and not tedious common tasks.",             
         "webpageUrl": {
-            "url": "https://github.com/jamesmh/coravel",
-            "wellknown": "https://github.com/jamesmh/coravel/blob/master/.well-known/funding-manifest-urls"
+            "url": "https://docs.coravel.net"
         }
     },
 
