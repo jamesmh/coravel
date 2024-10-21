@@ -51,8 +51,6 @@ namespace Coravel.Queuing.Interfaces
         /// <summary>
         /// Try to cancel a task by its GUID.
         /// </summary>
-        /// <param name="guid"></param>
-        /// <returns></returns>
         bool TryToCancelTask(Guid guid);
 
         /// <summary>

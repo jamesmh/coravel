@@ -48,7 +48,8 @@ namespace Coravel.Queuing
         public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
             var job = this.EnqueueInvocable<T>(invocable => {
-                (invocable as IInvocableWithPayload<TParams>).Payload = payload;
+                IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>)invocable;
+                invocableWithParams.Payload = payload;
             });
             return job.Guid;
         }
