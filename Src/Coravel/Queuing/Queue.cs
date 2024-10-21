@@ -48,8 +48,7 @@ namespace Coravel.Queuing
         public Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>
         {
             var job = this.EnqueueInvocable<T>(invocable => {
-                IInvocableWithPayload<TParams> invocableWithParams = (IInvocableWithPayload<TParams>) invocable;
-                invocableWithParams.Payload = payload;
+                (invocable as IInvocableWithPayload<TParams>).Payload = payload;
             });
             return job.Guid;
         }
@@ -59,6 +58,18 @@ namespace Coravel.Queuing
             var tokenSource = new CancellationTokenSource();
             var func = this.EnqueueInvocable<T>((invocable) => {
                 (invocable as ICancellableTask).Token = tokenSource.Token;
+            });
+            this._tokens.TryAdd(func.Guid, tokenSource);
+            return (func.Guid, tokenSource);
+        }
+
+        public (Guid, CancellationTokenSource) QueueCancellableInvocableWithPayload<T, TParams>(TParams payload)
+            where T : IInvocable, IInvocableWithPayload<TParams>, ICancellableTask
+        {
+            var tokenSource = new CancellationTokenSource();
+            var func = this.EnqueueInvocable<T>((invocable) => {
+                (invocable as ICancellableTask).Token = tokenSource.Token;
+                (invocable as IInvocableWithPayload<TParams>).Payload = payload;
             });
             this._tokens.TryAdd(func.Guid, tokenSource);
             return (func.Guid, tokenSource);
@@ -74,6 +85,17 @@ namespace Coravel.Queuing
         public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
         {
             this.QueueAsyncTask(async () => await this._dispatcher.Broadcast(toBroadcast));
+        }
+
+        public bool TryToCancelTask(Guid guid)
+        {
+            if (this._tokens.TryGetValue(guid, out var token) && !token.IsCancellationRequested)
+            {
+                token.Cancel();
+                return true;
+            }
+
+            return false;
         }
 
         public IQueueConfiguration OnError(Action<Exception> errorHandler)

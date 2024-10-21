@@ -36,10 +36,24 @@ namespace Coravel.Queuing.Interfaces
         (Guid, CancellationTokenSource) QueueCancellableInvocable<T>() where T : IInvocable, ICancellableTask;
 
         /// <summary>
+        /// Queue an invocable that will be given the payload supplied to this method.
+        /// Invocable might be cancelled.
+        /// </summary>
+        (Guid, CancellationTokenSource) QueueCancellableInvocableWithPayload<T, TParams>(TParams payload)
+            where T : IInvocable, IInvocableWithPayload<TParams>, ICancellableTask;
+
+        /// <summary>
         /// Queue an event to be broadcasted.
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
+
+        /// <summary>
+        /// Try to cancel a task by its GUID.
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        bool TryToCancelTask(Guid guid);
 
         /// <summary>
         /// Queue an invocable that will be given the payload supplied to this method.
