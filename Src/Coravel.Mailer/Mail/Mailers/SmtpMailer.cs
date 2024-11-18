@@ -89,7 +89,16 @@ namespace Coravel.Mailer.Mail.Mailers
             {
                 foreach (var attachment in attachments)
                 {
-                    bodyBuilder.Attachments.Add(attachment.Name, attachment.Bytes);
+                    if (string.IsNullOrWhiteSpace(attachment.ContentId) == false)
+                    {
+                        var image = bodyBuilder.LinkedResources.Add(attachment.Name, attachment.Bytes);
+                        // We do this instead of using their value because RFC states the Content-Id value MUST be in the message id format.
+                        image.ContentId = MimeKit.Utils.MimeUtils.GenerateMessageId();
+                        // Now replace where they applied it in the html template with the updated correct version
+                        bodyBuilder.HtmlBody = bodyBuilder.HtmlBody.Replace($"\"cid:{attachment.ContentId}\"", $"\"cid:{image.ContentId}\"", System.StringComparison.OrdinalIgnoreCase);
+                    }
+                    else
+                        bodyBuilder.Attachments.Add(attachment.Name, attachment.Bytes);
                 }
             }
 
