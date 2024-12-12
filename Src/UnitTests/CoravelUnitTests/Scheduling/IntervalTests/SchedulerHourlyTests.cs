@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
@@ -18,6 +20,7 @@ namespace CoravelUnitTests.Scheduling.IntervalTests
         [InlineData(4, 21, 0, true)]
         [InlineData(5, 23, 0, true)]
         [InlineData(6, 1, 0, true)]
+        [InlineData(7, 1, 0, true, "th-TH")]
         // Should not run
         [InlineData(0, 0, 1, false)]
         [InlineData(1, 4, 12, false)]
@@ -40,17 +43,34 @@ namespace CoravelUnitTests.Scheduling.IntervalTests
         [InlineData(4, 21, 45, false)]
         [InlineData(5, 23, 55, false)]
         [InlineData(6, 1, 1, false)]
+        [InlineData(7, 1, 1, false, "th-TH")]   // Try with different culture since it affects IndexOf calls
 
-        public async Task ValidHourly(int day, int hour, int minute, bool shouldRun)
+        public async Task ValidHourly(int day, int hour, int minute, bool shouldRun, string culture = null)
         {
-            var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
-            bool taskRan = false;
+            // Remember current culture in order to clean up
+            var prevCulture = Thread.CurrentThread.CurrentCulture;
 
-            scheduler.Schedule(() => taskRan = true).Hourly();
+            try
+            {
+                // Set culture if needed
+                if (culture != null)
+                    Thread.CurrentThread.CurrentCulture = new CultureInfo(culture, false);
 
-            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
+                var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+                bool taskRan = false;
 
-            Assert.Equal(shouldRun, taskRan);
+                scheduler.Schedule(() => taskRan = true).Hourly();
+
+                await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
+
+                Assert.Equal(shouldRun, taskRan);
+            }
+            finally
+            {
+                // Revert to previous culture if it has been changed
+                if (culture != null)
+                    Thread.CurrentThread.CurrentCulture = prevCulture;
+            }
         }
     }
 }
