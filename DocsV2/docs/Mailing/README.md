@@ -345,6 +345,36 @@ Sender("test@test.com")
 
 Attach multiple files by passing an `Attachment` to the `Attach()` method.
 
+Each attachment has a few fields to assign:
+
+- `Bytes`: The `byte[]` of the file you are attaching.
+- `Name`: The name of the file to attach.
+- `ContentId`: Often used for embedding images into emails. Assign a value that is unique within your email template.
+
+##### Embedding Images
+
+To embed images into your email you can assign the `ContentId` field with a unique value that will also be used in your email.
+
+For example:
+
+```csharp
+emailMessage
+    .Attach(new Attachment
+    {
+        Name = "My Image",
+        Bytes = myBytes,
+        ContentId = "my-image"
+    });
+```
+
+```html
+<html>
+    <img src="cid:my-image" />
+</html>
+```
+
+Coravel will automatically link the embedded resources to the email properly for you.
+
 #### Auto-Detect Email Address And Name
 
 Using an `object` that has a `public` field or property `Email` and `Name`, you can pass it to the `To()` method.
