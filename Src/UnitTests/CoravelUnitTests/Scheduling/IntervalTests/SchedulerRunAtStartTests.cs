@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Scheduling.Schedule;
 using Coravel.Scheduling.Schedule.Mutex;
@@ -38,8 +41,8 @@ namespace CoravelUnitTests.Scheduling.IntervalTests
             Assert.True(taskRan);
 
             taskRan = false;
+            
             await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
-
             Assert.False(taskRan);
         }
 
@@ -67,9 +70,51 @@ namespace CoravelUnitTests.Scheduling.IntervalTests
             Assert.True(taskRan);
 
             taskRan = false;
-            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
 
+            await RunScheduledTasksFromDayHourMinutes(scheduler, day, hour, minute);
             Assert.True(taskRan);
+        }
+
+        /// <summary>
+        /// This test runs for a long time - like 40 seconds on a fast codespaces VM. But, that's how many iterations of running this test takes to
+        /// catch a really rare race condition. This was causing the `RunOnceAtStart` method to have an bug where intermittently those tasks weren't running
+        /// when the application started up.
+        /// </summary>
+        [Fact]
+        public async Task TestConcurrentThreadsDoesNotSkipForcedRun()
+        {
+            for(int i = 0; i < 10000; i++)
+            {
+                var scheduler = new Scheduler(new InMemoryMutex(), new ServiceScopeFactoryStub(), new DispatcherStub());
+                var taskRan = false;
+                var taskRunCount = 0;
+
+                scheduler
+                    .Schedule(() => 
+                    { 
+                        Interlocked.Increment(ref taskRunCount); 
+                        taskRan = true; 
+                    })
+                    .Monthly()
+                    .RunOnceAtStart();
+
+
+                Func<Task> runTask = async () => 
+                { 
+                    await Task.Delay(1); 
+                    await scheduler.RunAtAsync(new DateTime(2000, 1, 15));
+                };
+
+                var tasks = new List<Task>()
+                {
+                    runTask(), runTask(), runTask()
+                };
+
+                await Task.WhenAll(tasks);
+
+                Assert.True(taskRan);
+                Assert.Equal(1, taskRunCount);
+            }
         }
     }
 }
