@@ -18,9 +18,9 @@ namespace Coravel.Scheduling.Schedule.Cron
         /// <returns></returns>
         public bool CheckIfTimeIsDue(int time)
         {
-            var isRange = _expression.IndexOf('-') > -1;
-            var isDivisibleRange = isRange && _expression.IndexOf('/') > -1;
-            var isDelineatedArray = _expression.IndexOf(',') > -1;
+            var isRange = _expression.IndexOf('-', StringComparison.InvariantCulture) > -1;
+            var isDivisibleRange = isRange && _expression.IndexOf('/', StringComparison.InvariantCulture) > -1;
+            var isDelineatedArray = _expression.IndexOf(',', StringComparison.InvariantCulture) > -1;
 
             if (isRange && isDelineatedArray)
             {

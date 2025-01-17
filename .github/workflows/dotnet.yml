@@ -7,42 +7,6 @@ on:
     branches: [ master ]
 
 jobs:
-  build_and_tests_on_dotnet_6:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore ./Src/All.sln
-    - name: Build
-      run: dotnet build ./Src/All.sln
-    - name: Mailer Tests
-      run: dotnet test ./Src/UnitTests/MailerUnitTests/MailerUnitTests.csproj
-    - name: Unit Tests
-      run: dotnet test ./Src/UnitTests/CoravelUnitTests/CoravelUnitTests.csproj
-    - name: Integration Tests
-      run: dotnet test ./Src/IntegrationTests/Tests/Tests.csproj
-  build_and_tests_on_dotnet_7:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      run: dotnet restore ./Src/All.sln
-    - name: Build
-      run: dotnet build ./Src/All.sln
-    - name: Mailer Tests
-      run: dotnet test ./Src/UnitTests/MailerUnitTests/MailerUnitTests.csproj
-    - name: Unit Tests
-      run: dotnet test ./Src/UnitTests/CoravelUnitTests/CoravelUnitTests.csproj
-    - name: Integration Tests
-      run: dotnet test ./Src/IntegrationTests/Tests/Tests.csproj
   build_and_tests_on_dotnet_8:
     runs-on: ubuntu-latest
     steps:

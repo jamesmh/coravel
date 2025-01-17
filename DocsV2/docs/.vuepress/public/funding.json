@@ -1,0 +1,88 @@
+{
+    "version": "v1.0.0",
+
+    "entity": {
+        "type": "individual",
+        "role": "maintainer",
+        "name": "James Hickey",
+        "email": "james@jamesmichaelhickey.com",
+        "description": "Maintainer of Coravel open-source tooling for .NET applications. Trying to bring advanced application tooling to the .NET ecosystem so .NET developers can focus on their application's business value and not tedious common tasks.",             
+        "webpageUrl": {
+            "url": "https://docs.coravel.net"
+        }
+    },
+
+    "projects": [{
+        "guid": "coravel-core",
+        "name": "Coravel",
+        "description": "Near-zero config .NET library that makes advanced application features like Task Scheduling, Caching, Queuing, Event Broadcasting, and more a breeze!",
+        "webpageUrl": {
+            "url": "https://docs.coravel.net"
+        },
+        "repositoryUrl": {
+            "url": "https://docs.coravel.net"
+        },
+        "licenses": ["spdx:MIT"],
+        "tags": ["dotnet", "scheduler", "queuing", "mailing", "caching", "background"]
+    }],
+
+    "funding": {
+        "channels": [{
+            "guid": "bank",
+            "type": "bank",
+            "description": "Will accept direct bank transfers / interact e-transfers. Please e-mail me for details."
+        },
+        {
+            "guid": "stripe",
+            "type": "payment-provider",
+            "description": "Pay with your debit/credit card through this gateway for one-time payments or recurring subscriptions. Please e-mail me for details."
+        },
+        {
+            "guid": "buy-me-a-coffee",
+            "type": "payment-provider",
+            "address": "https://www.buymeacoffee.com/gIPOyBD5N",
+            "description": "Pay with your debit/credit card through this gateway for one-time payment or monthly sponsorship."
+        }],
+
+        "plans": [{
+            "guid": "core-donation",
+            "status": "active",
+            "name": "Core Donation",
+            "description": "Pays for combination of hosting/infrastructure, part-time developer(s) to work on triage/bugs/features/docs and marketing. Any amount helps!",
+            "amount": 0,
+            "currency": "USD",
+            "frequency": "one-time",
+            "channels": ["bank", "stripe", "buy-me-a-coffee"]
+        },
+        {
+            "guid": "developer-time",
+            "status": "active",
+            "name": "Developer Time",
+            "description": "Pays for part-time developer(s) to work and maintain Coravel and it's sub-projects (e.g. Coravel.Caching, Coravel.Mailer, etc.)",
+            "amount": 10000,
+            "currency": "USD",
+            "frequency": "yearly",
+            "channels": ["bank", "stripe", "buy-me-a-coffee"]
+        },
+        {
+            "guid": "infrastructure-costs",
+            "status": "active",
+            "name": "Infrastructure Costs",
+            "description": "Pays for infrastructure needs like web hosting, domain names, email services, etc.",
+            "amount": 250,
+            "currency": "USD",
+            "frequency": "yearly",
+            "channels": ["bank", "stripe", "buy-me-a-coffee"]
+        },
+        {
+            "guid": "marketing-costs",
+            "status": "active",
+            "name": "Marketing Costs",
+            "description": "This would allow the project to market by means not currently available due to lack of funds. E.g. paid articles about Coravel, .NET focused email newsletters, purchase ads in popular YouTube channels about .NET, etc.",
+            "amount": 10000,
+            "currency": "USD",
+            "frequency": "one-time",
+            "channels": ["bank", "stripe", "buy-me-a-coffee"]
+        }]
+    }
+}

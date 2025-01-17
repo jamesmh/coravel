@@ -10,6 +10,10 @@ meta:
 
 [[toc]]
 
+## GitHub
+
+[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
+
 ## Requirements
 
 Coravel is a .NET Standard library designed for .NET Core apps.
@@ -21,10 +25,6 @@ Include Coravel in either an existing .NET Core application (version 2.1.0+) or 
 Coravel requires the nuget package `Coravel` to get started.
 
 `dotnet add package coravel`
-
-## GitHub
-
-[You can visit the GitHub repo here.](https://github.com/jamesmh/coravel)
 
 ## Extras
 
