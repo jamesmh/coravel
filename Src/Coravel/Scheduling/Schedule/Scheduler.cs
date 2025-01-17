@@ -27,6 +27,7 @@ namespace Coravel.Scheduling.Schedule
         private string _currentWorkerName;
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isFirstTick = true;
+        private object _isFirstTickLockObj = new object();
 
         public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
         {
@@ -102,8 +103,21 @@ namespace Coravel.Scheduling.Schedule
         public async Task RunAtAsync(DateTime utcDate)
         {
             Interlocked.Increment(ref this._schedulerIterationsActiveCount);
-            bool isFirstTick = this._isFirstTick;
-            this._isFirstTick = false;
+            
+            // Possibility for race condition here.
+            // Note: This was a bug fixed by issue 353.
+            bool isFirstTick = false;
+            if(this._isFirstTick)
+            {
+                lock(this._isFirstTickLockObj)
+                {
+                    // Set to `this._isFirstTick` not `true` because there might be multiple threads coming into
+                    // this critical section - but only one should count as "the first run".
+                    isFirstTick = this._isFirstTick;
+                    this._isFirstTick = false;
+                }
+            }
+
             await RunWorkersAt(utcDate, isFirstTick);
             Interlocked.Decrement(ref this._schedulerIterationsActiveCount);
         }
