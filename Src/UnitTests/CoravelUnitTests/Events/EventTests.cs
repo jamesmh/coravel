@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Coravel;
 using Coravel.Events;
@@ -192,6 +193,41 @@ namespace CoravelUnitTests.Events
             await dispatcher.Broadcast(new TestEvent1());
 
             Assert.Equal(1, listenersExecutedCount);
+        }
+
+        [Fact]
+        public async Task TestAutomaticallyRegisterAllListeners()
+        {
+            int listenersExecutedCount = 0;
+
+            var services = new ServiceCollection() as IServiceCollection;
+            services.AddTransient<Action>(p => () => listenersExecutedCount++);
+            services.AddEventsFromAssembly<EventTests>();
+
+            var provider = services.BuildServiceProvider() as IServiceProvider;
+
+            provider.UseCoravelEvents();
+
+            var dispatcher = provider.GetRequiredService<IDispatcher>() as Dispatcher;
+
+            await dispatcher.Broadcast(new TestEvent1());
+            Assert.Equal(2, listenersExecutedCount);
+
+            await dispatcher.Broadcast(new TestEvent2());
+            Assert.Equal(3, listenersExecutedCount);
+        }
+
+        [Fact]
+        public void TestUseCoravelEventsWithoutAssemblyEventsShouldThrow()
+        {
+            var services = new ServiceCollection() as IServiceCollection;
+            services.AddEvents();
+
+            var provider = services.BuildServiceProvider() as IServiceProvider;
+
+            Assert.Throws<Exception>(() =>
+                provider.UseCoravelEvents()
+            );
         }
     }
 }
