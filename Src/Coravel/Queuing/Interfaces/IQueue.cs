@@ -12,6 +12,10 @@ namespace Coravel.Queuing.Interfaces
     public interface IQueue
     {
         /// <summary>
+        /// Contains a unique name for the queue!
+        /// </summary>
+        string QueueName { get; }
+        /// <summary>
         /// Queue a new synchronous task.
         /// </summary>
         /// <param name="workItem">The task to be invoke by Coravel.</param>

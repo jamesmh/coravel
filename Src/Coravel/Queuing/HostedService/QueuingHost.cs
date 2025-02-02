@@ -29,7 +29,10 @@ namespace Coravel.Queuing.HostedService
         public Task StartAsync(CancellationToken cancellationToken)
         {
             int consummationDelay = GetConsummationDelay();
-
+            if (!string.IsNullOrEmpty(_queue.QueueName))
+            {
+                _logger.LogDebug($"Coravel is starting queue service for '{_queue.QueueName}'");
+            }
             this._timer = new Timer((state) => this._signal.Release(), null, TimeSpan.Zero, TimeSpan.FromSeconds(consummationDelay));
             Task.Run(ConsumeQueueAsync);
             return Task.CompletedTask;
@@ -74,7 +77,14 @@ namespace Coravel.Queuing.HostedService
         public void Dispose()
         {
             this._timer?.Dispose();
-            this._logger.LogInformation("Coravel's Queuing service is now stopped.");
+            if (string.IsNullOrEmpty(_queue.QueueName))
+            {
+                this._logger.LogInformation("Coravel's Queuing service is now stopped.");
+            }
+            else
+            {
+                this._logger.LogInformation($"Coravel's Queuing service for '{_queue.QueueName}' is now stopped.");
+            }
         }
     }
 }
