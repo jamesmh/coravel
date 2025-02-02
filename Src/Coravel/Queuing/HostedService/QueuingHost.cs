@@ -39,10 +39,7 @@ namespace Coravel.Queuing.HostedService
 
         private int GetConsummationDelay()
         {
-            if (this._queueOptions.ConsummationDelay.HasValue) return this._queueOptions.ConsummationDelay.Value;
-            var configurationSection = this._configuration.GetSection("Coravel:Queue:ConsummationDelay");
-            bool couldParseDelay = int.TryParse(configurationSection.Value, out var parsedDelay);
-            return couldParseDelay ? parsedDelay : 30;
+            return this._queueOptions.GetConsummationDelay(this._configuration);
         }
 
         private async Task ConsumeQueueAsync()
