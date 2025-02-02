@@ -64,6 +64,31 @@ scheduler
 
 What a simple, terse and expressive syntax! Easy Peasy!
 
+For completeness here is the possible impelmentation of the `GrabDataFromApiAndPutInDBInvocable` class:
+
+```csharp
+public class GrabDataFromApiAndPutInDBInvocable: IInvocable
+{
+    private readonly DbContext _dbContext;
+    public GrabDataFromApiAndPutInDBInvocable(DbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+    public Task Invoke()
+    {
+        //call api and save data to db
+        //...
+        _dbContext.SaveChangesAsync();
+    }
+}
+```
+
+Make sure that your invocable *itself* is available in the service container:
+
+```csharp
+services.AddTransient<GrabDataFromApiAndPutInDBInvocable>();
+```
+
 :::tip Cancel Long-Running Invocables
 Make your long-running invocable classes implement `Coravel.Invocable.ICancellableInvocable` to enable it to gracefully abort on application shutdown.
 
