@@ -16,14 +16,16 @@ namespace Coravel.Queuing.HostedService
         private Queue _queue;
         private IConfiguration _configuration;
         private ILogger<QueuingHost> _logger;
+        private QueueOptions _queueOptions;
         private readonly string QueueRunningMessage = "Coravel Queuing service is attempting to close but the queue is still running." +
                                                       " App closing (in background) will be prevented until dequeued tasks are completed.";
 
-        public QueuingHost(IQueue queue, IConfiguration configuration, ILogger<QueuingHost> logger)
+        public QueuingHost(IQueue queue, IConfiguration configuration, ILogger<QueuingHost> logger, QueueOptions queueOptions)
         {
             this._configuration = configuration;
             this._queue = queue as Queue;
             this._logger = logger;
+            this._queueOptions = queueOptions;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -37,9 +39,7 @@ namespace Coravel.Queuing.HostedService
 
         private int GetConsummationDelay()
         {
-            var configurationSection = this._configuration.GetSection("Coravel:Queue:ConsummationDelay");
-            bool couldParseDelay = int.TryParse(configurationSection.Value, out var parsedDelay);
-            return couldParseDelay ? parsedDelay : 30;
+            return this._queueOptions.GetConsummationDelay(this._configuration);
         }
 
         private async Task ConsumeQueueAsync()

@@ -10,7 +10,7 @@ meta:
 
 [[toc]]
 
-Coravel gives you a zero-configuration queue that runs in-memory. 
+Coravel gives you a zero-configuration queue that runs in-memory.
 
 This is useful to offload long-winded tasks to the background instead of making your users wait for their HTTP request to finish.
 
@@ -33,6 +33,7 @@ public HomeController(IQueue queue) {
 ```
 
 ## Queuing Jobs
+
 ### Queuing Invocables
 
 To queue an invocable, use `QueueInvocable`:
@@ -93,7 +94,7 @@ Use the `QueueAsyncTask` to queue up an async task:
 
 ### Queuing Synchronously
 
-You use the `QueueTask()` method to add a  task to the queue.
+You use the `QueueTask()` method to add a task to the queue.
 
 ```csharp
 public IActionResult QueueTask() {
@@ -109,7 +110,7 @@ Event broadcasting is great - but what if your event listeners are doing some he
 By using `QueueBroadcast`, you can queue an event to be broadcasted in the background.
 
 ```csharp
-this._queue.QueueBroadcast(new OrderCreated(orderId)); 
+this._queue.QueueBroadcast(new OrderCreated(orderId));
 ```
 
 ### Queuing Cancellable Invocables
@@ -120,7 +121,7 @@ By using `QueueCancellableInvocable` you can build invocables that can be cancel
 
 ```csharp
  var (taskGuid, token) = queue.QueueCancellableInvocable<CancellableInvocable>();
- 
+
  // Somewhere else....
 
  token.Cancel();
@@ -138,6 +139,7 @@ while(!this.Token.IsCancellationRequested)
   await ProcessNextRecord();
 }
 ```
+
 ## Metrics
 
 You can gain some insight into how the queue is doing at a given moment in time.
@@ -153,7 +155,7 @@ Available methods:
 
 ## Tracking Task Progress
 
-Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue. Also, Coravel's queue exposes some internal events that you can hook into. 
+Most of the methods on the `IQueue` interface will return a `Guid` that represents the unique id for the task you pushed to the queue. Also, Coravel's queue exposes some internal events that you can hook into.
 
 Combining these: you can create listeners for the events `QueueTaskStarted` and `QueueTaskCompleted` that verify the progress of specific tasks in real-time. When a task/job crashes, then the event `DequeuedTaskFailed` will be emitted. Creating a listener for this one might be helpful too.
 
@@ -197,6 +199,19 @@ You can adjust this delay in the `appsettings.json` file.
   }
 }
 ```
+
+Alternatively, you can adjust the consummation delay using `AddQueue`:
+
+```csharp
+services.AddQueue(queueOptions => {
+    // Consume queue every 5 seconds.
+    queueOptions.ConsummationDelay = 5;
+});
+```
+
+:::tip
+`QueueOptions` will take precedence over your configuration file if both are defined.
+:::
 
 ## Logging Task Progress
 
