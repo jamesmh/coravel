@@ -10,7 +10,6 @@ namespace Coravel.Events.Interfaces
         /// <summary>
         /// Dispatches and broadcasts the event to all subscribed listeners.
         /// </summary>
-        /// <typeparam name="TEvent"></typeparam>
-        Task Broadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
+        Task Broadcast(IEvent toBroadcast);
     }
 }
