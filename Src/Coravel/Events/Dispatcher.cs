@@ -13,8 +13,8 @@ namespace Coravel.Events
     ///  </summary>
     public class Dispatcher : IDispatcher, IEventRegistration
     {
-        private IServiceScopeFactory _scopeFactory;
-        private Dictionary<Type, List<Type>> _events;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly Dictionary<Type, List<Type>> _events;
 
         public Dispatcher(IServiceScopeFactory scopeFactory)
         {
@@ -29,16 +29,11 @@ namespace Coravel.Events
         /// <returns></returns>
         public IEventSubscription<TEvent> Register<TEvent>() where TEvent : IEvent
         {
-            var listeners = new List<Type>();
             var eventType = typeof(TEvent);
 
-            if (this._events.ContainsKey(eventType))
+            if(!this._events.TryGetValue(eventType, out var listeners))
             {
-                listeners = this._events[eventType];
-            }
-            else
-            {
-                this._events.Add(eventType, listeners);
+                this._events.Add(eventType, listeners = new List<Type>());
             }
 
             return new EventSubscription<TEvent>(listeners);

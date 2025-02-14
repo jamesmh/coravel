@@ -25,10 +25,10 @@ namespace Coravel
         {
             string mailerType = config.GetValue<string>("Coravel:Mail:Driver", "FileLog");
 
-            var strategies = new Dictionary<string, Action>();
+            var strategies = new Dictionary<string, Action>(StringComparer.OrdinalIgnoreCase);
             strategies.Add("SMTP", () => AddSmtpMailer(services, config));
             strategies.Add("FILELOG", () => AddFileLogMailer(services, config));
-            strategies[mailerType.ToUpper()].Invoke();
+            strategies[mailerType].Invoke();
             return services;
         }
 
