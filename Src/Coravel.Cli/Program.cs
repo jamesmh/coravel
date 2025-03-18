@@ -64,44 +64,44 @@ namespace Coravel.Cli
             });
 
             app.Command("invocable", config =>
-           {
-               config.OnExecute(() =>
-               {
-                   config.ShowHelp();
-                   return 1;
-               });
+            {
+                config.OnExecute(() =>
+                {
+                    config.ShowHelp();
+                    return 1;
+                });
 
-               config.Command("new", newConfig =>
-               {
-                   newConfig.Description = "Create a new coravel Invocable class.";
-                   var invocableName = newConfig.Argument<string>("name", "Name of the Invocable to generate.");
-                   newConfig.OnExecute(() =>
-                   {
-                       string invocable = invocableName.Value ?? "Invocable";
-                       new CreateInvocableCommand().Execute(invocable);
-                   });
-               });
-           });
+                config.Command("new", newConfig =>
+                {
+                    newConfig.Description = "Create a new coravel Invocable class.";
+                    var invocableName = newConfig.Argument<string>("name", "Name of the Invocable to generate.");
+                    newConfig.OnExecute(() =>
+                    {
+                        string invocable = invocableName.Value ?? "Invocable";
+                        new CreateInvocableCommand().Execute(invocable);
+                    });
+                });
+            });
 
             app.Command("event", config =>
-         {
-             config.OnExecute(() =>
-             {
-                 config.ShowHelp();
-                 return 1;
-             });
+            {
+                config.OnExecute(() =>
+                {
+                    config.ShowHelp();
+                    return 1;
+                });
 
-             config.Command("new", newConfig =>
-             {
-                 newConfig.Description = "Create a new coravel Event and Listeners.";
-                 var eventName = newConfig.Argument<string>("eventName", "Name of the Event to generate.").IsRequired();
-                 var listenerName = newConfig.Argument<string>("listenerName", "Name of the Listener to generate.").IsRequired();
-                 newConfig.OnExecute(() =>
-                 {
-                     new GenerateEventCommand().Execute(eventName.Value, listenerName.Value);
-                 });
-             });
-         });
+                config.Command("new", newConfig =>
+                {
+                    newConfig.Description = "Create a new coravel Event and Listeners.";
+                    var eventName = newConfig.Argument<string>("eventName", "Name of the Event to generate.").IsRequired();
+                    var listenerName = newConfig.Argument<string>("listenerName", "Name of the Listener to generate.").IsRequired();
+                    newConfig.OnExecute(() =>
+                    {
+                        new GenerateEventCommand().Execute(eventName.Value, listenerName.Value);
+                    });
+                });
+            });
 
             try
             {
