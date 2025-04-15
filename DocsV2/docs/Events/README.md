@@ -131,4 +131,4 @@ public BlogController : Controller
 
 If your listeners do some heavy or long-winded work, then you might want to do that in the background (e.g. not on the current HTTP request).
 
-See the docs for [queue event broadcasting](/Queuing/#queuing-an-event-broadcast).
+See the docs for [queue event broadcasting](/Queuing/#queue-event-broadcast).
