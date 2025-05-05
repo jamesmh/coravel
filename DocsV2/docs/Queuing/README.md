@@ -138,6 +138,33 @@ while(!this.Token.IsCancellationRequested)
   await ProcessNextRecord();
 }
 ```
+
+If you need supply a payload/parameters to your `ICancellableTask` you should add `IInvocableWithPayload<T>` to your invocable and implement the Payload property:
+
+```csharp
+public UserModel Payload { get; set; }
+```
+
+Now, your `Invoke` method will have access to `Token` and `Payload`:
+
+```csharp
+while(!this.Token.IsCancellationRequested)
+{
+  await ProcessNextRecord(this.Payload.UserId);
+}
+```
+
+To queue this invocable use the `QueueCancellableInvocableWithPayload` method:
+
+```csharp
+var userModel = await _userService.Get(userId);
+var (taskGuid, token) = queue.QueueCancellableInvocableWithPayload<CancellableInvocable, UserModel>(userModel);
+ 
+// Somewhere else....
+
+token.Cancel();
+```
+
 ## Metrics
 
 You can gain some insight into how the queue is doing at a given moment in time.

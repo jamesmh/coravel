@@ -47,6 +47,11 @@ namespace Coravel.Queuing.Interfaces
         Guid QueueInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>;
 
         /// <summary>
+        /// Queue an invocable that will be given the payload supplied to this method.
+        /// </summary>
+        (Guid, CancellationTokenSource) QueueCancellableInvocableWithPayload<T, TParams>(TParams payload) where T : IInvocable, IInvocableWithPayload<TParams>, ICancellableTask;
+
+        /// <summary>
         /// View metrics given the queue's current executing state.
         /// </summary>
         /// <returns></returns>
