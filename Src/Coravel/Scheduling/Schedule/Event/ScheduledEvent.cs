@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
-    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration
+    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration, IScheduledDataProvider
     {
         private CronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;
@@ -129,6 +129,22 @@ namespace Coravel.Scheduling.Schedule.Event
         public string OverlappingUniqueIdentifier() => this._eventUniqueId;
 
         public bool IsScheduledCronBasedTask() => !this._isScheduledPerSecond;
+
+        public ScheduledData GetScheduledData()
+        {
+            return new ScheduledData(
+                cronExpression: this._expression?.ToString() ?? string.Empty,
+                isScheduledPerSecond: this._isScheduledPerSecond,
+                secondsInterval: this._secondsInterval,
+                invocableType: this._invocableType,
+                preventOverlapping: this._preventOverlapping,
+                eventUniqueId: this._eventUniqueId,
+                hasWhenPredicates: this._whenPredicate != null,
+                zonedTimeZone: this._zonedTime?.TimeZoneInfo ?? TimeZoneInfo.Utc,
+                runOnceAtStart: this._runOnceAtStart,
+                runOnce: this._runOnce
+            );
+        }
 
         public IScheduledEventConfiguration Daily()
         {
