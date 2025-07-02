@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coravel.Invocable;
 
@@ -63,5 +64,11 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <param name="workerName"></param>
         /// <returns></returns>
         IScheduler OnWorker(string workerName);
+
+        /// <summary>
+        /// Gets a data representation of all currently active schedules.
+        /// </summary>
+        /// <returns>A read-only list of ScheduledData objects containing information about all active schedules.</returns>
+        IReadOnlyList<ScheduledData> GetSchedules();
     }
 }

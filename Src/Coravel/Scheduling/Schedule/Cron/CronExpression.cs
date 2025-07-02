@@ -77,6 +77,11 @@ namespace Coravel.Scheduling.Schedule.Cron
             return new CronExpressionPart(this._months, 12).IsDue(time.Month);
         }
 
+        public override string ToString()
+        {
+            return $"{_minutes} {_hours} {_days} {_months} {_weekdays}";
+        }
+
         private void GuardExpressionIsValid()
         {
             // We don't want to check that the expression is due, but just run validation and ignore any results.
