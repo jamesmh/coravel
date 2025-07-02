@@ -151,17 +151,11 @@ namespace Coravel.Scheduling.Schedule
 
         public IReadOnlyList<ScheduledData> GetSchedules()
         {
-            var schedules = new List<ScheduledData>();
-            
-            foreach (var task in this._tasks.Values)
-            {
-                if (task.ScheduledEvent is IScheduledDataProvider dataProvider)
-                {
-                    schedules.Add(dataProvider.GetScheduledData());
-                }
-            }
-            
-            return schedules;
+            return this._tasks.Values
+                .Select(task => task.ScheduledEvent)
+                .OfType<IScheduledDataProvider>()
+                .Select(dataProvider => dataProvider.GetScheduledData())
+                .ToList();
         }
 
         private async Task InvokeEventWithLoggerScope(ScheduledEvent scheduledEvent)
