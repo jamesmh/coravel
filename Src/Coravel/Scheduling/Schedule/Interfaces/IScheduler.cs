@@ -68,7 +68,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
         /// <summary>
         /// Gets a data representation of all currently active schedules.
         /// </summary>
-        /// <returns>A read-only list of ScheduledData objects containing information about all active schedules.</returns>
-        IReadOnlyList<ScheduledData> GetSchedules();
+        /// <returns>A read-only list of ScheduleInfo objects containing information about all active schedules.</returns>
+        IReadOnlyList<ScheduleInfo> GetSchedules();
     }
 }

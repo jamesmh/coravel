@@ -5,7 +5,7 @@ namespace Coravel.Scheduling.Schedule
     /// <summary>
     /// Data representation of a scheduled event.
     /// </summary>
-    public class ScheduledData
+    public class ScheduleInfo
     {
         /// <summary>
         /// The CRON expression for the schedule.
@@ -57,7 +57,7 @@ namespace Coravel.Scheduling.Schedule
         /// </summary>
         public bool RunOnce { get; }
 
-        public ScheduledData(
+        public ScheduleInfo(
             string cronExpression,
             bool isScheduledPerSecond,
             int? secondsInterval,

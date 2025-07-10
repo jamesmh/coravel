@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
-    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration, IScheduledDataProvider
+    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration, IGetAllScheduleInfo
     {
         private CronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;
@@ -130,9 +130,9 @@ namespace Coravel.Scheduling.Schedule.Event
 
         public bool IsScheduledCronBasedTask() => !this._isScheduledPerSecond;
 
-        public ScheduledData GetScheduledData()
+        public ScheduleInfo GetScheduleInfo()
         {
-            return new ScheduledData(
+            return new ScheduleInfo(
                 cronExpression: this._expression?.ToString() ?? string.Empty,
                 isScheduledPerSecond: this._isScheduledPerSecond,
                 secondsInterval: this._secondsInterval,
