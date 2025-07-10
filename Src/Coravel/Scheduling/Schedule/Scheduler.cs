@@ -153,7 +153,7 @@ namespace Coravel.Scheduling.Schedule
         {
             return this._tasks.Values
                 .Select(task => task.ScheduledEvent)
-                .OfType<IGetAllScheduleInfo>()
+                .OfType<IGetScheduleInfo>()
                 .Select(dataProvider => dataProvider.GetScheduleInfo())
                 .ToList();
         }

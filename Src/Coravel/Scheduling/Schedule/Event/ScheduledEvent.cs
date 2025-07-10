@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Coravel.Scheduling.Schedule.Event
 {
-    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration, IGetAllScheduleInfo
+    public class ScheduledEvent : IScheduleInterval, IScheduledEventConfiguration, IGetScheduleInfo
     {
         private CronExpression _expression;
         private ActionOrAsyncFunc _scheduledAction;

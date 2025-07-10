@@ -3,7 +3,7 @@ namespace Coravel.Scheduling.Schedule.Interfaces
     /// <summary>
     /// Provides methods to get information about active schedules.
     /// </summary>
-    public interface IGetAllScheduleInfo
+    public interface IGetScheduleInfo
     {
         /// <summary>
         /// Gets a data representation of the scheduled event.
