@@ -149,6 +149,15 @@ namespace Coravel.Scheduling.Schedule
             return true; // Nothing to remove - was successful.
         }
 
+        public IReadOnlyList<ScheduleInfo> GetSchedules()
+        {
+            return this._tasks.Values
+                .Select(task => task.ScheduledEvent)
+                .OfType<IGetAllScheduleInfo>()
+                .Select(dataProvider => dataProvider.GetScheduleInfo())
+                .ToList();
+        }
+
         private async Task InvokeEventWithLoggerScope(ScheduledEvent scheduledEvent)
         {         
             using var scope = this._scopeFactory.CreateAsyncScope();
