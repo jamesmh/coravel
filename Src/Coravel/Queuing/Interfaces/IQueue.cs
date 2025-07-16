@@ -38,8 +38,7 @@ namespace Coravel.Queuing.Interfaces
         /// <summary>
         /// Queue an event to be broadcasted.
         /// </summary>
-        /// <typeparam name="TEvent"></typeparam>
-        void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent;
+        void QueueBroadcast(IEvent toBroadcast);
 
         /// <summary>
         /// Queue an invocable that will be given the payload supplied to this method.
