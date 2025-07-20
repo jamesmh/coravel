@@ -20,12 +20,14 @@ namespace Coravel
         /// <returns></returns>
         public static IServiceCollection AddScheduler(this IServiceCollection services)
         {
+            services.AddCoravelGlobalConfiguration();
             services.AddSingleton<IMutex>(new InMemoryMutex());
             services.AddSingleton<IScheduler>(p =>
                 new Scheduler(
                     p.GetRequiredService<IMutex>(), 
                     p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetService<IDispatcher>()
+                    p.GetService<IDispatcher>(),
+                    p.GetRequiredService<Coravel.Invocable.Interfaces.ICoravelGlobalConfiguration>()
                 )
             );
             services.AddHostedService<SchedulerHost>();
