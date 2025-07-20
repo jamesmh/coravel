@@ -11,6 +11,7 @@ using Coravel.Invocable;
 using Coravel.Events.Interfaces;
 using Coravel.Scheduling.Schedule.Broadcast;
 using System.Threading;
+using Coravel.Invocable.Interfaces;
 
 namespace Coravel.Scheduling.Schedule
 {
@@ -28,13 +29,20 @@ namespace Coravel.Scheduling.Schedule
         private CancellationTokenSource _cancellationTokenSource;
         private bool _isFirstTick = true;
         private object _isFirstTickLockObj = new object();
+        private ICoravelGlobalConfiguration _globalConfiguration;
 
-        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
+        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher) 
+            : this(mutex, scopeFactory, dispatcher, null)
+        {
+        }
+
+        public Scheduler(IMutex mutex, IServiceScopeFactory scopeFactory, IDispatcher dispatcher, ICoravelGlobalConfiguration globalConfiguration)
         {
             this._tasks = new ConcurrentDictionary<string, ScheduledTask>();
             this._mutex = mutex;
             this._scopeFactory = scopeFactory;
             this._dispatcher = dispatcher;
+            this._globalConfiguration = globalConfiguration;
             this._currentWorkerName = "_default";
             this._cancellationTokenSource = new CancellationTokenSource();
         }
@@ -189,9 +197,22 @@ namespace Coravel.Scheduling.Schedule
                     logger?.LogDebug("Scheduled task finished...");
                 };
 
-                if (scheduledEvent.ShouldPreventOverlapping())
+                // Check for prevent overlapping - either per-event or global configuration
+                var shouldPreventOverlapping = scheduledEvent.ShouldPreventOverlapping();
+                string uniqueIdentifier = null;
+
+                if (!shouldPreventOverlapping && scheduledEvent.InvocableType() != null)
                 {
-                    if (this._mutex.TryGetLock(scheduledEvent.OverlappingUniqueIdentifier(), EventLockTimeout_24Hours))
+                    // Check global configuration for this invocable type
+                    shouldPreventOverlapping = this.TryGetGlobalPreventOverlapping(scheduledEvent.InvocableType(), out uniqueIdentifier);
+                }
+
+                if (shouldPreventOverlapping)
+                {
+                    // Use per-event identifier if available, otherwise use global identifier
+                    var lockIdentifier = uniqueIdentifier ?? scheduledEvent.OverlappingUniqueIdentifier();
+                    
+                    if (this._mutex.TryGetLock(lockIdentifier, EventLockTimeout_24Hours))
                     {
                         try
                         {
@@ -199,7 +220,7 @@ namespace Coravel.Scheduling.Schedule
                         }
                         finally
                         {
-                            this._mutex.Release(scheduledEvent.OverlappingUniqueIdentifier());
+                            this._mutex.Release(lockIdentifier);
                         }
                     }
                 }
@@ -217,6 +238,41 @@ namespace Coravel.Scheduling.Schedule
                 logger?.LogError(e, "A scheduled task threw an Exception: ");
 
                 this._errorHandler?.Invoke(e);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the given invocable type has global prevent overlapping configured.
+        /// Uses reflection to call the generic method since we have the Type at runtime.
+        /// </summary>
+        /// <param name="invocableType">The invocable type to check</param>
+        /// <param name="uniqueIdentifier">The unique identifier if configured</param>
+        /// <returns>True if global prevent overlapping is configured for this type</returns>
+        private bool TryGetGlobalPreventOverlapping(Type invocableType, out string uniqueIdentifier)
+        {
+            uniqueIdentifier = null;
+            
+            if (this._globalConfiguration == null || invocableType == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                // Use reflection to call the generic method TryGetPreventOverlapping<T>
+                var method = this._globalConfiguration.GetType().GetMethod("TryGetPreventOverlapping");
+                var genericMethod = method.MakeGenericMethod(invocableType);
+                
+                var parameters = new object[] { null };
+                var result = (bool)genericMethod.Invoke(this._globalConfiguration, parameters);
+                uniqueIdentifier = (string)parameters[0];
+                
+                return result;
+            }
+            catch
+            {
+                // If reflection fails, assume no global configuration
+                return false;
             }
         }
 

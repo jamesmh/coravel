@@ -19,11 +19,15 @@ namespace Coravel
         /// <returns></returns>
         public static IServiceCollection AddQueue(this IServiceCollection services)
         {
+            services.AddCoravelGlobalConfiguration();
+            services.AddSingleton<Coravel.Scheduling.Schedule.Interfaces.IMutex>(new Coravel.Scheduling.Schedule.Mutex.InMemoryMutex());
             services.AddSingleton<QueueOptions>(new QueueOptions());
             services.AddSingleton<IQueue>(p =>
                 new Queue(
                     p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetService<IDispatcher>()
+                    p.GetService<IDispatcher>(),
+                    p.GetRequiredService<Coravel.Scheduling.Schedule.Interfaces.IMutex>(),
+                    p.GetRequiredService<Coravel.Invocable.Interfaces.ICoravelGlobalConfiguration>()
                 )
             );
             services.AddHostedService<QueuingHost>();
@@ -35,11 +39,15 @@ namespace Coravel
             var opt = new QueueOptions();
             options(opt);
 
+            services.AddCoravelGlobalConfiguration();
+            services.AddSingleton<Coravel.Scheduling.Schedule.Interfaces.IMutex>(new Coravel.Scheduling.Schedule.Mutex.InMemoryMutex());
             services.AddSingleton<QueueOptions>(opt);
             services.AddSingleton<IQueue>(p =>
                 new Queue(
                     p.GetRequiredService<IServiceScopeFactory>(),
-                    p.GetService<IDispatcher>()
+                    p.GetService<IDispatcher>(),
+                    p.GetRequiredService<Coravel.Scheduling.Schedule.Interfaces.IMutex>(),
+                    p.GetRequiredService<Coravel.Invocable.Interfaces.ICoravelGlobalConfiguration>()
                 )
             );
             services.AddHostedService<QueuingHost>();

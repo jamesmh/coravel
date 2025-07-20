@@ -6,8 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Coravel.Events.Interfaces;
 using Coravel.Invocable;
+using Coravel.Invocable.Interfaces;
 using Coravel.Queuing.Broadcast;
 using Coravel.Queuing.Interfaces;
+using Coravel.Scheduling.Schedule.Interfaces;
 using Coravel.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -25,11 +27,21 @@ namespace Coravel.Queuing
         private IDispatcher _dispatcher;
         private int _queueIsConsuming = 0;
         private int _tasksRunningCount = 0;
+        private IMutex _mutex;
+        private ICoravelGlobalConfiguration _globalConfiguration;
+        private readonly int EventLockTimeout_24Hours = 1440;
 
-        public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher)
+        public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher) 
+            : this(scopeFactory, dispatcher, null, null)
+        {
+        }
+
+        public Queue(IServiceScopeFactory scopeFactory, IDispatcher dispatcher, IMutex mutex, ICoravelGlobalConfiguration globalConfiguration)
         {
             this._scopeFactory = scopeFactory;
             this._dispatcher = dispatcher;
+            this._mutex = mutex;
+            this._globalConfiguration = globalConfiguration;
         }
 
         public Guid QueueTask(Action task)
@@ -148,28 +160,58 @@ namespace Coravel.Queuing
             var func = new ActionOrAsyncFunc(async () =>
                 {
                     Type invocableType = typeof(T);
-                    // This allows us to scope the scheduled IInvocable object
-                    // and allow DI to inject its dependencies.
-                    await using (var scope = this._scopeFactory.CreateAsyncScope())
-                    {
-                        if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
-                        {                            
-                            if(beforeInvoked != null)
-                            {                            
-                                beforeInvoked(invocable);
-                            }
+                    
+                    // Check if this invocable type has global prevent overlapping configured
+                    string uniqueIdentifier = null;
+                    bool shouldPreventOverlapping = this._globalConfiguration?.TryGetPreventOverlapping<T>(out uniqueIdentifier) ?? false;
 
-                            await invocable.Invoke();
-                        }
-                        else
+                    if (shouldPreventOverlapping && this._mutex != null)
+                    {
+                        // Try to acquire the lock
+                        if (this._mutex.TryGetLock(uniqueIdentifier, EventLockTimeout_24Hours))
                         {
-                            this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
-                            throw new Exception($"Queued invocable {invocableType} is not a registered service.");
+                            try
+                            {
+                                await this.ExecuteInvocable<T>(invocableType, beforeInvoked);
+                            }
+                            finally
+                            {
+                                this._mutex.Release(uniqueIdentifier);
+                            }
                         }
+                        // If we can't acquire the lock, we simply skip execution (consume but don't execute)
+                    }
+                    else
+                    {
+                        // No prevent overlapping, execute normally
+                        await this.ExecuteInvocable<T>(invocableType, beforeInvoked);
                     }
                 });
             this._tasks.Enqueue(func);
             return func;
+        }
+
+        private async Task ExecuteInvocable<T>(Type invocableType, Action<IInvocable> beforeInvoked) where T : IInvocable
+        {
+            // This allows us to scope the scheduled IInvocable object
+            // and allow DI to inject its dependencies.
+            await using (var scope = this._scopeFactory.CreateAsyncScope())
+            {
+                if (scope.ServiceProvider.GetService(invocableType) is IInvocable invocable)
+                {                            
+                    if(beforeInvoked != null)
+                    {                            
+                        beforeInvoked(invocable);
+                    }
+
+                    await invocable.Invoke();
+                }
+                else
+                {
+                    this._logger?.LogError($"Queued invocable {invocableType} is not a registered service.");
+                    throw new Exception($"Queued invocable {invocableType} is not a registered service.");
+                }
+            }
         }
 
         private void CleanTokens(IEnumerable<Guid> guidsForTokensToClean)
