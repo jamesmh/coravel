@@ -71,7 +71,7 @@ namespace Coravel.Queuing
             return job.Guid;
         }
 
-        public void QueueBroadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+        public void QueueBroadcast(IEvent toBroadcast)
         {
             this.QueueAsyncTask(async () => await this._dispatcher.Broadcast(toBroadcast));
         }

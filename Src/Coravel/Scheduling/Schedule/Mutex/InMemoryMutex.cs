@@ -9,10 +9,11 @@ namespace Coravel.Scheduling.Schedule.Mutex
     {
         private IUtcTime _utcTime;
         private readonly object _lock = new object();
-        private Dictionary<string, MutexItem> _mutexCollection = new Dictionary<string, MutexItem>();
+        private readonly Dictionary<string, MutexItem> _mutexCollection;
 
         public InMemoryMutex() {
             this._utcTime = new SystemUtcTime();
+            _mutexCollection = new Dictionary<string, MutexItem>();
         }
 
         /// <summary>

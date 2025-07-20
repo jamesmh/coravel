@@ -13,8 +13,8 @@ namespace Coravel.Events
     ///  </summary>
     public class Dispatcher : IDispatcher, IEventRegistration
     {
-        private IServiceScopeFactory _scopeFactory;
-        private Dictionary<Type, List<Type>> _events;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly Dictionary<Type, List<Type>> _events;
 
         public Dispatcher(IServiceScopeFactory scopeFactory)
         {
@@ -29,16 +29,11 @@ namespace Coravel.Events
         /// <returns></returns>
         public IEventSubscription<TEvent> Register<TEvent>() where TEvent : IEvent
         {
-            var listeners = new List<Type>();
             var eventType = typeof(TEvent);
 
-            if (this._events.ContainsKey(eventType))
+            if(!this._events.TryGetValue(eventType, out var listeners))
             {
-                listeners = this._events[eventType];
-            }
-            else
-            {
-                this._events.Add(eventType, listeners);
+                this._events.Add(eventType, listeners = new List<Type>());
             }
 
             return new EventSubscription<TEvent>(listeners);
@@ -48,9 +43,8 @@ namespace Coravel.Events
         ///  Broadcasts an event to be handled by its subscribed listeners.
         /// </summary>
         /// <param name="toBroadcast"></param>
-        /// <typeparam name="TEvent"></typeparam>
         /// <returns></returns>
-        public async Task Broadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+        public async Task Broadcast(IEvent toBroadcast)
         {
             if (this._events.TryGetValue(toBroadcast.GetType(), out var listeners))
             {
@@ -59,10 +53,11 @@ namespace Coravel.Events
                     await using (var scope = this._scopeFactory.CreateAsyncScope())
                     {
                         var obj = scope.ServiceProvider.GetService(listenerType);
-                        if (obj is IListener<TEvent> listener)
+                        if (obj is IListener listener)
                         {
                             await listener.HandleAsync(toBroadcast);
                         }
+                        // can delete
                         else {
                             // Depending on what assemblies the events, listeners and calling assmebly are - the cast
                             // above doesn't work (even though the type really does implement the interface).

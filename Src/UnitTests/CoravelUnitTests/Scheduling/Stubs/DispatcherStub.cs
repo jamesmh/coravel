@@ -5,7 +5,7 @@ namespace CoravelUnitTests.Scheduling.Stubs
 {
     public class DispatcherStub : IDispatcher
     {
-        public Task Broadcast<TEvent>(TEvent toBroadcast) where TEvent : IEvent
+        public Task Broadcast(IEvent toBroadcast)
         {
             return Task.CompletedTask;
         }
