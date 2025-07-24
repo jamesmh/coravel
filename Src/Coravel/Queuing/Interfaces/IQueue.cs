@@ -51,5 +51,12 @@ namespace Coravel.Queuing.Interfaces
         /// </summary>
         /// <returns></returns>
         QueueMetrics GetMetrics();
+
+        /// <summary>
+        /// Try to cancel an invocable by its token id return from QueueInvocableWithPayload
+        /// </summary>
+        /// <param name="tokenId">Token id return from QueueInvocableWithPayload</param>
+        /// <returns></returns>
+        bool TryCancelInvocable(Guid tokenId);
     }
 }
